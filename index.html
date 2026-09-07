@@ -2,22 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#0f1115">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FMAA">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
 <title>FMAA Flashcards — Sections A & B</title>
 <style>
 :root{--bg:#0f1115;--panel:#171a21;--panel2:#1e222b;--border:#2a2f3a;--text:#e6e8ee;--muted:#8b93a7;--accent:#4f8cff;--good:#2ecc71;--bad:#ff5c5c;--warn:#f5b342}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
-#app{display:flex;flex-direction:column;height:100vh}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;padding-top:env(safe-area-inset-top)}
 header{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--panel);flex-wrap:wrap}
 header h1{font-size:15px;margin:0 12px 0 0;font-weight:600;white-space:nowrap}
 .tabs{display:flex;gap:4px}
-.tab{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);cursor:pointer;user-select:none}
+.tab{padding:8px 12px;min-height:40px;display:flex;align-items:center;border-radius:6px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);cursor:pointer;user-select:none}
 .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .spacer{flex:1}
 select,button,input{font:inherit}
 select{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 8px}
-button{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 12px;cursor:pointer;user-select:none}
+button{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 12px;cursor:pointer;user-select:none;touch-action:manipulation;min-height:40px}
 button:hover{border-color:var(--accent)}
 button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 button.good{background:var(--good);border-color:var(--good);color:#06280f}
@@ -33,7 +39,7 @@ main{flex:1;display:flex;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--good)}
 .content{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:16px}
 .stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:auto;min-height:0}
-.card{width:min(860px,100%);min-height:300px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 32px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;user-select:none;position:relative}
+.card{width:min(860px,100%);min-height:300px;touch-action:pan-y;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 32px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;user-select:none;position:relative}
 .card .lbl{position:absolute;top:10px;left:14px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .card .sec{position:absolute;top:10px;right:14px;font-size:11px;color:var(--accent);font-weight:600}
 .card .txt{font-size:20px;line-height:1.4;text-align:center;white-space:pre-wrap}
@@ -41,7 +47,7 @@ main{flex:1;display:flex;overflow:hidden}
 .controls{display:flex;gap:8px;justify-content:center;align-items:center;padding-top:12px;flex-wrap:wrap}
 .meta{color:var(--muted);font-size:12px;text-align:center;padding-top:6px;font-variant-numeric:tabular-nums}
 .choices{width:min(860px,100%);display:grid;gap:8px;margin-top:14px}
-.choice{padding:12px 14px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;display:flex;gap:10px;align-items:flex-start}
+.choice{padding:14px 14px;min-height:48px;touch-action:manipulation;background:var(--panel2);border:1px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;display:flex;gap:10px;align-items:flex-start}
 .choice:hover{border-color:var(--accent)}
 .choice .k{color:var(--muted);font-weight:600;min-width:16px}
 .choice.correct{border-color:var(--good);background:#13301f}
@@ -64,11 +70,40 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
 .list td,.list th{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top;text-align:left}
 .list th{color:var(--muted);font-size:11px;text-transform:uppercase;position:sticky;top:0;background:var(--bg)}
 .list td.f{white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis}
+#menuBtn{display:none}
+.backdrop{display:none}
+@media (max-width:760px){
+  header{padding:6px 8px;gap:6px;padding-top:calc(6px + env(safe-area-inset-top))}
+  header h1{font-size:13px;margin:0 4px 0 0}
+  .tabs{order:10;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;padding:8px 10px;font-size:13px}
+  #btnReset{display:none}
+  #menuBtn{display:inline-flex;align-items:center;padding:6px 10px}
+  .side{position:fixed;left:0;top:0;bottom:0;width:min(85vw,300px);z-index:30;transform:translateX(-100%);transition:transform .2s;padding-top:calc(10px + env(safe-area-inset-top));box-shadow:4px 0 20px #0008}
+  .side.open{transform:none}
+  .side #btnResetM{display:block;width:100%;margin-top:10px}
+  .backdrop.show{display:block;position:fixed;inset:0;background:#0009;z-index:25}
+  .content{padding:10px 10px calc(10px + env(safe-area-inset-bottom))}
+  .card{min-height:46vh;padding:34px 16px 18px}
+  .card .txt{font-size:18px}
+  .card.back .txt{font-size:15px}
+  .controls{gap:6px;padding-top:8px}
+  .controls button{flex:1 1 44%;padding:10px 6px;font-size:13px}
+  .q{font-size:15px;padding:16px}
+  .choice{font-size:14px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat b{font-size:20px}
+  .list{font-size:12px}
+  .list td.f{max-width:140px}
+  .keys{display:none}
+}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
+  <button id="menuBtn" title="Sections & filters">☰</button>
   <h1>FMAA · Sections A &amp; B</h1>
   <div class="tabs">
     <div class="tab active" data-mode="flash">Flashcards</div>
@@ -91,14 +126,16 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
     <h3>Mastery</h3>
     <div class="bar"><i id="masteryBar" style="width:0"></i></div>
     <div id="masteryTxt" class="cnt"></div>
-    <h3>Keys</h3>
-    <div style="color:var(--muted);line-height:1.8">
+    <button id="btnResetM" style="display:none">Reset progress</button>
+    <h3 class="keys">Keys</h3>
+    <div class="keys" style="color:var(--muted);line-height:1.8">
       <span class="kbd">Space</span> flip · <span class="kbd">→</span> next · <span class="kbd">←</span> prev<br>
       <span class="kbd">1</span> still learning · <span class="kbd">2</span> know it<br>
       <span class="kbd">A</span>–<span class="kbd">D</span> pick choice · <span class="kbd">Enter</span> continue<br>
       <span class="kbd">S</span> star · <span class="kbd">R</span> shuffle
     </div>
   </aside>
+  <div class="backdrop" id="backdrop"></div>
   <section class="content" id="content"></section>
 </main>
 </div>
@@ -135,6 +172,12 @@ function renderSide(){
 $("#filter").onchange=e=>{state.filter=e.target.value;save();rebuild();};
 $("#selAll").onclick=()=>{state.secs=Object.keys(SECS);save();rebuild();};
 $("#selNone").onclick=()=>{state.secs=[];save();rebuild();};
+const side=document.querySelector(".side"),bd=$("#backdrop");
+const closeSide=()=>{side.classList.remove("open");bd.classList.remove("show");};
+$("#menuBtn").onclick=()=>{side.classList.toggle("open");bd.classList.toggle("show");};
+bd.onclick=closeSide;
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",closeSide));
+$("#btnResetM").onclick=()=>$("#btnReset").click();
 $("#btnReset").onclick=()=>{if(confirm("Clear all saved progress?")){state={cards:{},secs:Object.keys(SECS),mode:state.mode,filter:"all",test:{done:0,right:0}};save();rebuild();}};
 document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{state.mode=t.dataset.mode;save();rebuild();});
 
@@ -155,9 +198,11 @@ function renderFlash(){
       <button id="star">${s.star?"★ Unstar":"☆ Star"}</button>
       <button id="shuf">Shuffle</button>
     </div>
-    <div class="meta">${fc.i+1} / ${fc.order.length} · click card or Space to flip</div>
+    <div class="meta">${fc.i+1} / ${fc.order.length} · tap card to flip · swipe ←→</div>
   </div>`;
   $("#card").onclick=()=>{fc.back=!fc.back;renderFlash();};
+  (function(){let x0=null,t0=0;const el=$("#card");el.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;t0=Date.now();},{passive:true});
+    el.addEventListener("touchend",e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>60&&Date.now()-t0<600){e.preventDefault();if(dx<0)$("#next").click();else $("#prev").click();}},{passive:false});})();
   $("#prev").onclick=()=>{fc.i=(fc.i-1+fc.order.length)%fc.order.length;fc.back=false;renderFlash();};
   $("#next").onclick=()=>{fc.i=(fc.i+1)%fc.order.length;fc.back=false;renderFlash();};
   $("#know").onclick=()=>{s.lvl=2;s.seen++;save();$("#next").onclick();renderSide();};

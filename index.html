@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FMAA Flashcards — Sections A & B</title>
+<style>
+:root{--bg:#0f1115;--panel:#171a21;--panel2:#1e222b;--border:#2a2f3a;--text:#e6e8ee;--muted:#8b93a7;--accent:#4f8cff;--good:#2ecc71;--bad:#ff5c5c;--warn:#f5b342}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh}
+header{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--panel);flex-wrap:wrap}
+header h1{font-size:15px;margin:0 12px 0 0;font-weight:600;white-space:nowrap}
+.tabs{display:flex;gap:4px}
+.tab{padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);cursor:pointer;user-select:none}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.spacer{flex:1}
+select,button,input{font:inherit}
+select{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 8px}
+button{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 12px;cursor:pointer;user-select:none}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.good{background:var(--good);border-color:var(--good);color:#06280f}
+button.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+button.warn{background:var(--warn);border-color:var(--warn);color:#2a1d00}
+main{flex:1;display:flex;overflow:hidden}
+.side{width:230px;border-right:1px solid var(--border);background:var(--panel);padding:10px;overflow-y:auto;font-size:12px}
+.side h3{margin:8px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.side label{display:flex;justify-content:space-between;padding:3px 4px;border-radius:4px;cursor:pointer;user-select:none}
+.side label:hover{background:var(--panel2)}
+.side .cnt{color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin:4px 0 8px}
+.bar i{display:block;height:100%;background:var(--good)}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:16px}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:auto;min-height:0}
+.card{width:min(860px,100%);min-height:300px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px 32px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;user-select:none;position:relative}
+.card .lbl{position:absolute;top:10px;left:14px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.card .sec{position:absolute;top:10px;right:14px;font-size:11px;color:var(--accent);font-weight:600}
+.card .txt{font-size:20px;line-height:1.4;text-align:center;white-space:pre-wrap}
+.card.back .txt{font-size:17px;text-align:left}
+.controls{display:flex;gap:8px;justify-content:center;align-items:center;padding-top:12px;flex-wrap:wrap}
+.meta{color:var(--muted);font-size:12px;text-align:center;padding-top:6px;font-variant-numeric:tabular-nums}
+.choices{width:min(860px,100%);display:grid;gap:8px;margin-top:14px}
+.choice{padding:12px 14px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;cursor:pointer;user-select:none;display:flex;gap:10px;align-items:flex-start}
+.choice:hover{border-color:var(--accent)}
+.choice .k{color:var(--muted);font-weight:600;min-width:16px}
+.choice.correct{border-color:var(--good);background:#13301f}
+.choice.wrong{border-color:var(--bad);background:#3a1a1a}
+.choice.dim{opacity:.55}
+.q{width:min(860px,100%);background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 24px;font-size:17px;white-space:pre-wrap}
+.q .sec{font-size:11px;color:var(--accent);font-weight:600;margin-bottom:6px}
+textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px;font:inherit;min-height:80px;resize:vertical}
+.explain{width:min(860px,100%);margin-top:10px;padding:10px 14px;border-radius:8px;background:var(--panel2);border-left:3px solid var(--warn);font-size:13px;white-space:pre-wrap}
+.kbd{display:inline-block;border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11px;color:var(--muted);margin:0 2px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;width:min(860px,100%)}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px}
+.stat b{display:block;font-size:24px}
+.stat span{color:var(--muted);font-size:12px}
+.empty{color:var(--muted);text-align:center}
+.pill{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;background:var(--panel2);border:1px solid var(--border);color:var(--muted)}
+.pill.n{color:var(--muted)} .pill.l{color:var(--warn)} .pill.k{color:var(--good)}
+.list{width:min(900px,100%);overflow:auto;font-size:13px}
+.list table{width:100%;border-collapse:collapse}
+.list td,.list th{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top;text-align:left}
+.list th{color:var(--muted);font-size:11px;text-transform:uppercase;position:sticky;top:0;background:var(--bg)}
+.list td.f{white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <h1>FMAA · Sections A &amp; B</h1>
+  <div class="tabs">
+    <div class="tab active" data-mode="flash">Flashcards</div>
+    <div class="tab" data-mode="learn">Learn</div>
+    <div class="tab" data-mode="write">Write</div>
+    <div class="tab" data-mode="test">Test</div>
+    <div class="tab" data-mode="browse">Browse</div>
+    <div class="tab" data-mode="stats">Progress</div>
+  </div>
+  <div class="spacer"></div>
+  <button id="btnReset" title="Clear all saved progress">Reset progress</button>
+</header>
+<main>
+  <aside class="side">
+    <h3>Sections</h3>
+    <div id="secList"></div>
+    <div style="display:flex;gap:6px;margin-top:6px"><button id="selAll" style="flex:1;padding:4px">All</button><button id="selNone" style="flex:1;padding:4px">None</button></div>
+    <h3>Filter</h3>
+    <label><span>Show</span><select id="filter"><option value="all">all cards</option><option value="unlearned">not yet known</option><option value="starred">starred</option><option value="missed">missed in Learn</option></select></label>
+    <h3>Mastery</h3>
+    <div class="bar"><i id="masteryBar" style="width:0"></i></div>
+    <div id="masteryTxt" class="cnt"></div>
+    <h3>Keys</h3>
+    <div style="color:var(--muted);line-height:1.8">
+      <span class="kbd">Space</span> flip · <span class="kbd">→</span> next · <span class="kbd">←</span> prev<br>
+      <span class="kbd">1</span> still learning · <span class="kbd">2</span> know it<br>
+      <span class="kbd">A</span>–<span class="kbd">D</span> pick choice · <span class="kbd">Enter</span> continue<br>
+      <span class="kbd">S</span> star · <span class="kbd">R</span> shuffle
+    </div>
+  </aside>
+  <section class="content" id="content"></section>
+</main>
+</div>
+<script src="deck.js"></script>
+<script>
+(function(){
+const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis"};
+const CARDS=window.FMAA_CARDS.map((c,i)=>({id:i,sec:c[0],front:c[1],back:c[2]}));
+const MCQ=window.FMAA_MCQ.map((q,i)=>({id:i,sec:q[0],q:q[1],choices:q[2],ans:q[3],why:q[4]}));
+const LS="fmaa_fc_v1";
+let state=load();
+function load(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.cards)return s;}catch(e){}return {cards:{},secs:Object.keys(SECS),mode:"flash",filter:"all",test:{done:0,right:0}};}
+function save(){try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
+function cs(id){return state.cards[id]||(state.cards[id]={lvl:0,seen:0,miss:0,star:0,due:0});}
+// lvl: 0 new, 1 learning, 2 known (needs 2 consecutive correct in Learn), star flag
+
+const content=document.getElementById("content");
+const $=s=>document.querySelector(s);
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pool(){return CARDS.filter(c=>state.secs.includes(c.sec)).filter(c=>{const s=cs(c.id);switch(state.filter){case"unlearned":return s.lvl<2;case"starred":return !!s.star;case"missed":return s.miss>0;default:return true;}});}
+function mcqPool(){return MCQ.filter(q=>state.secs.includes(q.sec));}
+
+// ---------- sidebar ----------
+function renderSide(){
+  const el=document.getElementById("secList");
+  el.innerHTML=Object.keys(SECS).map(k=>{const n=CARDS.filter(c=>c.sec===k).length;const known=CARDS.filter(c=>c.sec===k&&cs(c.id).lvl>=2).length;
+    return `<label><span><input type="checkbox" data-sec="${k}" ${state.secs.includes(k)?"checked":""}> ${SECS[k]}</span><span class="cnt">${known}/${n}</span></label>`;}).join("");
+  el.querySelectorAll("input").forEach(i=>i.onchange=()=>{const k=i.dataset.sec;state.secs=i.checked?[...new Set([...state.secs,k])]:state.secs.filter(x=>x!==k);save();rebuild();});
+  const tot=CARDS.length,kn=CARDS.filter(c=>cs(c.id).lvl>=2).length;
+  $("#masteryBar").style.width=(100*kn/tot)+"%";$("#masteryTxt").textContent=`${kn} / ${tot} cards known`;
+  $("#filter").value=state.filter;
+}
+$("#filter").onchange=e=>{state.filter=e.target.value;save();rebuild();};
+$("#selAll").onclick=()=>{state.secs=Object.keys(SECS);save();rebuild();};
+$("#selNone").onclick=()=>{state.secs=[];save();rebuild();};
+$("#btnReset").onclick=()=>{if(confirm("Clear all saved progress?")){state={cards:{},secs:Object.keys(SECS),mode:state.mode,filter:"all",test:{done:0,right:0}};save();rebuild();}};
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{state.mode=t.dataset.mode;save();rebuild();});
+
+// ---------- FLASHCARDS ----------
+let fc={order:[],i:0,back:false};
+function initFlash(){fc.order=shuffle(pool().map(c=>c.id));fc.i=0;fc.back=false;}
+function renderFlash(){
+  if(!fc.order.length||fc.order.some(id=>!pool().find(c=>c.id===id))){initFlash();}
+  if(!fc.order.length){content.innerHTML=`<div class="stage"><div class="empty">No cards match the current sections/filter.</div></div>`;return;}
+  const c=CARDS[fc.order[fc.i]],s=cs(c.id);
+  content.innerHTML=`<div class="stage">
+    <div class="card ${fc.back?"back":""}" id="card"><div class="lbl">${fc.back?"Answer":"Prompt"}</div><div class="sec">${SECS[c.sec]} ${s.star?"★":""} <span class="pill ${["n","l","k"][s.lvl]}">${["new","learning","known"][s.lvl]}</span></div><div class="txt">${esc(fc.back?c.back:c.front)}</div></div>
+    <div class="controls">
+      <button id="prev">← Prev</button>
+      <button class="bad" id="learning">1 · Still learning</button>
+      <button class="good" id="know">2 · Know it</button>
+      <button id="next">Next →</button>
+      <button id="star">${s.star?"★ Unstar":"☆ Star"}</button>
+      <button id="shuf">Shuffle</button>
+    </div>
+    <div class="meta">${fc.i+1} / ${fc.order.length} · click card or Space to flip</div>
+  </div>`;
+  $("#card").onclick=()=>{fc.back=!fc.back;renderFlash();};
+  $("#prev").onclick=()=>{fc.i=(fc.i-1+fc.order.length)%fc.order.length;fc.back=false;renderFlash();};
+  $("#next").onclick=()=>{fc.i=(fc.i+1)%fc.order.length;fc.back=false;renderFlash();};
+  $("#know").onclick=()=>{s.lvl=2;s.seen++;save();$("#next").onclick();renderSide();};
+  $("#learning").onclick=()=>{s.lvl=Math.min(s.lvl,1);if(s.lvl===0)s.lvl=1;s.seen++;save();$("#next").onclick();renderSide();};
+  $("#star").onclick=()=>{s.star=s.star?0:1;save();renderFlash();};
+  $("#shuf").onclick=()=>{initFlash();renderFlash();};
+}
+
+// ---------- LEARN (adaptive multiple choice, Quizlet-style) ----------
+let ln={queue:[],cur:null,answered:false,streak:{},round:0,stats:{right:0,wrong:0}};
+function buildLearnQueue(){
+  const p=pool().filter(c=>cs(c.id).lvl<2);
+  // prioritise cards missed before, then new, then learning
+  const w=c=>{const s=cs(c.id);return (s.miss>0?0:s.lvl===0?1:2)+Math.random()*0.5;};
+  ln.queue=p.sort((a,b)=>w(a)-w(b)).map(c=>c.id).slice(0,20);
+  ln.round++;
+}
+function nextLearn(){
+  if(!ln.queue.length){buildLearnQueue();if(!ln.queue.length){ln.cur=null;renderLearn();return;}}
+  const id=ln.queue.shift();const c=CARDS[id];
+  const others=shuffle(CARDS.filter(o=>o.id!==id&&(o.sec===c.sec||Math.random()<0.15))).slice(0,3);
+  const choices=shuffle([{t:c.back,ok:true},...others.map(o=>({t:o.back,ok:false}))]);
+  ln.cur={card:c,choices,picked:null};ln.answered=false;renderLearn();
+}
+function renderLearn(){
+  if(!ln.cur){
+    const remaining=pool().filter(c=>cs(c.id).lvl<2).length;
+    content.innerHTML=`<div class="stage"><div class="stats">
+      <div class="stat"><b>${remaining}</b><span>cards left to master in selection</span></div>
+      <div class="stat"><b>${ln.stats.right}</b><span>correct this session</span></div>
+      <div class="stat"><b>${ln.stats.wrong}</b><span>missed this session</span></div></div>
+      <div class="controls" style="margin-top:20px">${remaining?`<button class="primary" id="startLearn">Start round</button>`:`<div class="empty">Everything in this selection is marked known. Change sections/filter or reset.</div>`}</div>
+      <div class="meta">A card becomes "known" after 2 consecutive correct answers. Wrong answers put it back into the queue.</div></div>`;
+    const b=$("#startLearn");if(b)b.onclick=()=>{buildLearnQueue();nextLearn();};return;
+  }
+  const {card:c,choices}=ln.cur,s=cs(c.id);
+  content.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:10px">
+    <div class="q"><div class="sec">${SECS[c.sec]} · <span class="pill ${["n","l","k"][s.lvl]}">${["new","learning","known"][s.lvl]}</span> · streak ${ln.streak[c.id]||0}/2</div>${esc(c.front)}</div>
+    <div class="choices">${choices.map((ch,i)=>`<div class="choice" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(ch.t)}</span></div>`).join("")}</div>
+    <div id="fb"></div>
+    <div class="controls" id="lc"><button id="dontknow">Don't know</button></div>
+    <div class="meta">queue: ${ln.queue.length} left · session ${ln.stats.right}✓ ${ln.stats.wrong}✗</div>
+  </div>`;
+  content.querySelectorAll(".choice").forEach(el=>el.onclick=()=>answerLearn(+el.dataset.i));
+  $("#dontknow").onclick=()=>answerLearn(-1);
+}
+function answerLearn(i){
+  if(ln.answered)return;ln.answered=true;
+  const {card:c,choices}=ln.cur,s=cs(c.id);const ok=i>=0&&choices[i].ok;s.seen++;
+  content.querySelectorAll(".choice").forEach((el,j)=>{if(choices[j].ok)el.classList.add("correct");else if(j===i)el.classList.add("wrong");else el.classList.add("dim");});
+  if(ok){ln.stats.right++;ln.streak[c.id]=(ln.streak[c.id]||0)+1;if(ln.streak[c.id]>=2){s.lvl=2;}else{s.lvl=Math.max(s.lvl,1);ln.queue.splice(Math.min(4,ln.queue.length),0,c.id);}}
+  else{ln.stats.wrong++;ln.streak[c.id]=0;s.miss++;s.lvl=1;ln.queue.splice(Math.min(2,ln.queue.length),0,c.id);}
+  save();renderSide();
+  $("#fb").innerHTML=`<div class="explain" style="border-color:${ok?"var(--good)":"var(--bad)"}">${ok?"Correct.":"Answer:"} ${ok?"":esc(c.back)}</div>`;
+  $("#lc").innerHTML=`<button class="primary" id="cont">Continue (Enter)</button><button id="star">${s.star?"★ Unstar":"☆ Star"}</button>`;
+  $("#cont").onclick=nextLearn;$("#star").onclick=()=>{s.star=s.star?0:1;save();$("#star").textContent=s.star?"★ Unstar":"☆ Star";};
+}
+
+// ---------- WRITE (typed recall, self-graded) ----------
+let wr={order:[],i:0,revealed:false};
+function renderWrite(){
+  if(!wr.order.length||wr.order.some(id=>!pool().find(c=>c.id===id))){wr.order=shuffle(pool().map(c=>c.id));wr.i=0;wr.revealed=false;}
+  if(!wr.order.length){content.innerHTML=`<div class="stage"><div class="empty">No cards match.</div></div>`;return;}
+  const c=CARDS[wr.order[wr.i]],s=cs(c.id);
+  content.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:10px">
+    <div class="q"><div class="sec">${SECS[c.sec]}</div>${esc(c.front)}</div>
+    <textarea id="ans" placeholder="Type your answer, then press Ctrl+Enter or Reveal…" ${wr.revealed?"disabled":""}></textarea>
+    ${wr.revealed?`<div class="explain" style="border-color:var(--accent)"><b>Model answer</b>\n${esc(c.back)}</div>`:""}
+    <div class="controls" id="wc">${wr.revealed?`<button class="bad" id="w1">1 · Missed it</button><button class="good" id="w2">2 · Got it</button>`:`<button class="primary" id="reveal">Reveal</button>`}<button id="skip">Skip →</button></div>
+    <div class="meta">${wr.i+1} / ${wr.order.length}</div></div>`;
+  const ta=$("#ans");if(!wr.revealed){ta.focus();ta.onkeydown=e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){wr.revealed=true;renderWrite();}};}
+  const adv=()=>{wr.i=(wr.i+1)%wr.order.length;wr.revealed=false;renderWrite();};
+  if($("#reveal"))$("#reveal").onclick=()=>{wr.revealed=true;renderWrite();};
+  if($("#w1"))$("#w1").onclick=()=>{s.miss++;s.lvl=1;s.seen++;save();renderSide();adv();};
+  if($("#w2"))$("#w2").onclick=()=>{s.lvl=2;s.seen++;save();renderSide();adv();};
+  $("#skip").onclick=adv;
+}
+
+// ---------- TEST (PRC quiz MCQs) ----------
+let ts={qs:[],i:0,picked:[],done:false};
+function startTest(){ts.qs=shuffle(mcqPool().slice());ts.i=0;ts.picked=[];ts.done=false;renderTest();}
+function renderTest(){
+  if(!ts.qs.length){content.innerHTML=`<div class="stage"><div class="stats"><div class="stat"><b>${mcqPool().length}</b><span>quiz questions in selected sections</span></div><div class="stat"><b>${state.test.done?Math.round(100*state.test.right/state.test.done)+"%":"—"}</b><span>lifetime accuracy (${state.test.right}/${state.test.done})</span></div></div><div class="controls" style="margin-top:20px"><button class="primary" id="st">Start test</button></div><div class="meta">Questions are the actual PRC session quiz items (QUC) with explanations.</div></div>`;$("#st").onclick=startTest;return;}
+  if(ts.done){const r=ts.picked.filter((p,i)=>p===ts.qs[i].ans).length;
+    content.innerHTML=`<div class="stage" style="justify-content:flex-start"><div class="stats"><div class="stat"><b>${r}/${ts.qs.length}</b><span>score · ${Math.round(100*r/ts.qs.length)}%</span></div></div>
+    <div class="list" style="margin-top:14px"><table><tr><th>#</th><th>Sec</th><th>Question</th><th>You</th><th>Ans</th></tr>${ts.qs.map((q,i)=>`<tr style="color:${ts.picked[i]===q.ans?"var(--good)":"var(--bad)"}"><td>${i+1}</td><td>${q.sec}</td><td>${esc(q.q)}<div style="color:var(--muted);font-size:12px">${esc(q.why)}</div></td><td>${ts.picked[i]>=0?"ABCD"[ts.picked[i]]:"—"}</td><td>${"ABCD"[q.ans]}</td></tr>`).join("")}</table></div>
+    <div class="controls"><button class="primary" id="again">New test</button></div></div>`;$("#again").onclick=startTest;return;}
+  const q=ts.qs[ts.i],p=ts.picked[ts.i];
+  content.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:10px">
+    <div class="q"><div class="sec">${SECS[q.sec]} · Q ${ts.i+1}/${ts.qs.length}</div>${esc(q.q)}</div>
+    <div class="choices">${q.choices.map((c,i)=>`<div class="choice ${p!==undefined?(i===q.ans?"correct":i===p?"wrong":"dim"):""}" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(c)}</span></div>`).join("")}</div>
+    ${p!==undefined?`<div class="explain">${esc(q.why)}</div>`:""}
+    <div class="controls">${p!==undefined?`<button class="primary" id="tn">${ts.i+1<ts.qs.length?"Next (Enter)":"Finish (Enter)"}</button>`:""}</div></div>`;
+  if(p===undefined)content.querySelectorAll(".choice").forEach(el=>el.onclick=()=>{ts.picked[ts.i]=+el.dataset.i;state.test.done++;if(+el.dataset.i===q.ans)state.test.right++;save();renderTest();});
+  else $("#tn").onclick=()=>{if(ts.i+1<ts.qs.length){ts.i++;}else{ts.done=true;}renderTest();};
+}
+
+// ---------- BROWSE ----------
+function renderBrowse(){
+  const p=pool();
+  content.innerHTML=`<div class="stage" style="justify-content:flex-start"><div class="list"><table><tr><th>Sec</th><th>Front</th><th>Back</th><th>Status</th><th></th></tr>${p.map(c=>{const s=cs(c.id);return `<tr><td>${c.sec}</td><td>${esc(c.front)}</td><td style="color:var(--muted)">${esc(c.back)}</td><td><span class="pill ${["n","l","k"][s.lvl]}">${["new","learning","known"][s.lvl]}</span>${s.miss?` <span class="pill l">${s.miss}✗</span>`:""}</td><td><button data-id="${c.id}" style="padding:2px 8px">${s.star?"★":"☆"}</button></td></tr>`;}).join("")}</table></div><div class="meta">${p.length} cards</div></div>`;
+  content.querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>{const s=cs(+b.dataset.id);s.star=s.star?0:1;save();renderBrowse();});
+}
+
+// ---------- STATS ----------
+function renderStats(){
+  const rows=Object.keys(SECS).map(k=>{const cs_=CARDS.filter(c=>c.sec===k);const kn=cs_.filter(c=>cs(c.id).lvl>=2).length,lr=cs_.filter(c=>cs(c.id).lvl===1).length,ms=cs_.reduce((a,c)=>a+cs(c.id).miss,0);return {k,n:cs_.length,kn,lr,ms};});
+  const worst=CARDS.filter(c=>cs(c.id).miss>0).sort((a,b)=>cs(b.id).miss-cs(a.id).miss).slice(0,10);
+  content.innerHTML=`<div class="stage" style="justify-content:flex-start">
+    <div class="stats">${rows.map(r=>`<div class="stat"><b>${Math.round(100*r.kn/r.n)}%</b><span>${SECS[r.k]}<br>${r.kn} known · ${r.lr} learning · ${r.n-r.kn-r.lr} new · ${r.ms} misses</span><div class="bar" style="margin-top:6px"><i style="width:${100*r.kn/r.n}%"></i></div></div>`).join("")}</div>
+    <div class="list" style="margin-top:16px"><table><tr><th colspan="3">Most missed</th></tr>${worst.length?worst.map(c=>`<tr><td>${c.sec}</td><td>${esc(c.front)}</td><td style="color:var(--bad)">${cs(c.id).miss}✗</td></tr>`).join(""):`<tr><td class="empty">No misses recorded yet.</td></tr>`}</table></div>
+    <div class="meta">Test accuracy: ${state.test.done?Math.round(100*state.test.right/state.test.done)+"% ("+state.test.right+"/"+state.test.done+")":"—"}</div></div>`;
+}
+
+function rebuild(){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.mode===state.mode));
+  renderSide();
+  ({flash:renderFlash,learn:renderLearn,write:renderWrite,test:renderTest,browse:renderBrowse,stats:renderStats})[state.mode]();
+}
+// keyboard
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;
+  const m=state.mode,k=e.key;
+  if(m==="flash"){if(k===" "){e.preventDefault();$("#card")&&$("#card").click();}else if(k==="ArrowRight")$("#next")&&$("#next").click();else if(k==="ArrowLeft")$("#prev")&&$("#prev").click();else if(k==="1")$("#learning")&&$("#learning").click();else if(k==="2")$("#know")&&$("#know").click();else if(k.toLowerCase()==="s")$("#star")&&$("#star").click();else if(k.toLowerCase()==="r")$("#shuf")&&$("#shuf").click();}
+  else if(m==="learn"||m==="test"){const idx="abcd".indexOf(k.toLowerCase());if(idx>=0){const el=content.querySelectorAll(".choice")[idx];if(el&&!el.classList.contains("correct")&&!el.classList.contains("wrong")&&!el.classList.contains("dim"))el.click();}
+    else if(k==="Enter"){const b=$("#cont")||$("#tn")||$("#startLearn")||$("#st")||$("#again");b&&b.click();}else if(k.toLowerCase()==="s"){$("#star")&&$("#star").click();}}
+  else if(m==="write"){if(k==="1")$("#w1")&&$("#w1").click();else if(k==="2")$("#w2")&&$("#w2").click();else if(k==="ArrowRight")$("#skip")&&$("#skip").click();}
+});
+rebuild();
+})();
+</script>
+</body>
+</html>

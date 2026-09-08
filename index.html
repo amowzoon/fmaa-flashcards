@@ -70,22 +70,6 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
 .list td,.list th{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top;text-align:left}
 .list th{color:var(--muted);font-size:11px;text-transform:uppercase;position:sticky;top:0;background:var(--bg)}
 .list td.f{white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis}
-.chat{width:min(900px,100%);flex:1;display:flex;flex-direction:column;min-height:0}
-.msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px}
-.msg{max-width:92%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
-.msg.u{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
-.msg.a{align-self:flex-start;background:var(--panel);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg.a b{color:#fff}.msg.a code{background:var(--panel2);padding:0 4px;border-radius:4px;font-size:13px}
-.msg.a ul{margin:4px 0 4px 18px;padding:0}.msg.a li{margin:2px 0}
-.msg.sys{align-self:center;color:var(--muted);font-size:12px;background:none}
-.chips{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0}
-.chip{padding:6px 10px;border-radius:14px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);font-size:12px;cursor:pointer;user-select:none;min-height:0}
-.chip:hover{border-color:var(--accent);color:var(--text)}
-.inrow{display:flex;gap:8px;align-items:flex-end}
-.inrow textarea{flex:1;margin:0;min-height:44px;max-height:160px}
-.setup{width:min(620px,100%);background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px}
-.setup input{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin:4px 0 12px}
-.setup small{color:var(--muted);display:block;line-height:1.5}
 #menuBtn{display:none}
 .backdrop{display:none}
 @media (max-width:760px){
@@ -126,7 +110,6 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
     <div class="tab" data-mode="learn">Learn</div>
     <div class="tab" data-mode="write">Write</div>
     <div class="tab" data-mode="test">Test</div>
-    <div class="tab" data-mode="tutor">Tutor</div>
     <div class="tab" data-mode="browse">Browse</div>
     <div class="tab" data-mode="stats">Progress</div>
   </div>
@@ -157,7 +140,6 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
 </main>
 </div>
 <script src="deck.js?v=5"></script>
-<script src="guide.js?v=1"></script>
 <script>
 (function(){
 const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis",AB:"Abbreviations"};
@@ -215,7 +197,6 @@ function renderFlash(){
       <button id="next">Next →</button>
       <button id="star">${s.star?"★ Unstar":"☆ Star"}</button>
       <button id="shuf">Shuffle</button>
-      <button id="askT">Ask tutor</button>
     </div>
     <div class="meta">${fc.i+1} / ${fc.order.length} · tap card to flip · swipe ←→</div>
   </div>`;
@@ -228,7 +209,6 @@ function renderFlash(){
   $("#learning").onclick=()=>{s.lvl=Math.min(s.lvl,1);if(s.lvl===0)s.lvl=1;s.seen++;save();$("#next").onclick();renderSide();};
   $("#star").onclick=()=>{s.star=s.star?0:1;save();renderFlash();};
   $("#shuf").onclick=()=>{initFlash();renderFlash();};
-  $("#askT").onclick=()=>openTutor(`Explain this flashcard to me in plain language with an example, then check my understanding with one question.\n\nFront: ${c.front}\nBack: ${c.back}`);
 }
 
 // ---------- LEARN (adaptive multiple choice, Quizlet-style) ----------
@@ -280,8 +260,7 @@ function answerLearn(i){
   else{ln.stats.wrong++;ln.streak[c.id]=0;s.miss++;s.lvl=1;ln.queue.splice(Math.min(2,ln.queue.length),0,c.id);}
   save();renderSide();
   $("#fb").innerHTML=`<div class="explain" style="border-color:${ok?"var(--good)":"var(--bad)"}">${ok?"Correct.":"Answer:"} ${ok?"":esc(c.back)}</div>`;
-  $("#lc").innerHTML=`<button class="primary" id="cont">Continue (Enter)</button><button id="star">${s.star?"★ Unstar":"☆ Star"}</button>${ok?"":`<button id="askT">Ask tutor why</button>`}`;
-  if($("#askT"))$("#askT").onclick=()=>openTutor(`I got this wrong in Learn mode. Explain why the correct answer is right and why my choice was wrong, then give me a fresh practice question on the same idea.\n\nQuestion: ${c.front}\nCorrect answer: ${c.back}\nMy wrong pick: ${i>=0?choices[i].t:"(didn't know)"}`);
+  $("#lc").innerHTML=`<button class="primary" id="cont">Continue (Enter)</button><button id="star">${s.star?"★ Unstar":"☆ Star"}</button>`;
   $("#cont").onclick=nextLearn;$("#star").onclick=()=>{s.star=s.star?0:1;save();$("#star").textContent=s.star?"★ Unstar":"☆ Star";};
 }
 
@@ -295,14 +274,13 @@ function renderWrite(){
     <div class="q"><div class="sec">${SECS[c.sec]}</div>${esc(c.front)}</div>
     <textarea id="ans" placeholder="Type your answer, then press Ctrl+Enter or Reveal…" ${wr.revealed?"disabled":""}></textarea>
     ${wr.revealed?`<div class="explain" style="border-color:var(--accent)"><b>Model answer</b>\n${esc(c.back)}</div>`:""}
-    <div class="controls" id="wc">${wr.revealed?`<button class="bad" id="w1">1 · Missed it</button><button class="good" id="w2">2 · Got it</button><button id="askT">Ask tutor</button>`:`<button class="primary" id="reveal">Reveal</button>`}<button id="skip">Skip →</button></div>
+    <div class="controls" id="wc">${wr.revealed?`<button class="bad" id="w1">1 · Missed it</button><button class="good" id="w2">2 · Got it</button>`:`<button class="primary" id="reveal">Reveal</button>`}<button id="skip">Skip →</button></div>
     <div class="meta">${wr.i+1} / ${wr.order.length}</div></div>`;
   const ta=$("#ans");if(!wr.revealed){ta.focus();ta.onkeydown=e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){wr.revealed=true;renderWrite();}};}
   const adv=()=>{wr.i=(wr.i+1)%wr.order.length;wr.revealed=false;renderWrite();};
   if($("#reveal"))$("#reveal").onclick=()=>{wr.revealed=true;renderWrite();};
   if($("#w1"))$("#w1").onclick=()=>{s.miss++;s.lvl=1;s.seen++;save();renderSide();adv();};
   if($("#w2"))$("#w2").onclick=()=>{s.lvl=2;s.seen++;save();renderSide();adv();};
-  if($("#askT"))$("#askT").onclick=()=>openTutor(`Grade my written answer against the model answer, point out what I missed, then teach the gap with an example.\n\nQuestion: ${c.front}\nModel answer: ${c.back}\nMy answer: ${$("#ans").value||"(blank)"}`);
   $("#skip").onclick=adv;
 }
 
@@ -343,96 +321,15 @@ function renderStats(){
 }
 
 
-// ---------- TUTOR (Anthropic API, browser-side) ----------
-const TK="fmaa_tutor_v1";
-let tu={msgs:[],busy:false,pending:null};
-function tcfg(){try{return JSON.parse(localStorage.getItem(TK))||{}}catch(e){return {}}}
-function tsave(c){try{localStorage.setItem(TK,JSON.stringify(c))}catch(e){}}
-function openTutor(prompt){state.mode="tutor";save();tu.pending=prompt;rebuild();}
-function weakList(){return CARDS.filter(c=>cs(c.id).miss>0).sort((a,b)=>cs(b.id).miss-cs(a.id).miss).slice(0,12).map(c=>`- [${SECS[c.sec]}] ${c.front} (missed ${cs(c.id).miss}x)`).join("\n")||"(none recorded yet)";}
-function sysPrompt(){
-  const known=CARDS.filter(c=>cs(c.id).lvl>=2).length;
-  return `You are a patient, expert tutor for the IMA FMAA exam, Sections A (General Accounting and Financial Management) and B (Financial Statement Analysis). The student is studying from Powers Resources Corporation (PRC) e-books. Your ONLY source of truth is the study guide below; if something is not covered there, say so briefly rather than inventing exam content.
-
-How to teach:
-- Be concrete. Every concept gets a small numeric or journal-entry example, and the "why" behind the rule.
-- Be Socratic. After explaining, ask ONE check question and wait. Grade the student's answer honestly, then continue.
-- Keep answers short (under 200 words unless asked for a full lesson). Use plain language. Use bullet lists sparingly.
-- Spell out abbreviations on first use (e.g., TIE = times interest earned).
-- Never use em dashes; use colons, commas, or periods.
-- If asked to "teach section X", run a mini lesson: 1) big picture in 2 sentences, 2) the 3 to 5 rules that get tested, 3) one worked example, 4) a check question.
-- If asked to "quiz me", give ONE exam-style multiple-choice question (4 options) at a time, wait for the answer, then explain and give the next.
-- Reference PRC quiz IDs (QUC numbers) when the guide has them.
-
-Student progress: ${known} of ${CARDS.length} flashcards marked known. Most-missed cards:
-${weakList()}
-
-=== STUDY GUIDE (Sections A and B) ===
-${window.FMAA_GUIDE}`;
-}
-function md(t){return esc(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/`([^`]+)`/g,"<code>$1</code>").replace(/^(?:[-*•] )(.*)$/gm,"<li>$1</li>").replace(/(<li>.*<\/li>\n?)+/g,m=>"<ul>"+m+"</ul>").replace(/^#{1,4} (.*)$/gm,"<b>$1</b>");}
-function renderTutor(){
-  const cfg=tcfg();
-  if(!cfg.key){
-    content.innerHTML=`<div class="stage"><div class="setup"><h3 style="margin:0 0 8px">Tutor setup</h3>
-      <small>Enter an Anthropic API key. It is stored only in this browser (localStorage) and sent directly to api.anthropic.com. Get one at console.anthropic.com. Typical cost: a few cents per session with Sonnet.</small>
-      <label>API key<input id="tk" type="password" placeholder="sk-ant-..."></label>
-      <label>Model<input id="tm" value="${cfg.model||"claude-sonnet-5"}"></label>
-      <button class="primary" id="tsave">Save and start</button></div></div>`;
-    $("#tsave").onclick=()=>{const k=$("#tk").value.trim();if(!k)return;tsave({key:k,model:$("#tm").value.trim()||"claude-sonnet-5"});renderTutor();};return;
-  }
-  content.innerHTML=`<div class="stage" style="justify-content:flex-start;padding:0"><div class="chat">
-    <div class="chips">
-      <span class="chip" data-p="Teach me the section I am weakest in, based on my most-missed cards.">Teach my weak spots</span>
-      <span class="chip" data-p="Teach me Section A.2: the accounting cycle, with a worked example.">Teach A.2 cycle</span>
-      <span class="chip" data-p="Teach me the indirect method statement of cash flows step by step.">Teach cash flows</span>
-      <span class="chip" data-p="Teach me the five-step revenue recognition model with examples.">Teach revenue (B.1)</span>
-      <span class="chip" data-p="Teach me all the depreciation methods with the Poor Co. numbers.">Teach depreciation</span>
-      <span class="chip" data-p="Teach me the ratio formulas in B.3 and how to interpret each.">Teach ratios (B.3)</span>
-      <span class="chip" data-p="Quiz me with exam-style questions across Sections A and B, one at a time.">Quiz me</span>
-      <span class="chip" id="tclear">Clear chat</span>
-      <span class="chip" id="tkey">Change key/model</span>
-    </div>
-    <div class="msgs" id="msgs"></div>
-    <div class="inrow"><textarea id="tin" placeholder="Ask anything about Sections A and B... (Enter to send, Shift+Enter for newline)"></textarea><button class="primary" id="tsend">Send</button></div>
-    <div class="meta">Model: ${cfg.model} · answers are grounded in the study guide only</div></div></div>`;
-  content.querySelectorAll(".chip[data-p]").forEach(ch=>ch.onclick=()=>sendTutor(ch.dataset.p));
-  $("#tclear").onclick=()=>{tu.msgs=[];drawMsgs();};
-  $("#tkey").onclick=()=>{tsave({});renderTutor();};
-  $("#tsend").onclick=()=>{const v=$("#tin").value.trim();if(v){$("#tin").value="";sendTutor(v);}};
-  $("#tin").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#tsend").click();}};
-  drawMsgs();
-  if(!tu.msgs.length&&!tu.pending)tu.msgs.push({role:"assistant",content:"Hi. I am your FMAA tutor for Sections A and B. Pick a chip above, paste a flashcard you are stuck on, or ask me anything. I will explain with examples and then check that it stuck."});
-  drawMsgs();
-  if(tu.pending){const p=tu.pending;tu.pending=null;sendTutor(p);}
-}
-function drawMsgs(){const el=$("#msgs");if(!el)return;el.innerHTML=tu.msgs.map(m=>`<div class="msg ${m.role==="user"?"u":"a"}">${m.role==="user"?esc(m.content):md(m.content)}</div>`).join("")+(tu.busy?`<div class="msg sys">thinking…</div>`:"");el.scrollTop=el.scrollHeight;}
-async function sendTutor(text){
-  if(tu.busy)return;const cfg=tcfg();
-  tu.msgs.push({role:"user",content:text});tu.busy=true;drawMsgs();
-  const hist=tu.msgs.slice(-24).map(m=>({role:m.role,content:m.content}));
-  if(hist[0].role!=="user")hist.shift();
-  const body={model:cfg.model,max_tokens:1200,stream:true,system:[{type:"text",text:sysPrompt(),cache_control:{type:"ephemeral"}}],messages:hist};
-  const a={role:"assistant",content:""};
-  try{
-    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"content-type":"application/json","x-api-key":cfg.key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});
-    if(!r.ok){const e=await r.text();throw new Error(r.status+" "+e.slice(0,300));}
-    tu.msgs.push(a);const rd=r.body.getReader(),dec=new TextDecoder();let buf="";
-    while(true){const {done,value}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});const lines=buf.split("\n");buf=lines.pop();
-      for(const ln of lines){if(!ln.startsWith("data: "))continue;try{const ev=JSON.parse(ln.slice(6));if(ev.type==="content_block_delta"&&ev.delta&&ev.delta.text){a.content+=ev.delta.text;drawMsgs();}}catch(e){}}}
-  }catch(err){tu.msgs.push({role:"assistant",content:"Error: "+err.message+"\n\nCheck the API key, model name, and that your key has credit. Click 'Change key/model' to fix."});}
-  tu.busy=false;drawMsgs();
-}
-
 function rebuild(){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.mode===state.mode));
   renderSide();
-  ({flash:renderFlash,learn:renderLearn,write:renderWrite,test:renderTest,tutor:renderTutor,browse:renderBrowse,stats:renderStats})[state.mode]();
+  ({flash:renderFlash,learn:renderLearn,write:renderWrite,test:renderTest,browse:renderBrowse,stats:renderStats})[state.mode]();
 }
 // keyboard
 document.addEventListener("keydown",e=>{
   if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;
-  const m=state.mode,k=e.key;if(m==="tutor")return;
+  const m=state.mode,k=e.key;
   if(m==="flash"){if(k===" "){e.preventDefault();$("#card")&&$("#card").click();}else if(k==="ArrowRight")$("#next")&&$("#next").click();else if(k==="ArrowLeft")$("#prev")&&$("#prev").click();else if(k==="1")$("#learning")&&$("#learning").click();else if(k==="2")$("#know")&&$("#know").click();else if(k.toLowerCase()==="s")$("#star")&&$("#star").click();else if(k.toLowerCase()==="r")$("#shuf")&&$("#shuf").click();}
   else if(m==="learn"||m==="test"){const idx="abcd".indexOf(k.toLowerCase());if(idx>=0){const el=content.querySelectorAll(".choice")[idx];if(el&&!el.classList.contains("correct")&&!el.classList.contains("wrong")&&!el.classList.contains("dim"))el.click();}
     else if(k==="Enter"){const b=$("#cont")||$("#tn")||$("#startLearn")||$("#st")||$("#again");b&&b.click();}else if(k.toLowerCase()==="s"){$("#star")&&$("#star").click();}}

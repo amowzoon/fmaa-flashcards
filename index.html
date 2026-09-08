@@ -99,6 +99,27 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
 .bucket{min-height:120px;background:var(--panel);border:2px dashed var(--border);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
 .bucket:hover{border-color:var(--accent)}.bh{font-weight:600;font-size:13px;text-align:center;padding-bottom:4px}
 @media (max-width:760px){.simb{grid-template-columns:1fr 1fr !important}.tgrid{grid-template-columns:1fr 1fr}}
+.facts{margin:4px 0 4px 18px;padding:0;font-size:14px}.facts li{margin:3px 0}
+.why{border-left:3px solid var(--accent);padding:6px 10px;background:var(--panel2);border-radius:6px;font-size:13px}
+.method{width:min(900px,100%);color:var(--muted);font-size:11px;text-align:right;padding:6px 4px 0;letter-spacing:.02em}
+.famrow{display:flex;gap:6px;flex-wrap:wrap;padding:4px}.famrow button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ratiorow{display:flex;gap:6px;flex-wrap:wrap;padding:6px 4px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:6px 0}
+.rchip{padding:5px 10px;font-size:12.5px;min-height:0;border-radius:14px}.rchip.on{border-color:var(--accent);color:var(--accent)}
+.formula{padding:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}.formula.small{padding:8px 10px;background:var(--panel2);border-radius:8px}
+.fname{font-weight:600;font-size:15px}
+.feq{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:15px}.feq2{color:var(--muted)}
+.frac{display:inline-flex;flex-direction:column;align-items:center;text-align:center;line-height:1.3}.frac>span:first-child{border-bottom:2px solid var(--text);padding:0 6px 2px}.frac>span:last-child{padding:2px 6px 0}.frac>span:only-child{border:0}
+.fval{font-weight:700;font-size:18px;color:var(--accent)}.fplain{font-weight:500}.fmean{color:var(--muted);font-size:13px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.vtab.small{font-size:12px}.vtab.small td,.vtab.small th{padding:2px 8px}
+details.vinfo summary{cursor:pointer;color:var(--muted);font-size:13px}
+.pickrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.pickrow label{display:flex;gap:6px;align-items:center;font-size:13px}.pickrow input{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:7px 10px;width:160px}
+.ok{border-left:3px solid var(--good);padding:6px 10px;background:var(--panel2);border-radius:6px;font-size:13px}.no{border-left:3px solid var(--bad);padding:6px 10px;background:var(--panel2);border-radius:6px;font-size:13px}
+.vsvg .vn.closed rect{fill:var(--panel2);stroke:var(--warn)}
+.mgrid{width:min(900px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.mtile{min-height:84px;padding:10px;border-radius:10px;background:var(--panel);border:1px solid var(--border);font-size:12.5px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;user-select:none;transition:opacity .3s}
+.mtile.f{font-weight:600}.mtile.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}.mtile.bad{border-color:var(--bad);background:#3a1a1a}.mtile.gone{opacity:0;pointer-events:none}
+@media (max-width:760px){.mgrid{grid-template-columns:1fr 1fr}.mtile{min-height:70px;font-size:12px}}
 #menuBtn{display:none}
 .backdrop{display:none}
 @media (max-width:760px){
@@ -152,7 +173,7 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
     <div id="secList"></div>
     <div style="display:flex;gap:6px;margin-top:6px"><button id="selAll" style="flex:1;padding:4px">All</button><button id="selNone" style="flex:1;padding:4px">None</button></div>
     <h3>Filter</h3>
-    <label><span>Show</span><select id="filter"><option value="all">all cards</option><option value="unlearned">not yet known</option><option value="starred">starred</option><option value="missed">missed in Learn</option></select></label>
+    <label><span>Show</span><select id="filter"><option value="all">all cards</option><option value="unlearned">not yet known</option><option value="starred">starred</option><option value="missed">missed in Learn</option><option value="due">due for review</option></select></label>
     <h3>Mastery</h3>
     <div class="bar"><i id="masteryBar" style="width:0"></i></div>
     <div id="masteryTxt" class="cnt"></div>
@@ -169,8 +190,8 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
   <section class="content" id="content"></section>
 </main>
 </div>
-<script src="deck.js?v=5"></script>
-<script src="visual.js?v=1"></script>
+<script src="deck.js?v=6"></script>
+<script src="visual.js?v=2"></script>
 <script>
 (function(){
 const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis",AB:"Abbreviations"};
@@ -187,7 +208,7 @@ const content=document.getElementById("content");
 const $=s=>document.querySelector(s);
 function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
-function pool(){return CARDS.filter(c=>state.secs.includes(c.sec)).filter(c=>{const s=cs(c.id);switch(state.filter){case"unlearned":return s.lvl<2;case"starred":return !!s.star;case"missed":return s.miss>0;default:return true;}});}
+function pool(){return CARDS.filter(c=>state.secs.includes(c.sec)).filter(c=>{const s=cs(c.id);switch(state.filter){case"unlearned":return s.lvl<2;case"starred":return !!s.star;case"missed":return s.miss>0;case"due":return s.lvl>=2&&s.due&&s.due<=Date.now();default:return true;}});}
 function mcqPool(){return MCQ.filter(q=>state.secs.includes(q.sec));}
 
 // ---------- sidebar ----------
@@ -197,7 +218,7 @@ function renderSide(){
     return `<label><span><input type="checkbox" data-sec="${k}" ${state.secs.includes(k)?"checked":""}> ${SECS[k]}</span><span class="cnt">${known}/${n}</span></label>`;}).join("");
   el.querySelectorAll("input").forEach(i=>i.onchange=()=>{const k=i.dataset.sec;state.secs=i.checked?[...new Set([...state.secs,k])]:state.secs.filter(x=>x!==k);save();rebuild();});
   const tot=CARDS.length,kn=CARDS.filter(c=>cs(c.id).lvl>=2).length;
-  $("#masteryBar").style.width=(100*kn/tot)+"%";$("#masteryTxt").textContent=`${kn} / ${tot} cards known`;
+  $("#masteryBar").style.width=(100*kn/tot)+"%";const due=CARDS.filter(c=>{const s=cs(c.id);return s.lvl>=2&&s.due&&s.due<=Date.now();}).length;$("#masteryTxt").textContent=`${kn} / ${tot} cards known${due?" · "+due+" due for review":""}`;
   $("#filter").value=state.filter;
 }
 $("#filter").onchange=e=>{state.filter=e.target.value;save();rebuild();};
@@ -245,9 +266,10 @@ function renderFlash(){
 // ---------- LEARN (adaptive multiple choice, Quizlet-style) ----------
 let ln={queue:[],cur:null,answered:false,streak:{},round:0,stats:{right:0,wrong:0}};
 function buildLearnQueue(){
-  const p=pool().filter(c=>cs(c.id).lvl<2);
-  // prioritise cards missed before, then new, then learning
-  const w=c=>{const s=cs(c.id);return (s.miss>0?0:s.lvl===0?1:2)+Math.random()*0.5;};
+  const now=Date.now();
+  const p=pool().filter(c=>{const s=cs(c.id);return s.lvl<2||(s.due&&s.due<=now);});
+  // due reviews first (spaced repetition), then previously missed, then new, then learning; shuffled so sections interleave
+  const w=c=>{const s=cs(c.id);return (s.lvl>=2&&s.due<=now?0:s.miss>0?1:s.lvl===0?2:3)+Math.random()*0.9;};
   ln.queue=p.sort((a,b)=>w(a)-w(b)).map(c=>c.id).slice(0,20);
   ln.round++;
 }
@@ -263,13 +285,13 @@ function nextLearn(){
 }
 function renderLearn(){
   if(!ln.cur){
-    const remaining=pool().filter(c=>cs(c.id).lvl<2).length;
+    const remaining=pool().filter(c=>{const s=cs(c.id);return s.lvl<2||(s.due&&s.due<=Date.now());}).length;
     content.innerHTML=`<div class="stage"><div class="stats">
       <div class="stat"><b>${remaining}</b><span>cards left to master in selection</span></div>
       <div class="stat"><b>${ln.stats.right}</b><span>correct this session</span></div>
       <div class="stat"><b>${ln.stats.wrong}</b><span>missed this session</span></div></div>
       <div class="controls" style="margin-top:20px">${remaining?`<button class="primary" id="startLearn">Start round</button>`:`<div class="empty">Everything in this selection is marked known. Change sections/filter or reset.</div>`}</div>
-      <div class="meta">A card becomes "known" after 2 consecutive correct answers. Wrong answers put it back into the queue.</div></div>`;
+      <div class="meta">A card becomes "known" after 2 correct answers in a row, then comes back for review after 1, 3, 7, 14 and 30 days (spaced repetition). Misses reset it. Sections are interleaved.</div></div>`;
     const b=$("#startLearn");if(b)b.onclick=()=>{buildLearnQueue();nextLearn();};return;
   }
   const {card:c,choices}=ln.cur,s=cs(c.id);
@@ -287,8 +309,9 @@ function answerLearn(i){
   if(ln.answered)return;ln.answered=true;
   const {card:c,choices}=ln.cur,s=cs(c.id);const ok=i>=0&&choices[i].ok;s.seen++;
   content.querySelectorAll(".choice").forEach((el,j)=>{if(choices[j].ok)el.classList.add("correct");else if(j===i)el.classList.add("wrong");else el.classList.add("dim");});
-  if(ok){ln.stats.right++;ln.streak[c.id]=(ln.streak[c.id]||0)+1;if(ln.streak[c.id]>=2){s.lvl=2;}else{s.lvl=Math.max(s.lvl,1);ln.queue.splice(Math.min(4,ln.queue.length),0,c.id);}}
-  else{ln.stats.wrong++;ln.streak[c.id]=0;s.miss++;s.lvl=1;ln.queue.splice(Math.min(2,ln.queue.length),0,c.id);}
+  const DAY=864e5,IV=[1,3,7,14,30];
+  if(ok){ln.stats.right++;ln.streak[c.id]=(ln.streak[c.id]||0)+1;if(ln.streak[c.id]>=2){s.lvl=2;s.iv=IV[Math.min(IV.indexOf(s.iv||0)+1,IV.length-1)]||1;if(!IV.includes(s.iv))s.iv=1;s.due=Date.now()+s.iv*DAY;}else{s.lvl=Math.max(s.lvl,1);ln.queue.splice(Math.min(4,ln.queue.length),0,c.id);}}
+  else{ln.stats.wrong++;ln.streak[c.id]=0;s.miss++;s.lvl=1;s.iv=0;s.due=Date.now();ln.queue.splice(Math.min(2,ln.queue.length),0,c.id);}
   save();renderSide();
   $("#fb").innerHTML=`<div class="explain" style="border-color:${ok?"var(--good)":"var(--bad)"}">${ok?"Correct.":"Answer:"} ${ok?"":esc(c.back)}</div>`;
   $("#lc").innerHTML=`<button class="primary" id="cont">Continue (Enter)</button><button id="star">${s.star?"★ Unstar":"☆ Star"}</button>`;

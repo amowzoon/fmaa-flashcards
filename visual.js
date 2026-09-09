@@ -337,8 +337,9 @@ function drawStory(){
   if(!sy.events.length)newStory();
   const rows=ORDER.filter(o=>sy.bal[o[0]]!=null&&sy.bal[o[0]]!==0);
   const tot=c=>rows.filter(o=>o[1]===c).reduce((s,o)=>s+sy.bal[o[0]],0);
-  const cell=o=>{const k=o[0],v=sy.bal[k],u=sy.inputs[k];const ok=sy.checked&&u!=null&&Math.abs(parseFloat(u)-Math.abs(v))<1;const bad=sy.checked&&!ok;
-    return `<tr class="sl i1 ${bad?"srow-bad":ok?"srow-ok":""}"><td class="lab">${esc(k)}${k==="Accumulated depreciation"?' <span class="meta">(contra-asset, enter as a positive number)</span>':""}</td><td class="num"><input class="sin" data-k="${esc(k)}" type="number" step="any" value="${u==null?"":esc(u)}" ${sy.checked?"disabled":""}>${sy.checked?`<div class="${ok?"ok":"no"} small">${k==="Accumulated depreciation"?"("+fmt(Math.abs(v))+")":fmt(v)}</div>`:""}</td></tr>`;};
+  const cell=o=>{const k=o[0],v=sy.bal[k],u=sy.inputs[k];const ok=sy.checked&&u!=null&&u!==""&&Math.abs(parseFloat(u)-Math.abs(v))<1;const bad=sy.checked&&!ok;
+    const shown=k==="Accumulated depreciation"?"("+fmt(Math.abs(v))+")":fmt(v);
+    return `<tr class="sl i1 ${bad?"srow-bad":ok?"srow-ok":""}"><td class="lab">${esc(k)}${k==="Accumulated depreciation"?' <span class="meta">(contra-asset: enter as a positive number)</span>':""}</td><td class="num"><div class="sycell"><input class="sin" data-k="${esc(k)}" type="number" step="any" value="${u==null?"":esc(u)}" ${sy.checked?"disabled":""}>${sy.checked?`<span class="syres ${ok?"good":"bad"}">${ok?"✓":"✗ "+shown}</span>`:""}</div></td></tr>`;};
   const sec=(c,title)=>`<tr class="sl kh"><td>${title}</td><td></td></tr>${rows.filter(o=>o[1]===c).map(cell).join("")}<tr class="sl kt"><td class="lab">Total ${title.toLowerCase()}</td><td class="num">${sy.checked?fmt(tot(c)):"?"}</td></tr>`;
   const n=rows.length,right=sy.checked?rows.filter(o=>Math.abs(parseFloat(sy.inputs[o[0]])-Math.abs(sy.bal[o[0]]))<1).length:0;
   return `<div class="vinfo"><div class="vt">${esc(sy.name)}: build the balance sheet from the story</div>

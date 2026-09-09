@@ -248,10 +248,13 @@ const ACC=[["Cash","A",1],["Accounts receivable","A",1],["Inventory","A",1],["Pr
  ["Accounts payable","L",1],["Wages payable","L",1],["Unearned revenue","L",1],["Income taxes payable","L",1],["Notes payable (due in 6 months)","L",1],["Current portion of long-term debt","L",1],["Bonds payable (due in 10 years)","L",0],["Long-term notes payable","L",0],["Deferred tax liability","L",0],
  ["Common stock","E",0],["Additional paid-in capital","E",0],["Preferred stock","E",0],["Accumulated other comprehensive income","E",0]];
 const AMT=()=>[2,3,4,5,6,8,10,12,15,18,20,25,30,40][Math.random()*14|0]*1000;
+let SZ=(()=>{try{return Object.assign({build:8,story:5},JSON.parse(localStorage.getItem("fmaa_vis_size")||"{}"));}catch(e){return {build:8,story:5};}})();
+function setSize(k,v){SZ[k]=v;try{localStorage.setItem("fmaa_vis_size",JSON.stringify(SZ));}catch(e){}}
+const sizeSel=(id,k,lo,hi,unit)=>`<label class="meta szlab">Size <select id="${id}">${Array.from({length:hi-lo+1},(_,i)=>lo+i).map(n=>`<option value="${n}" ${SZ[k]===n?"selected":""}>${n} ${unit}</option>`).join("")}</select></label>`;
 let bd={items:[],placed:{},stage:1,q:null,ans:"",res:null,score:0,total:0};
 function newBuild(){
   const pick_=(cat,n)=>shuffle(ACC.filter(a=>a[1]===cat)).slice(0,n).map(a=>({n:a[0],c:a[1],cur:a[2],v:AMT()}));
-  const items=[...pick_("A",4),...pick_("L",3),...pick_("E",1)];
+  const N=SZ.build,nA=Math.max(2,Math.round(N*.5)),nL=Math.max(1,Math.round(N*.3)),nE=Math.max(1,N-nA-nL);const items=[...pick_("A",nA),...pick_("L",nL),...pick_("E",nE)];
   const A=items.filter(i=>i.c==="A").reduce((s,i)=>s+i.v,0),L=items.filter(i=>i.c==="L").reduce((s,i)=>s+i.v,0),E0=items.filter(i=>i.c==="E").reduce((s,i)=>s+i.v,0);
   let re=A-L-E0;if(re<=0){items.find(i=>i.n==="Cash"||i.c==="A").v+= -re+5000;re=5000;}
   items.push({n:"Retained earnings",c:"E",cur:0,v:re});
@@ -269,7 +272,7 @@ function drawBuild(){
     return `<div class="vinfo"><div class="vt">Build a balance sheet · step 1: sort the accounts</div><div class="meta">Tap an account, then the section it belongs in. ${Object.keys(pl).length}/${it.length} placed · ${ok} correct</div></div>
     <div class="simtray">${left.map(i=>`<div class="simitem ${bd.sel===i?"sel":""}" data-i="${i}">${esc(it[i].n)} <span class="amt">${fmt(it[i].v)}</span></div>`).join("")||`<div class="meta">${ok===it.length?"All correct. ":"Fix the red ones, then "}<b>Continue</b> to see the statement.</div>`}</div>
     <div class="simb" style="grid-template-columns:1fr 1fr 1fr">${["A","L","E"].map(b=>`<div class="bucket" data-b="${b}"><div class="bh">${cats[b]}</div>${it.map((x,i)=>pl[i]===b?`<div class="simitem ${x.c===b?"ok":"bad"}" data-i="${i}" data-back="1">${esc(x.n)} <span class="amt">${fmt(x.v)}</span>${x.c===b?"":" ✗"}</div>`:"").join("")}</div>`).join("")}</div>
-    <div class="controls">${left.length===0&&ok===it.length?`<button class="primary" id="bdGo">Continue →</button>`:""}<button id="bdNew">New set</button></div>${method("categorisation, then construction: classify the accounts, then assemble and read the statement")}`;
+    <div class="controls">${left.length===0&&ok===it.length?`<button class="primary" id="bdGo">Continue →</button>`:""}<button id="bdNew">New set</button>${sizeSel("bdSz","build",5,12,"accounts")}</div>${method("categorisation, then construction: classify the accounts, then assemble and read the statement")}`;
   }
   const sec=c=>it.filter(x=>x.c===c);const cur=x=>x.cur?"":" (non-current)";
   const row=x=>`<tr class="sl i1"><td class="lab">${esc(x.n)}<span class="meta"> ${x.c==="E"?"":cur(x)}</span></td><td class="num">${fmt(x.v)}</td></tr>`;
@@ -289,6 +292,7 @@ function bindBuild(){const c=ctx.content;
   c.querySelectorAll(".bucket").forEach(b=>b.onclick=()=>{if(bd.sel==null)return;bd.placed[bd.sel]=b.dataset.b;bd.sel=null;render();});
   const g=$("#bdGo",c);if(g)g.onclick=()=>{bd.stage=2;render();};
   const nw=$("#bdNew",c);if(nw)nw.onclick=()=>{newBuild();render();};
+  const sz=$("#bdSz",c);if(sz)sz.onchange=()=>{setSize("build",+sz.value);newBuild();render();};
   const bk=$("#bdBack",c);if(bk)bk.onclick=()=>{bd.stage=1;render();};
   const inp=$("#bdAns",c);if(inp){inp.oninput=e=>bd.ans=e.target.value;inp.onkeydown=e=>{if(e.key==="Enter")$("#bdChk",c).click();};
     $("#bdChk",c).onclick=()=>{const a=parseFloat(bd.ans);if(isNaN(a))return;const ok=Math.abs(a-bd.q[1])<=Math.max(0.011,Math.abs(bd.q[1])*0.005);if(bd.res===null){bd.total++;if(ok)bd.score++;}bd.res=ok;render();};}
@@ -324,7 +328,7 @@ let sy={name:"",events:[],bal:{},inputs:{},checked:false,score:null};
 function newStory(){
   sy.name=NAMES[Math.random()*NAMES.length|0];const ev=[EVENTS[0]()];const bal={};const apply=e=>{for(const k in e.fx)bal[k]=(bal[k]||0)+e.fx[k];};apply(ev[0]);
   const pool_=shuffle(EVENTS.slice(1));let n=0;
-  for(const f of pool_){if(n>=5)break;const e=f();if(e.dep&&!(bal[e.dep]>0))continue;if(e.fx["Cash"]&&bal["Cash"]+e.fx["Cash"]<0)continue;if(e.fx["Notes payable"]<0&&bal["Notes payable"]+e.fx["Notes payable"]<0)continue;if(e.fx["Accounts receivable"]<0&&(bal["Accounts receivable"]||0)+e.fx["Accounts receivable"]<0)continue;if(e.fx["Accounts payable"]<0&&(bal["Accounts payable"]||0)+e.fx["Accounts payable"]<0)continue;ev.push(e);apply(e);n++;}
+  for(const f of pool_){if(n>=SZ.story)break;const e=f();if(e.dep&&!(bal[e.dep]>0))continue;if(e.fx["Cash"]&&bal["Cash"]+e.fx["Cash"]<0)continue;if(e.fx["Notes payable"]<0&&bal["Notes payable"]+e.fx["Notes payable"]<0)continue;if(e.fx["Accounts receivable"]<0&&(bal["Accounts receivable"]||0)+e.fx["Accounts receivable"]<0)continue;if(e.fx["Accounts payable"]<0&&(bal["Accounts payable"]||0)+e.fx["Accounts payable"]<0)continue;ev.push(e);apply(e);n++;}
   shuffle(ADJ.slice()).slice(0,2).forEach(f=>{const e=f(ev,bal);if(e){ev.push(e);apply(e);}});
   // guarantee a profit: make sure one revenue event exists and is big enough
   let rev=ev.find(e=>e.fx["Retained earnings"]>0&&(e.fx["Cash"]>0||e.fx["Accounts receivable"]>0));
@@ -345,7 +349,7 @@ function drawStory(){
   return `<div class="sywrap"><div class="vinfo sycol"><div class="vt">${esc(sy.name)}: the story</div>
   <ol class="story">${sy.events.map((e,i)=>`<li>${esc(e.t)}${sy.checked?`<div class="why small">${esc(e.why)}</div>`:""}</li>`).join("")}</ol>
   <div class="meta" style="text-align:left">Work out each ending balance and type it into the balance sheet. Retained earnings = revenues − expenses (first year). ${sy.checked?`<b>Score ${right}/${n}.</b>`:""}</div>
-  <div class="controls" style="justify-content:flex-start">${sy.checked?`<button class="primary" id="syNew">New story →</button><button id="syRetry">Try again</button>`:`<button class="primary" id="syChk">Check</button><button id="syNew">New story</button>`}</div></div>
+  <div class="controls" style="justify-content:flex-start">${sy.checked?`<button class="primary" id="syNew">New story →</button><button id="syRetry">Try again</button>`:`<button class="primary" id="syChk">Check</button><button id="syNew">New story</button>`}${sizeSel("sySz","story",2,8,"events")}</div></div>
   <div class="stmt sycol"><div class="sh"><b>Balance sheet at year end</b><span class="meta">${sy.checked?"A "+fmt(tot("A"))+" = L "+fmt(tot("L"))+" + E "+fmt(tot("E")):"fill in every line"}</span></div>
   <table class="stab sytab">${sec("A","Assets")}${sec("L","Liabilities")}${sec("E","Equity")}</table></div></div>
   ${sy.checked?howBuilt(rows):""}
@@ -364,6 +368,7 @@ function bindStory(){const c=ctx.content;
   const chk=$("#syChk",c);if(chk)chk.onclick=()=>{sy.checked=true;render();};
   const nw=$("#syNew",c);if(nw)nw.onclick=()=>{newStory();render();};
   const rt=$("#syRetry",c);if(rt)rt.onclick=()=>{sy.checked=false;render();};
+  const sz=$("#sySz",c);if(sz)sz.onchange=()=>{setSize("story",+sz.value);newStory();render();};
 }
 
 // ================= MIND MAPS (with recall mode) =================

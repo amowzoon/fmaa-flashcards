@@ -294,6 +294,67 @@ function bindBuild(){const c=ctx.content;
     $("#bdChk",c).onclick=()=>{const a=parseFloat(bd.ans);if(isNaN(a))return;const ok=Math.abs(a-bd.q[1])<=Math.max(0.011,Math.abs(bd.q[1])*0.005);if(bd.res===null){bd.total++;if(ok)bd.score++;}bd.res=ok;render();};}
 }
 
+
+// ================= STORY: build the balance sheet from a narrative =================
+const R=(a,b,step)=>{step=step||1000;return a+Math.floor(Math.random()*((b-a)/step+1))*step;};
+const NAMES=["Harbor Tools","Northwind Design","Maple Street Bakery","Cobalt Repairs","Summit Tutoring","Redwood Landscaping","Pixel Print Co.","Blue Fern Clinic"];
+// each event: text, fx (account deltas), why. RE deltas are income-statement effects.
+const EVENTS=[
+ ()=>{const v=R(40000,90000,5000);return {t:`The owner invests $${fmt(v)} cash to start the business.`,fx:{"Cash":v,"Owner's capital":v},why:"Cash up, owner's capital up. No income effect."};},
+ ()=>{const m=R(2000,5000,500),n=[3,4,6][Math.random()*3|0];return {t:`It rents a building for $${fmt(m)} a month and pays ${n} months in advance.`,fx:{"Cash":-m*n,"Prepaid rent":m*n},m,n,tag:"rent",why:`${n} × ${fmt(m)} = ${fmt(m*n)} leaves cash and becomes a prepaid asset (future benefit).`};},
+ ()=>{const v=R(8000,30000,1000),c=Math.round(v*0.4/1000)*1000;return {t:`It buys equipment for $${fmt(v)}, paying $${fmt(c)} cash and signing a two-year note for the rest.`,fx:{"Equipment":v,"Cash":-c,"Notes payable":v-c},why:`Equipment at full cost ${fmt(v)}; cash down ${fmt(c)}; the unpaid ${fmt(v-c)} is a note payable.`};},
+ ()=>{const v=R(3000,12000,1000);return {t:`A customer pays $${fmt(v)} in advance for work to be done next quarter.`,fx:{"Cash":v,"Unearned revenue":v},why:"Cash received but nothing earned yet: a liability to perform, not revenue."};},
+ ()=>{const v=R(4000,15000,1000);return {t:`It completes a job and sends the client an invoice for $${fmt(v)}; nothing has been collected yet.`,fx:{"Accounts receivable":v,"Retained earnings":v},why:"Earned, so revenue is recognized (accrual basis) and a receivable is the asset. Revenue raises retained earnings."};},
+ ()=>{const v=R(1000,4000,500);return {t:`It buys $${fmt(v)} of supplies on account.`,fx:{"Supplies":v,"Accounts payable":v},why:"Supplies are an asset until used; buying on credit creates a payable."};},
+ ()=>{const v=R(3000,12000,1000);return {t:`It performs services for cash, $${fmt(v)}.`,fx:{"Cash":v,"Retained earnings":v},why:"Earned and collected: revenue, which raises retained earnings."};},
+ ()=>{const v=R(1000,3000,500);return {t:`It pays employees $${fmt(v)} in wages for the period.`,fx:{"Cash":-v,"Retained earnings":-v},why:"An expense: cash down, retained earnings down."};},
+ ()=>{const v=R(2000,6000,1000);return {t:`It pays $${fmt(v)} on the note payable.`,fx:{"Cash":-v,"Notes payable":-v},dep:"Notes payable",why:"Paying down a liability: both cash and the note fall. No income effect."};},
+ ()=>{const v=R(1000,3000,500);return {t:`It collects $${fmt(v)} from a client who was invoiced earlier.`,fx:{"Cash":v,"Accounts receivable":-v},dep:"Accounts receivable",why:"Cash up, receivable down. Revenue was already recognized when invoiced, so no income effect now."};},
+ ()=>{const v=R(500,2000,500);return {t:`It pays $${fmt(v)} of what it owes suppliers.`,fx:{"Cash":-v,"Accounts payable":-v},dep:"Accounts payable",why:"Cash down, payable down. No income effect."};},
+ ()=>{const v=R(2000,5000,1000);return {t:`The owner withdraws $${fmt(v)} cash for personal use.`,fx:{"Cash":-v,"Owner's capital":-v},why:"A withdrawal reduces owner's capital; it is not an expense."};}
+];
+const ADJ=[
+ (st)=>{const e=st.find(x=>x.tag==="rent");if(!e)return null;return {t:`Year end: one month of the prepaid rent has been used up.`,fx:{"Prepaid rent":-e.m,"Retained earnings":-e.m},why:`Adjusting entry: rent expense ${fmt(e.m)}, prepaid rent falls by the same amount.`};},
+ (st,bal)=>{const s=bal["Supplies"]||0;if(s<=0)return null;const u=Math.min(s,R(500,Math.max(500,s-500),500));return {t:`Year end: a count shows $${fmt(u)} of the supplies were used.`,fx:{"Supplies":-u,"Retained earnings":-u},why:`Supplies expense ${fmt(u)}; the supplies asset falls to what is still on hand.`};},
+ (st,bal)=>{const u=bal["Unearned revenue"]||0;if(u<=0)return null;const e=Math.round(u/2/500)*500||u;return {t:`Year end: half of the work paid for in advance has now been done.`,fx:{"Unearned revenue":-e,"Retained earnings":e},why:`${fmt(e)} moves from the liability to revenue because it is now earned.`};},
+ (st,bal)=>{const eq=bal["Equipment"]||0;if(eq<=0)return null;const d=Math.round(eq/5/100)*100;return {t:`Year end: the equipment has a five-year life and no salvage value; record straight-line depreciation.`,fx:{"Accumulated depreciation":-d,"Retained earnings":-d},why:`${fmt(eq)} ÷ 5 = ${fmt(d)} depreciation expense; accumulated depreciation (a contra-asset) grows by the same amount.`};}
+];
+const ORDER=[["Cash","A",1],["Accounts receivable","A",1],["Supplies","A",1],["Prepaid rent","A",1],["Equipment","A",0],["Accumulated depreciation","A",0],["Accounts payable","L",1],["Unearned revenue","L",1],["Notes payable","L",0],["Owner's capital","E",0],["Retained earnings","E",0]];
+let sy={name:"",events:[],bal:{},inputs:{},checked:false,score:null};
+function newStory(){
+  sy.name=NAMES[Math.random()*NAMES.length|0];const ev=[EVENTS[0]()];const bal={};const apply=e=>{for(const k in e.fx)bal[k]=(bal[k]||0)+e.fx[k];};apply(ev[0]);
+  const pool_=shuffle(EVENTS.slice(1));let n=0;
+  for(const f of pool_){if(n>=5)break;const e=f();if(e.dep&&!(bal[e.dep]>0))continue;if(e.fx["Cash"]&&bal["Cash"]+e.fx["Cash"]<0)continue;if(e.fx["Notes payable"]<0&&bal["Notes payable"]+e.fx["Notes payable"]<0)continue;if(e.fx["Accounts receivable"]<0&&(bal["Accounts receivable"]||0)+e.fx["Accounts receivable"]<0)continue;if(e.fx["Accounts payable"]<0&&(bal["Accounts payable"]||0)+e.fx["Accounts payable"]<0)continue;ev.push(e);apply(e);n++;}
+  shuffle(ADJ.slice()).slice(0,2).forEach(f=>{const e=f(ev,bal);if(e){ev.push(e);apply(e);}});
+  // guarantee a profit: make sure one revenue event exists and is big enough
+  let rev=ev.find(e=>e.fx["Retained earnings"]>0&&(e.fx["Cash"]>0||e.fx["Accounts receivable"]>0));
+  if(!rev){const v=R(6000,15000,1000);rev={t:`It performs services for cash, $${fmt(v)}.`,fx:{"Cash":v,"Retained earnings":v},why:"Earned and collected: revenue, which raises retained earnings."};ev.splice(1,0,rev);apply(rev);}
+  if((bal["Retained earnings"]||0)<=0){const d=-(bal["Retained earnings"]||0)+R(2000,6000,1000);const acct=rev.fx["Cash"]>0?"Cash":"Accounts receivable";const nv=rev.fx[acct]+d;
+    rev.fx[acct]=nv;rev.fx["Retained earnings"]=nv;rev.t=rev.t.replace(/\$[\d,]+/,"$"+fmt(nv));bal[acct]+=d;bal["Retained earnings"]+=d;}
+  sy.events=ev;sy.bal=bal;sy.inputs={};sy.checked=false;sy.score=null;
+}
+function drawStory(){
+  if(!sy.events.length)newStory();
+  const rows=ORDER.filter(o=>sy.bal[o[0]]!=null&&sy.bal[o[0]]!==0);
+  const tot=c=>rows.filter(o=>o[1]===c).reduce((s,o)=>s+sy.bal[o[0]],0);
+  const cell=o=>{const k=o[0],v=sy.bal[k],u=sy.inputs[k];const ok=sy.checked&&u!=null&&Math.abs(parseFloat(u)-Math.abs(v))<1;const bad=sy.checked&&!ok;
+    return `<tr class="sl i1 ${bad?"srow-bad":ok?"srow-ok":""}"><td class="lab">${esc(k)}${k==="Accumulated depreciation"?' <span class="meta">(contra-asset, enter as a positive number)</span>':""}</td><td class="num"><input class="sin" data-k="${esc(k)}" type="number" step="any" value="${u==null?"":esc(u)}" ${sy.checked?"disabled":""}>${sy.checked?`<div class="${ok?"ok":"no"} small">${k==="Accumulated depreciation"?"("+fmt(Math.abs(v))+")":fmt(v)}</div>`:""}</td></tr>`;};
+  const sec=(c,title)=>`<tr class="sl kh"><td>${title}</td><td></td></tr>${rows.filter(o=>o[1]===c).map(cell).join("")}<tr class="sl kt"><td class="lab">Total ${title.toLowerCase()}</td><td class="num">${sy.checked?fmt(tot(c)):"?"}</td></tr>`;
+  const n=rows.length,right=sy.checked?rows.filter(o=>Math.abs(parseFloat(sy.inputs[o[0]])-Math.abs(sy.bal[o[0]]))<1).length:0;
+  return `<div class="vinfo"><div class="vt">${esc(sy.name)}: build the balance sheet from the story</div>
+  <ol class="story">${sy.events.map((e,i)=>`<li>${esc(e.t)}${sy.checked?`<div class="why small">${esc(e.why)}</div>`:""}</li>`).join("")}</ol>
+  <div class="meta">Work out each ending balance and type it in. Retained earnings = revenues − expenses (this is the first year). ${sy.checked?`Score ${right}/${n}.`:""}</div></div>
+  <div class="stmt"><div class="sh"><b>${esc(sy.name)}: balance sheet at year end</b><span class="meta">${sy.checked?"Assets "+fmt(tot("A"))+" = Liabilities "+fmt(tot("L"))+" + Equity "+fmt(tot("E")):"fill in every line"}</span></div>
+  <table class="stab">${sec("A","Assets")}${sec("L","Liabilities")}${sec("E","Equity")}</table></div>
+  <div class="controls">${sy.checked?`<button class="primary" id="syNew">New story →</button><button id="syRetry">Try again</button>`:`<button class="primary" id="syChk">Check</button><button id="syNew">New story</button>`}</div>${method("transfer: translate events in words into account balances, the way exam word problems do")}`;
+}
+function bindStory(){const c=ctx.content;
+  c.querySelectorAll(".sin").forEach(i=>{i.oninput=e=>sy.inputs[i.dataset.k]=e.target.value;i.onkeydown=e=>{if(e.key==="Enter"){const b=$("#syChk",c);if(b)b.click();}};});
+  const chk=$("#syChk",c);if(chk)chk.onclick=()=>{sy.checked=true;render();};
+  const nw=$("#syNew",c);if(nw)nw.onclick=()=>{newStory();render();};
+  const rt=$("#syRetry",c);if(rt)rt.onclick=()=>{sy.checked=false;render();};
+}
+
 // ================= MIND MAPS (with recall mode) =================
 const MAPS={
 A1:["A.1 Terminology",[["3 types of accounting",["Financial: external, GAAP/IFRS, past","Managerial: internal, no standards, past + future","Tax: beyond FMAA"]],["Business forms",["Sole prop: unlimited liability","Partnerships: general / limited / LLP","Corporation: separate entity, double tax","S-corp ≤ 75 holders · LLC · JV · nonprofit"]],["Accounting equation",["A = L + OE","Assets debit; L and OE credit"]],["Principles",["Accrual vs cash","Conservatism","Consistency","Matching"]]]],
@@ -318,9 +379,9 @@ function render(){
   const c=ctx.content;
   const opts=(o,cur,lab)=>`<select id="vpick">${Object.keys(o).map(k=>`<option value="${k}" ${cur===k?"selected":""}>${lab(k)}</option>`).join("")}</select>`;
   const ST=window.FMAA_STATEMENTS;const stMap=Object.fromEntries(ST.list);
-  const picker={build:"",stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
-  const body={build:drawBuild,stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
-  c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${[["stmts","Statements"],["build","Build"],["maps","Mind maps"],["diagrams","Diagrams"],["anim","Examples"],["charts","Charts"],["sims","Sort"],["match","Match"]].map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div>${picker}</div>${body}</div>`;
+  const picker={story:"",build:"",stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
+  const body={story:drawStory,build:drawBuild,stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
+  c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${[["stmts","Statements"],["build","Build"],["story","Story"],["maps","Mind maps"],["diagrams","Diagrams"],["anim","Examples"],["charts","Charts"],["sims","Sort"],["match","Match"]].map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div>${picker}</div>${body}</div>`;
   c.querySelectorAll(".vtabs button").forEach(b=>b.onclick=()=>{sub=b.dataset.v;step=0;ui={};render();});
   const vp=$("#vpick",c);if(vp)vp.onchange=e=>{pick[{stmts:"stmt",maps:"map",diagrams:"diagram",anim:"anim",charts:"chart",sims:"sim"}[sub]]=e.target.value;step=0;ui={};stSel=null;sim={sel:null,placed:{},set:null};render();};
   if(sub==="stmts"){c.querySelectorAll(".sl.click").forEach(r=>r.onclick=()=>{stSel=+r.dataset.i;render();});
@@ -334,7 +395,7 @@ function render(){
   if(pv)pv.onclick=()=>{step=Math.max(0,step-1);render();};
   const rv=$("#vreveal",c);if(rv)rv.onclick=()=>{ui.reveal=1;render();};
   const ms=$("#mshow",c),mr=$("#mrecall",c);if(ms)ms.onclick=()=>{ui.recall=0;render();};if(mr)mr.onclick=()=>{ui.recall=1;ui.open={};render();};
-  if(sub==="sims")bindSim();if(sub==="match")bindMatch();if(sub==="build")bindBuild();
+  if(sub==="sims")bindSim();if(sub==="match")bindMatch();if(sub==="build")bindBuild();if(sub==="story")bindStory();
   if(sub==="anim"&&pick.anim==="faded"){$("#fdr",c).onchange=e=>fade.dr=e.target.value;$("#fcr",c).onchange=e=>fade.cr=e.target.value;
     $("#fchk",c).onclick=()=>{const a=BP[fade.i][1];const ok=a.some(x=>x[1]&&x[0]===fade.dr)&&a.some(x=>x[2]&&x[0]===fade.cr);if(fade.res===null&&ok)fade.score++;fade.res=ok;render();};
     $("#fnext",c).onclick=()=>{fade.i=(fade.i+1)%BP.length;fade.dr=fade.cr="";fade.res=null;render();};$("#fprev",c).onclick=()=>{fade.i=(fade.i+BP.length-1)%BP.length;fade.dr=fade.cr="";fade.res=null;render();};}

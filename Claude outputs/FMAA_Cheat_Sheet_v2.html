@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>FMAA Cheat Sheet</title>
+<style>
+@page{size:Letter;margin:14mm 14mm 16mm 14mm}
+*{box-sizing:border-box}
+body{font:10pt/1.45 "Segoe UI",Arial,Helvetica,sans-serif;color:#1a1a1a;margin:0}
+h1{font-size:22pt;margin:0 0 4px;color:#123c7a;letter-spacing:-.01em}
+h2{font-size:15pt;margin:0 0 10px;padding:6px 10px;background:#123c7a;color:#fff;border-radius:4px;break-after:avoid}
+h3{font-size:11.5pt;margin:14px 0 5px;color:#123c7a;break-after:avoid;border-bottom:2px solid #dbe4f3;padding-bottom:2px}
+p{margin:0 0 6px}
+.page{break-before:page}
+.lead{font-size:10.5pt;color:#333;margin-bottom:10px}
+table{border-collapse:collapse;width:100%;margin:4px 0 10px;break-inside:auto}
+tr{break-inside:avoid}
+th,td{border:1px solid #d5dbe5;padding:4px 7px;vertical-align:top;text-align:left}
+th{background:#eaf0f8;font-weight:600;color:#123c7a}
+tbody tr:nth-child(even) td{background:#f7f9fc}
+td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+td.k{font-weight:600;white-space:nowrap}
+.ans{font-weight:700;color:#0b5a2a}
+.trap{background:#fff4dc;border-left:4px solid #e0a020;padding:6px 10px;margin:6px 0 10px;border-radius:0 4px 4px 0}
+.rule{background:#e8f6ee;border-left:4px solid #2e9e5b;padding:6px 10px;margin:6px 0 10px;border-radius:0 4px 4px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;align-items:start}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+.card{border:1px solid #d5dbe5;border-radius:6px;padding:8px 12px;margin:0 0 10px;break-inside:avoid;background:#fff}
+.card h4{margin:0 0 6px;font-size:10.5pt;color:#123c7a}
+.fx{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:6px 12px;margin:4px 0}
+.fx .n{font-weight:600}
+.fr{display:inline-flex;flex-direction:column;align-items:center;line-height:1.2;vertical-align:middle;margin-right:8px}
+.fr>span:first-child{border-bottom:1.5px solid #222;padding:0 5px 2px}.fr>span:last-child{padding:2px 5px 0}
+.eq{color:#666;margin:0 6px}
+.je{font-family:Consolas,Menlo,monospace;font-size:9.2pt;white-space:pre;background:#f5f6f8;padding:6px 10px;border-radius:4px;margin:4px 0 8px;line-height:1.5}
+ul{margin:2px 0 6px 18px;padding:0}li{margin:2px 0}
+.toc{columns:2;column-gap:20px;font-size:10pt}
+.toc div{padding:2px 0;border-bottom:1px dotted #ccc;break-inside:avoid;display:flex;justify-content:space-between}
+.tag{display:inline-block;background:#e5edf9;color:#123c7a;font-size:8.5pt;padding:0 6px;border-radius:10px;margin-right:4px;font-weight:600}
+.big{font-size:12pt;font-weight:700;color:#123c7a}
+.muted{color:#666;font-size:9pt}
+</style></head><body>
+
+<h1>FMAA Cheat Sheet</h1>
+<p class="lead">Sections A and B, from the PRC e-books. Built for open-notes lookup: find the topic in the table of contents, go to the page. Pages 2–7 are the fast lane: the answer to every practice-quiz question and every formula.</p>
+
+<h3>Contents</h3>
+<div class="toc">
+<div><span>Quiz answer finder (all 49 PRC quiz items)</span><span>2–3</span></div>
+<div><span>Formula sheet</span><span>4</span></div>
+<div><span>Decision tables: which bucket?</span><span>5–6</span></div>
+<div><span>Journal entries</span><span>7</span></div>
+<div><span>A.1 Terminology, business forms, principles</span><span>8</span></div>
+<div><span>A.2 Accounting cycle</span><span>9</span></div>
+<div><span>A.3 Financial statements, cash flows</span><span>10</span></div>
+<div><span>A.4 Internal controls</span><span>11</span></div>
+<div><span>A.5 Working capital, cash, A/R, inventory, A/P</span><span>12</span></div>
+<div><span>B.1 Receivables, inventory, PP&amp;E, liabilities</span><span>13</span></div>
+<div><span>B.1 Revenue recognition, equity</span><span>14</span></div>
+<div><span>B.2 Common-size analysis · B.3 Ratios</span><span>15</span></div>
+</div>
+
+<h3>Reading this sheet</h3>
+<table><tr><td class="k">Green box</td><td>A rule of thumb or a worked calculation you can copy.</td></tr>
+<tr><td class="k">Orange box</td><td>A trap: the answer the exam expects that people get wrong.</td></tr>
+<tr><td class="k"><span class="tag">QUC 1234</span></td><td>A real PRC quiz question number. If you recognize the question, the answer is right there.</td></tr>
+<tr><td class="k"><b>Bold</b></td><td>The exact fact the question turns on.</td></tr></table>
+
+<h3>The ten rules that answer the most questions</h3>
+<table>
+<tr><td class="k">1</td><td>Order of the cycle: <b>post → adjust → close → reverse</b>. Reversing is optional and is the exact opposite of the adjusting entry.</td></tr>
+<tr><td class="k">2</td><td>Interest paid and interest/dividends received are <b>operating</b>. Dividends paid and treasury stock are <b>financing</b>. Buying or selling long-lived assets is <b>investing</b>.</td></tr>
+<tr><td class="k">3</td><td>Indirect method: <b>add</b> non-cash expenses and losses, <b>subtract</b> gains, subtract increases in operating assets, add increases in operating liabilities.</td></tr>
+<tr><td class="k">4</td><td>Current = within <b>one year or the operating cycle, whichever is longer</b>. A short-term debt with intent and ability to refinance is long-term.</td></tr>
+<tr><td class="k">5</td><td>Rising prices: <b>FIFO</b> gives lowest COGS, highest income, highest ending inventory. <b>LIFO</b> the opposite.</td></tr>
+<tr><td class="k">6</td><td>Revenue is recognized when <b>control transfers</b>, not when cash arrives. Cash before performance = liability (unearned revenue).</td></tr>
+<tr><td class="k">7</td><td>Cash dividend is a liability <b>at declaration</b>. Small stock dividend (under 20–25%) reduces retained earnings at <b>market value</b>; large at <b>par</b>. Stock dividends and splits never change total equity.</td></tr>
+<tr><td class="k">8</td><td>Change in <b>estimate</b> (life, salvage, collectability, depreciation method) = prospective. Change in <b>principle</b> or an <b>error</b> = adjust opening retained earnings, net of tax.</td></tr>
+<tr><td class="k">9</td><td>Segregate <b>authorization, recordkeeping, custody, reconciliation</b>. Internal control gives <b>reasonable</b>, never absolute, assurance. Board is ultimately responsible; management maintains.</td></tr>
+<tr><td class="k">10</td><td>Vertical common-size base: <b>total assets</b> (balance sheet) or <b>net sales</b> (income statement). Horizontal: % of the base year; growth = index − 100.</td></tr>
+</table>
+
+<!-- ===================== QUIZ FINDER ===================== -->
+<div class="page"></div>
+<h2>Quiz answer finder</h2><style>.qf table{font-size:9.2pt}.qf td,.qf th{padding:3px 6px}</style><div class="qf">
+<p class="lead">Every PRC practice-quiz question in Sections A and B, grouped by topic. Recognize the question, read the answer, check the reason.</p>
+
+<h3>Principles and the cycle</h3>
+<table><thead><tr><th style="width:70px">QUC</th><th style="width:38%">Question is about</th><th>Answer</th><th>Reason</th></tr></thead><tbody>
+<tr><td>12328</td><td>Feature unique to managerial accounting</td><td class="ans">Reports prepared based on management needs</td><td>Financial accounting must follow standards, report periodically, and looks at the past.</td></tr>
+<tr><td>11942</td><td>Entity owned by 2+ firms for a special purpose</td><td class="ans">Joint venture</td><td>Owners share costs, returns and risks.</td></tr>
+<tr><td>12322</td><td>Conservatism under uncertainty</td><td class="ans">Least likely to overstate assets (or income)</td><td>Also: least likely to understate liabilities or expenses.</td></tr>
+<tr><td>317</td><td>Catalogues printed in Dec for a Jan promotion</td><td class="ans">Deferred cost, because of matching</td><td>They produce revenue in January, so the expense belongs in January.</td></tr>
+<tr><td>314</td><td>When manufacturing labor hits the income statement</td><td class="ans">When the product is sold</td><td>Labor is capitalized into inventory first (matching).</td></tr>
+<tr><td>2638</td><td>Order of cycle steps</td><td class="ans">Posting, adjusting, closing, reversing</td><td>Reversing happens at the start of the next period.</td></tr>
+<tr><td>2235</td><td>Dr Prepaid Property Taxes / Cr Property Tax Expense</td><td class="ans">Recognizes a prepaid expense</td><td>Moves an unexpired cost out of expense into an asset.</td></tr>
+<tr><td>3294</td><td>Accrue revenue from credit sales: effect</td><td class="ans">Assets ↑, liabilities no effect, equity ↑</td><td>Dr Receivable / Cr Revenue.</td></tr>
+<tr><td>319</td><td>Reversing entries</td><td class="ans">Exact opposite of prior-period adjustments</td><td>Optional; made at the beginning of the next period.</td></tr>
+<tr><td>12317</td><td>Which is a real (permanent) account</td><td class="ans">Allowance for doubtful accounts</td><td>Balance-sheet contra-asset. Losses, gains, expenses are temporary.</td></tr>
+</tbody></table>
+
+<h3>Financial statements and cash flows</h3>
+<table><thead><tr><th style="width:70px">QUC</th><th style="width:38%">Question is about</th><th>Answer</th><th>Reason</th></tr></thead><tbody>
+<tr><td>1751</td><td>What the cash flow statement does NOT assess</td><td class="ans">Management's efficient, profitable use of resources</td><td>That is the income statement's job.</td></tr>
+<tr><td>6104</td><td>Buy asset $5,000, borrow $10,000</td><td class="ans">Investing outflow 5,000; financing inflow 10,000</td><td></td></tr>
+<tr><td>6106</td><td>Dividends 150k, interest 250k, equipment 350k: operating total</td><td class="ans">$250,000</td><td>Only interest paid is operating.</td></tr>
+<tr><td>1752</td><td>Purpose of the statement of financial position</td><td class="ans">Evaluate economic resources and obligations</td><td>Performance is the income statement; cash flows are the CFS.</td></tr>
+<tr><td>1881</td><td>Income 60,000 incl. depreciation 5,000, bond-discount amortization 6,000, interest 4,000: cash flow</td><td class="ans">$71,000</td><td>Add back the two non-cash items. Interest was paid in cash.</td></tr>
+<tr><td>325</td><td>Net income of a proprietorship from balance-sheet changes</td><td class="ans">$12,000</td><td>End equity 99,000 = Beg 90,000 + 72,000 invested − 75,000 withdrawn + NI.</td></tr>
+<tr><td>1960</td><td>Which is a financing activity</td><td class="ans">Purchase of treasury stock</td><td>Interest on a mortgage is operating; equipment and trademarks are investing.</td></tr>
+<tr><td>1475</td><td>Credit-card interest incurred and paid</td><td class="ans">Equity decreases; operating outflow</td><td>Interest expense reduces income.</td></tr>
+<tr><td>2507</td><td>$500,000 employee inventory theft, no restitution</td><td class="ans">Loss, separate line on the income statement</td><td>Material fraud is not buried in COGS.</td></tr>
+<tr><td>2793</td><td>Which item is a change in estimate</td><td class="ans">Change in collectability of receivables</td><td>Completed-contract → percentage-of-completion is a change in principle.</td></tr>
+</tbody></table>
+
+<h3>Internal control and working capital</h3>
+<table><thead><tr><th style="width:70px">QUC</th><th style="width:38%">Question is about</th><th>Answer</th><th>Reason</th></tr></thead><tbody>
+<tr><td>6450</td><td>Ultimate objective of managerial control</td><td class="ans">Promote organizational effectiveness</td><td>Control increases the likelihood that objectives are achieved.</td></tr>
+<tr><td>7645</td><td>Cost ≤ benefit; controls should not hinder efficiency</td><td class="ans">Reasonable assurance</td><td>Absolute assurance would cost too much.</td></tr>
+<tr><td>7646</td><td>Which cash procedure violates control</td><td class="ans">Cashier prepares a weekly deposit slip for all receipts</td><td>Custody plus recording in one person, and not timely.</td></tr>
+<tr><td>7763</td><td>Best sign management is committed to controls</td><td class="ans">Funds allocated annually to improve information systems</td><td>Aggressive reporting or earnings pressure are bad signs.</td></tr>
+<tr><td>128</td><td>Risk that controls fail to prevent/detect/correct errors timely</td><td class="ans">Control risk</td><td>Inherent = absent controls; detection = auditors miss it.</td></tr>
+<tr><td>12090</td><td>Which combination decreases net working capital</td><td class="ans">Cash ↓ $1M and fixed assets ↑ $1M</td><td>Current assets fall, current liabilities unchanged.</td></tr>
+<tr><td>6189</td><td>Not a motive for holding cash</td><td class="ans">Motive to make a profit</td><td>Transaction, precautionary, speculative (future needs) are the motives.</td></tr>
+<tr><td>6214</td><td>Not a carrying cost of inventory</td><td class="ans">Shipping costs</td><td>Storage, insurance, opportunity cost are carrying costs.</td></tr>
+<tr><td>6882</td><td>Best financing for a new factory machine</td><td class="ans">Retained earnings or a long-term loan</td><td>Maturity matching: long-lived asset, long-term money.</td></tr>
+<tr><td>589</td><td>Factoring means</td><td class="ans">Selling accounts receivable to another company</td><td></td></tr>
+</tbody></table>
+
+<h3>Recognition, valuation, equity</h3>
+<table><thead><tr><th style="width:70px">QUC</th><th style="width:38%">Question is about</th><th>Answer</th><th>Reason</th></tr></thead><tbody>
+<tr><td>7398</td><td>A/R on May 1 with 60/25/15 collection pattern; Mar 280k, Apr 260k</td><td class="ans">$146,000</td><td>15% × 280,000 + 40% × 260,000.</td></tr>
+<tr><td>12113</td><td>FIFO ending inventory, 11,500 units, purchases at $7.50</td><td class="ans">$86,250</td><td>All ending units come from the latest purchases: 11,500 × 7.50.</td></tr>
+<tr><td>7000</td><td>SYD, cost 250k, salvage 50k, 5 years: year-3 expense and accumulated</td><td class="ans">$40,000 and $160,000</td><td>200,000 × 3/15; 200,000 × 12/15.</td></tr>
+<tr><td>1478</td><td>Selling price when cost 700k, accum. dep. 495k, gain 75k</td><td class="ans">$280,000</td><td>Book value 205,000 + gain 75,000.</td></tr>
+<tr><td>546</td><td>Short-term notes excludable from current liabilities</td><td class="ans">$340,000 (both notes)</td><td>One refinanced, one under a non-cancelable agreement, both before issuance.</td></tr>
+<tr><td>12115</td><td>5% stock dividend, 100,000 shares, $10 par, $18 market: RE effect</td><td class="ans">Decrease $90,000</td><td>Small dividend: 5,000 shares × $18 market.</td></tr>
+<tr><td>11810</td><td>Revenue in year 1 when 50,000 of 100,000 gallons delivered at $3</td><td class="ans">$150,000</td><td>Delivery transfers control; cash timing is irrelevant.</td></tr>
+<tr><td>525</td><td>Annual lawn-service fee paid in advance</td><td class="ans">Over the year as services are performed</td><td>Each visit is a distinct performance obligation.</td></tr>
+<tr><td>11813</td><td>Cash dividend distributed + 5% stock dividend declared: equity change</td><td class="ans">$0</td><td>Cash dividend already left equity at declaration; stock dividend moves within equity.</td></tr>
+</tbody></table>
+
+<h3>Analysis and ratios</h3>
+<table><thead><tr><th style="width:70px">QUC</th><th style="width:38%">Question is about</th><th>Answer</th><th>Reason</th></tr></thead><tbody>
+<tr><td>2419</td><td>Base of a common-size balance sheet</td><td class="ans">Total assets</td><td>Income statement uses net sales.</td></tr>
+<tr><td>6910</td><td>Example of vertical common-size analysis</td><td class="ans">Advertising is 2% of sales this year</td><td>Item ÷ same-year base.</td></tr>
+<tr><td>12057</td><td>Common-size % for net income 120,000, sales 600,000</td><td class="ans">20%</td><td></td></tr>
+<tr><td>12059</td><td>Largest % change: sales 6.0→6.6M, NI 500→540k, assets 10→10.5M, inventory 600→500k</td><td class="ans">Inventory</td><td>500/600 = 83%, a 17% change; the others are 10%, 8%, 5%.</td></tr>
+<tr><td>12182</td><td>Growth rate of salaries 568,920 → 622,310</td><td class="ans">9.38%</td><td>622,310 ÷ 568,920 = 1.0938.</td></tr>
+<tr><td>6026</td><td>A/R turnover: credit sales 3.6M; A/R 320k → 400k</td><td class="ans">10.0</td><td>3,600,000 ÷ average 360,000.</td></tr>
+<tr><td>6068</td><td>Return on equity: NI 96,000; equity 467,000 → 534,000</td><td class="ans">19.2%</td><td>96,000 ÷ 500,500. Include the reserve for bond retirement; exclude bonds.</td></tr>
+<tr><td>140</td><td>Ratio whose unexpected decrease suggests fictitious inventory</td><td class="ans">Total assets turnover</td><td>Fake inventory inflates assets. Current ratio would rise.</td></tr>
+<tr><td>11968</td><td>Inventory when CL 2,000,000, NWC 300,000, quick ratio 0.8</td><td class="ans">$700,000</td><td>CA = 2,300,000; (2,300,000 − Inv) ÷ 2,000,000 = 0.8.</td></tr>
+<tr><td>11969</td><td>Times interest earned: EBIT 20M, interest 5M</td><td class="ans">4</td><td>EBIT ÷ interest.</td></tr>
+</tbody></table>
+
+</div>
+<!-- ===================== FORMULAS ===================== -->
+<div class="page"></div>
+<h2>Formula sheet</h2>
+<div class="grid2">
+<div class="card"><h4>Liquidity</h4>
+<div class="fx"><span class="n">Current ratio</span><span><span class="fr"><span>Current assets</span><span>Current liabilities</span></span></span></div>
+<div class="fx"><span class="n">Quick (acid-test)</span><span><span class="fr"><span>Cash + Marketable securities + Receivables</span><span>Current liabilities</span></span></span></div>
+<div class="fx"><span class="n">Cash ratio</span><span><span class="fr"><span>Cash + Marketable securities</span><span>Current liabilities</span></span></span></div>
+<div class="fx"><span class="n">Cash flow ratio</span><span><span class="fr"><span>Cash flow from operations</span><span>Average current liabilities</span></span></span></div>
+<div class="fx"><span class="n">Net working capital</span><span>Current assets − Current liabilities</span></div>
+<div class="fx"><span class="n">NWC ratio</span><span><span class="fr"><span>Net working capital</span><span>Total assets</span></span></span></div>
+</div>
+<div class="card"><h4>Leverage</h4>
+<div class="fx"><span class="n">Debt to assets</span><span><span class="fr"><span>Total debt (CL + long-term debt)</span><span>Total assets</span></span></span></div>
+<div class="fx"><span class="n">Debt to equity</span><span><span class="fr"><span>Total debt</span><span>Common equity</span></span></span></div>
+<div class="fx"><span class="n">LT debt to equity</span><span><span class="fr"><span>Total debt − Current liabilities</span><span>Common equity</span></span></span></div>
+<div class="fx"><span class="n">Times interest earned</span><span><span class="fr"><span>EBIT</span><span>Interest expense</span></span></span></div>
+<p class="muted">Lenders prefer high TIE with high debt over low TIE with low debt. ROE above ROA means leverage is paying off.</p>
+</div>
+<div class="card"><h4>Activity (360-day year)</h4>
+<div class="fx"><span class="n">Inventory turnover</span><span><span class="fr"><span>Cost of goods sold</span><span>Average inventory</span></span></span></div>
+<div class="fx"><span class="n">Days in inventory</span><span>360 ÷ Inventory turnover</span></div>
+<div class="fx"><span class="n">Receivables turnover</span><span><span class="fr"><span>Net credit sales</span><span>Average receivables</span></span></span></div>
+<div class="fx"><span class="n">Days sales outstanding</span><span>360 ÷ Receivables turnover</span></div>
+<div class="fx"><span class="n">Payables turnover</span><span><span class="fr"><span>Net credit purchases</span><span>Average payables</span></span></span></div>
+<div class="fx"><span class="n">Days payables</span><span>360 ÷ Payables turnover</span></div>
+<div class="fx"><span class="n">Operating cycle</span><span>Days inventory + Days receivables</span></div>
+<div class="fx"><span class="n">Cash conversion cycle</span><span>Days inventory + Days receivables − Days payables</span></div>
+<div class="fx"><span class="n">Asset turnover</span><span><span class="fr"><span>Sales</span><span>Average total (or fixed) assets</span></span></span></div>
+</div>
+<div class="card"><h4>Profitability</h4>
+<div class="fx"><span class="n">Gross margin</span><span><span class="fr"><span>Net sales − COGS</span><span>Net sales</span></span></span></div>
+<div class="fx"><span class="n">Operating margin</span><span><span class="fr"><span>Operating income</span><span>Net sales</span></span></span></div>
+<div class="fx"><span class="n">Net margin</span><span><span class="fr"><span>Net income</span><span>Net sales</span></span></span></div>
+<div class="fx"><span class="n">Return on assets</span><span><span class="fr"><span>Net income</span><span>Average total assets</span></span></span></div>
+<div class="fx"><span class="n">Return on equity</span><span><span class="fr"><span>Net income − Preferred dividends</span><span>Average common equity</span></span></span></div>
+</div>
+<div class="card"><h4>Depreciation (cost C, salvage S, life n)</h4>
+<div class="fx"><span class="n">Straight-line</span><span><span class="fr"><span>C − S</span><span>n</span></span> per year</div>
+<div class="fx"><span class="n">Activity</span><span><span class="fr"><span>C − S</span><span>Total capacity</span></span>× units or hours used</div>
+<div class="fx"><span class="n">Sum-of-years'-digits</span><span>(C − S) × <span class="fr"><span>remaining life</span><span>n(n+1) ÷ 2</span></span></span></div>
+<div class="fx"><span class="n">Double-declining</span><span>Book value × <span class="fr"><span>2</span><span>n</span></span> (ignore S until floor)</span></div>
+<div class="rule">Example, C 1,000,000, S 100,000, 5 yr: SL 180,000/yr · SYD 300k, 240k, 180k, 120k, 60k · DDB 400k, 240k, 144k, 86.4k, 29.6k · Activity 45/hr.</div>
+</div>
+<div class="card"><h4>Other calculations</h4>
+<div class="fx"><span class="n">Periodic COGS</span><span>Beginning inv. + Purchases − Purchase returns − Ending inv.</span></div>
+<div class="fx"><span class="n">Bad debt (aging)</span><span>Required allowance − Existing balance</span></div>
+<div class="fx"><span class="n">Bad debt (% sales)</span><span>% × Credit sales (ignore existing balance)</span></div>
+<div class="fx"><span class="n">Gain/loss on disposal</span><span>Proceeds − (Cost − Accumulated depreciation)</span></div>
+<div class="fx"><span class="n">Equity roll-forward</span><span>Beg + Investments − Withdrawals + Net income = End</span></div>
+<div class="fx"><span class="n">Dividends (from RE)</span><span>Net income − Change in retained earnings</span></div>
+<div class="fx"><span class="n">Growth rate</span><span>(Current ÷ Prior) − 1</span></div>
+<div class="fx"><span class="n">Expected value</span><span>Σ (probability × outcome)</span></div>
+<div class="fx"><span class="n">Allocate price</span><span>Contract price × (SSP of item ÷ Σ SSP)</span></div>
+<div class="fx"><span class="n">Book value / share</span><span>(Assets − Liabilities − Preferred) ÷ Common shares</span></div>
+<div class="fx"><span class="n">Value of a right</span><span>(Price rights-on − Subscription) ÷ (Rights per share + 1)</span></div>
+</div>
+</div>
+
+<!-- ===================== DECISION TABLES ===================== -->
+<div class="page"></div>
+<h2>Decision tables: which bucket?</h2>
+<div class="grid2">
+<div class="card"><h4>Cash flow statement</h4>
+<table><tr><th>Operating</th><th>Investing</th><th>Financing</th></tr>
+<tr><td>Cash from customers<br>Paid to suppliers, employees<br>Taxes paid<br><b>Interest paid</b><br><b>Interest received</b><br><b>Dividends received</b></td><td>Buy / sell PP&amp;E<br>Buy / sell intangibles<br>Buy / sell other firms' stock or bonds<br>Loans made to others and their collection (principal)</td><td>Issue stock<br><b>Buy treasury stock</b><br>Borrow<br>Repay principal<br><b>Dividends paid</b></td></tr></table></div>
+<div class="card"><h4>Indirect method: net income → cash from operations</h4>
+<table><tr><th>Add</th><th>Subtract</th><th>Ignore</th></tr>
+<tr><td>Depreciation, amortization, impairment<br>Bond-discount amortization<br>Losses on disposals or debt<br>Decrease in operating assets<br>Increase in operating liabilities</td><td>Gains on disposals or debt<br>Increase in receivables, inventory, prepaids<br>Decrease in payables, accruals<br>Undistributed equity-method income</td><td>Interest paid in cash<br>Asset purchases (investing)<br>Loan repayment (financing)</td></tr></table></div>
+<div class="card"><h4>Normal balances</h4>
+<table><tr><th>Debit balance</th><th>Credit balance</th></tr>
+<tr><td>Assets<br>Expenses, losses<br>Owner drawings<br>Treasury stock (contra-equity)<br>Discount on notes payable (contra-liability)<br>Sales returns, sales discounts (contra-revenue)</td><td>Liabilities<br>Equity, retained earnings<br>Revenues, gains<br>Accumulated depreciation (contra-asset)<br>Allowance for doubtful debts (contra-asset)<br>Premium on notes payable (adjunct)<br>Sales discount forfeited (other revenue)</td></tr></table></div>
+<div class="card"><h4>Permanent vs temporary</h4>
+<table><tr><th>Permanent (real): carried forward</th><th>Temporary (nominal): closed to zero</th></tr>
+<tr><td>All assets, incl. contra-assets<br>All liabilities<br>Capital stock, APIC<br>Retained earnings<br>Accumulated OCI</td><td>Revenues, gains<br>Expenses, losses<br>Dividends, drawings<br>Income summary</td></tr></table></div>
+<div class="card"><h4>Balance sheet classification</h4>
+<table><tr><th>Current</th><th>Non-current</th></tr>
+<tr><td>Cash, marketable securities, receivables, inventory, prepaids<br>Payables, accruals, unearned revenue due within a year<br>Current portion of long-term debt</td><td>Long-term investments, PP&amp;E, intangibles, goodwill<br><b>Cash restricted for a long-term purpose</b><br>Bonds, long-term notes, leases, pensions, deferred taxes<br><b>Short-term debt with intent and ability to refinance</b></td></tr></table>
+<p class="muted">Current = within one year or the operating cycle, whichever is longer.</p></div>
+<div class="card"><h4>Events after the balance-sheet date</h4>
+<table><tr><th>Adjust the statements</th><th>Disclose only</th></tr>
+<tr><td>Evidence about a condition that <b>existed</b> at the balance-sheet date (customer already failing; lawsuit already pending)</td><td>Condition <b>arose after</b>: stock issue or split, business combination, fire or flood, litigation from a later event, receivable losses from later conditions</td></tr></table></div>
+<div class="card"><h4>Income statement: where does it go?</h4>
+<table><tr><th>Item</th><th>Treatment</th></tr>
+<tr><td>Unusual or infrequent gains/losses (write-downs, restructuring, FX, disposals, strikes, disasters)</td><td>Other revenues/expenses, <b>before tax</b></td></tr>
+<tr><td>Discontinued operations (whole segment or product line)</td><td>Separate section, <b>net of tax</b></td></tr>
+<tr><td>Employee theft of inventory</td><td>Loss, separate line</td></tr>
+<tr><td>Change in estimate</td><td>Prospective; no restatement</td></tr>
+<tr><td>Change in principle or error correction</td><td>Opening retained earnings, net of tax</td></tr></table></div>
+<div class="card"><h4>Revenue: over time or point in time?</h4>
+<table><tr><th>Over time (any one)</th><th>Point in time (control indicators)</th></tr>
+<tr><td>Customer consumes as you perform (services, support)<br>You build or improve an asset the customer controls<br>No alternative use <b>and</b> enforceable right to payment for work done</td><td>Right to payment<br>Legal title passed<br>Physical possession<br>Risks and rewards transferred<br>Customer acceptance</td></tr></table></div>
+<div class="card"><h4>Inventory: whose is it? What cost?</h4>
+<table><tr><th>Situation</th><th>Answer</th></tr>
+<tr><td>Goods on consignment</td><td>Consignor's inventory (plus freight to consignee)</td></tr>
+<tr><td>In transit, FOB shipping point</td><td>Buyer's (title passes at the carrier)</td></tr>
+<tr><td>In transit, FOB destination</td><td>Seller's until the buyer's dock</td></tr>
+<tr><td>Freight-in, insurance in transit, DM, DL, factory overhead</td><td>Product cost: capitalize</td></tr>
+<tr><td>Freight-out, selling, G&amp;A, general interest</td><td>Period cost: expense</td></tr></table></div>
+<div class="card"><h4>Dividends and splits</h4>
+<table><tr><th>Event</th><th>Retained earnings</th><th>Total equity</th></tr>
+<tr><td>Cash dividend declared</td><td>↓ (liability created)</td><td>↓</td></tr>
+<tr><td>Cash dividend paid</td><td>no change</td><td>no change</td></tr>
+<tr><td>Small stock dividend (&lt;20–25%)</td><td>↓ at market value</td><td>no change</td></tr>
+<tr><td>Large stock dividend (&gt;20–25%)</td><td>↓ at par value</td><td>no change</td></tr>
+<tr><td>Stock split</td><td>memo entry only</td><td>no change</td></tr>
+<tr><td>Treasury stock purchase</td><td>no change</td><td>↓</td></tr></table></div>
+</div>
+
+<!-- ===================== JOURNAL ENTRIES ===================== -->
+<div class="page"></div>
+<h2>Journal entries</h2>
+<div class="grid2">
+<div class="card"><h4>Everyday transactions</h4>
+<div class="je">Owner invests cash          Dr Cash
+                              Cr Capital
+Prepay rent                 Dr Prepaid Rent
+                              Cr Cash
+Buy equipment for cash      Dr Equipment
+                              Cr Cash
+Cash received in advance    Dr Cash
+                              Cr Unearned Revenue
+Buy supplies on credit      Dr Supplies
+                              Cr Accounts Payable
+Land: part cash, part note  Dr Land
+                              Cr Cash
+                              Cr Notes Payable
+Pay down a note             Dr Notes Payable
+                              Cr Cash
+Service for cash            Dr Cash
+                              Cr Revenue
+Service on account          Dr Accounts Receivable
+                              Cr Revenue</div></div>
+<div class="card"><h4>Adjusting entries</h4>
+<div class="je">Rent used up                Dr Rent Expense
+                              Cr Prepaid Rent
+Supplies used               Dr Supplies Expense
+                              Cr Supplies
+Advance now earned          Dr Unearned Revenue
+                              Cr Revenue
+Revenue earned, unbilled    Dr Accounts Receivable
+                              Cr Revenue
+Expense incurred, unpaid    Dr Wages Expense
+                              Cr Wages Payable
+Depreciation                Dr Depreciation Expense
+                              Cr Accumulated Depreciation
+Bad debt estimate           Dr Bad Debt Expense
+                              Cr Allowance for Doubtful Debts</div></div>
+<div class="card"><h4>Closing entries (BestPort)</h4>
+<div class="je">Revenue               9,000
+   Income Summary              9,000
+Income Summary        1,200
+   Rent Expense                1,000
+   Supplies Expense              200
+Income Summary        7,800
+   Retained Earnings           7,800</div>
+<p class="muted">After closing: revenue, expense and income summary = 0. Retained earnings carries the 7,800.</p></div>
+<div class="card"><h4>Receivables</h4>
+<div class="je">Write off an account        Dr Allowance for Doubtful Debts
+                              Cr Accounts Receivable
+Recover a written-off acct  Dr Accounts Receivable
+                              Cr Allowance
+                            Dr Cash
+                              Cr Accounts Receivable
+Gross method, paid in time  Dr Cash                1,960
+                            Dr Sales Discount         40
+                              Cr A/R                   2,000
+Net method, paid late       Dr A/R                    60
+                              Cr Sales Discount Forfeited 60
+Factor without recourse     Dr Cash
+                            Dr Loss on Sale of Receivables
+                              Cr Accounts Receivable</div></div>
+<div class="card"><h4>Assets and revenue</h4>
+<div class="je">Sell asset at a gain        Dr Cash
+                            Dr Accumulated Depreciation
+                              Cr Asset (cost)
+                              Cr Gain on Disposal
+Sell asset at a loss        Dr Cash
+                            Dr Accumulated Depreciation
+                            Dr Loss on Disposal
+                              Cr Asset (cost)
+Deliver goods paid earlier  Dr Unearned Revenue
+                              Cr Sales Revenue
+                            Dr Cost of Goods Sold
+                              Cr Inventory
+Sale with financing &gt;1 yr   Dr A/R                13,310
+                              Cr Unearned Interest   3,310
+                              Cr Sales Revenue      10,000</div></div>
+<div class="card"><h4>Equity</h4>
+<div class="je">Issue 1,000 sh, $50 par @$75  Dr Cash               75,000
+                                Cr Common Stock        50,000
+                                Cr APIC                25,000
+Declare cash dividend         Dr Retained Earnings
+                                Cr Dividends Payable
+Pay it                        Dr Dividends Payable
+                                Cr Cash
+Small stock dividend          Dr Retained Earnings (market)
+                                Cr Common Stock (par)
+                                Cr APIC (excess)
+Large stock dividend          Dr Retained Earnings (par)
+                                Cr Common Stock (par)
+Buy treasury stock            Dr Treasury Stock
+                                Cr Cash
+Stock split                   Memo entry only</div></div>
+</div>
+
+<!-- ===================== A.1 ===================== -->
+<div class="page"></div>
+<h2>A.1 Terminology, business forms, principles</h2>
+<h3>Three kinds of accounting</h3>
+<table><tr><th>Kind</th><th>Who uses it</th><th>Rules</th><th>Time focus</th></tr>
+<tr><td class="k">Financial</td><td>External: creditors, shareholders, investors, lenders, government</td><td>GAAP or IFRS; change over time; differ by country</td><td>Past; reports each period</td></tr>
+<tr><td class="k">Managerial</td><td>Internal decision makers (plan, evaluate, control)</td><td><b>No mandatory standards</b>; similar across countries; stable</td><td><b>Past and future; reports when management needs them</b></td></tr>
+<tr><td class="k">Tax</td><td>Tax authorities</td><td>Local tax law</td><td>Outside the FMAA</td></tr></table>
+<p class="muted">ICMA definition: accounting = identifying, classifying, measuring, recording and communicating, in monetary terms, financial transactions and events of an entity.</p>
+
+<h3>Forms of business</h3>
+<table><tr><th>Form</th><th>Separate legal entity?</th><th>Liability</th><th>Remember</th></tr>
+<tr><td class="k">Sole proprietorship</td><td>No</td><td>Unlimited</td><td>Ends with the owner; one owner keeps all profit and loss</td></tr>
+<tr><td class="k">General partnership</td><td>No</td><td>All partners unlimited</td><td>Easy to form, even without meaning to; any change = new partnership</td></tr>
+<tr><td class="k">Limited partnership</td><td>By statute (certificate filed)</td><td>General partners unlimited; limited partners limited</td><td>Needs at least one of each; <b>only general partners manage</b>; a limited partner's name cannot appear in the firm name</td></tr>
+<tr><td class="k">LLP</td><td>Statutory filing</td><td>Limited, except your own malpractice</td><td>Law, audit and similar professions; all partners may manage</td></tr>
+<tr><td class="k">Corporation</td><td><b>Yes</b></td><td>Limited</td><td>Unlimited life; shareholders elect the board, board appoints management; <b>double taxation</b>; public ones regulated by SEC and PCAOB</td></tr>
+<tr><td class="k">S corporation</td><td>Yes</td><td>Limited</td><td>No corporate-level tax; <b>at most 75 shareholders, one class of stock</b></td></tr>
+<tr><td class="k">LLC</td><td colspan="3">Limited liability plus preferential tax treatment, with conditions</td></tr>
+<tr><td class="k">Joint venture</td><td colspan="3">Two or more parties, one specific purpose, shared costs, returns and risks</td></tr>
+<tr><td class="k">Nonprofit</td><td colspan="3">Public-benefit purpose, usually tax exempt, surplus reinvested rather than distributed</td></tr></table>
+
+<h3>Accounting equation and element definitions</h3>
+<p class="big">Assets (debit) = Liabilities (credit) + Equity (credit)</p>
+<table><tr><td class="k">Asset</td><td>Probable future economic benefit obtained or controlled as a result of past transactions</td></tr>
+<tr><td class="k">Liability</td><td>Probable future sacrifice of economic benefits from a present obligation, from past transactions</td></tr>
+<tr><td class="k">Equity</td><td>Residual interest in assets after liabilities: contributed capital plus retained earnings</td></tr>
+<tr><td class="k">Revenue / expense</td><td>Inflows / outflows from the entity's <b>ongoing major or central operations</b></td></tr>
+<tr><td class="k">Gain / loss</td><td>Equity changes from <b>peripheral or incidental</b> transactions (a laptop maker selling its own machine)</td></tr>
+<tr><td class="k">Journal / ledger</td><td>Journal = book of original entry, in date order. Ledger = book of final entry. General ledger = every account.</td></tr></table>
+
+<h3>Principles</h3>
+<table><tr><td class="k">Accrual basis</td><td>Revenue when earned, expense when incurred, whatever the cash timing. GAAP and IFRS require it; cash basis is tolerated only for small firms. Cash received before delivery is a <b>liability</b>.</td></tr>
+<tr><td class="k">Conservatism</td><td>Under uncertainty, book expenses and liabilities early, revenues and assets only when assured. Expense the ad campaign now; accrue the probable lawsuit; wait for the contract revenue.</td></tr>
+<tr><td class="k">Consistency</td><td>Same policies period to period; change only for a good, permanent reason.</td></tr>
+<tr><td class="k">Matching</td><td>Expense in the same period as the revenue it produced: COGS when sold, depreciation over the life, warranty and bad-debt estimates in the year of sale.</td></tr>
+<tr><td class="k">Accrual vs deferral</td><td>Accrual: earned or incurred, cash not yet moved. Deferral: cash moved, belongs to a later period.</td></tr></table>
+
+<!-- ===================== A.2 ===================== -->
+<div class="page"></div>
+<h2>A.2 Recording transactions: the accounting cycle</h2>
+<div class="grid2">
+<div>
+<h3>The ten steps, in order</h3>
+<table><tr><td class="k">1</td><td>Identify and measure the transaction in money</td></tr>
+<tr><td class="k">2</td><td>Journalize: date, debit(s), credit(s), equal amounts, description</td></tr>
+<tr><td class="k">3</td><td><b>Post</b> to ledger accounts (T-accounts)</td></tr>
+<tr><td class="k">4</td><td>Unadjusted trial balance: proves debits = credits; <b>not a financial statement</b>; cannot catch a wrong-account error</td></tr>
+<tr><td class="k">5</td><td><b>Adjust</b> for accruals and deferrals</td></tr>
+<tr><td class="k">6</td><td>Adjusted trial balance</td></tr>
+<tr><td class="k">7</td><td>Statements: income statement → changes in equity → balance sheet → cash flows</td></tr>
+<tr><td class="k">8</td><td><b>Close</b> temporary accounts through Income Summary into Retained Earnings</td></tr>
+<tr><td class="k">9</td><td>Post-closing trial balance: permanent accounts only</td></tr>
+<tr><td class="k">10</td><td><b>Reverse</b> (optional): first day of next period, exact opposite of an adjusting entry</td></tr></table>
+<div class="trap">Tested order: <b>posting → adjusting → closing → reversing</b>.</div>
+</div>
+<div>
+<h3>Double-entry rules</h3>
+<ul><li>Every entry has at least one debit and one credit, and the totals are equal.</li>
+<li>Assets, expenses, losses grow with debits. Liabilities, equity, revenues, gains grow with credits.</li>
+<li><b>Contra</b> account: opposite balance to the account it reduces (Accumulated Depreciation is a credit inside assets).</li>
+<li><b>Adjunct</b> account: same balance as the account it adds to (Premium on Notes Payable is a credit).</li></ul>
+<h3>Four adjusting entries</h3>
+<table><tr><th>Kind</th><th>Entry</th></tr>
+<tr><td>Accrued revenue</td><td>Dr Receivable / Cr Revenue</td></tr>
+<tr><td>Accrued expense</td><td>Dr Expense / Cr Payable</td></tr>
+<tr><td>Prepaid expense used</td><td>Dr Expense / Cr Prepaid asset</td></tr>
+<tr><td>Unearned revenue earned</td><td>Dr Unearned Revenue / Cr Revenue</td></tr></table>
+<h3>Permanent vs temporary</h3>
+<p><b>Permanent</b>: every asset, liability and equity account, including contra-assets. <b>Temporary</b>: revenues, expenses, gains, losses, drawings or dividends, Income Summary.</p>
+</div></div>
+<h3>BestPort Company: the numbers the exam recycles</h3>
+<table><tr><th>Checkpoint</th><th>Total</th><th>Why</th></tr>
+<tr><td>Unadjusted trial balance</td><td class="n">87,300</td><td>Debits = credits after ten December entries</td></tr>
+<tr><td>Adjusted trial balance</td><td class="n">87,300</td><td>Adjustments move amounts between accounts; totals unchanged</td></tr>
+<tr><td>Net income</td><td class="n">7,800</td><td>Revenue 9,000 − rent 1,000 − supplies 200</td></tr>
+<tr><td>Total assets = liabilities + equity</td><td class="n">86,100</td><td>Cash 51,500 + A/R 2,000 + supplies 600 + prepaid 2,000 + equipment 10,000 + land 20,000</td></tr>
+<tr><td>Post-closing trial balance</td><td class="n">86,100</td><td>Only permanent accounts remain; retained earnings 7,800</td></tr></table>
+
+<!-- ===================== A.3 ===================== -->
+<div class="page"></div>
+<h2>A.3 Financial statements and cash flows</h2>
+<div class="grid2">
+<div>
+<h3>Balance sheet (point in time)</h3>
+<table><tr><td class="k">Helps assess</td><td>Operating capability; capital structure, risk, creditworthiness; enterprise value; future cash flows; <b>liquidity</b> (time to turn into cash) and <b>financial flexibility</b> (ability to change amounts and timing of cash flows)</td></tr>
+<tr><td class="k">Limitations</td><td>Historical cost, not fair value; estimates and judgments; omits things that cannot be measured (people); snapshot only</td></tr>
+<tr><td class="k">Asset order</td><td>Current (cash, securities, receivables, inventory, prepaids) → long-term investments → PP&amp;E → intangibles → other assets</td></tr>
+<tr><td class="k">Equity parts</td><td>Capital stock at par · additional paid-in capital · retained earnings (free and appropriated) · accumulated OCI · less treasury stock. Disclose shares <b>authorized, issued, outstanding</b>.</td></tr>
+<tr><td class="k">Disclosure</td><td>Parenthetical notes, footnotes, cross-references and contra items, supporting schedules. Supplemental: contingencies, accounting policies, contracts and covenants, post-balance-sheet events.</td></tr></table>
+<h3>Statement of changes in equity</h3>
+<p>Beginning ± prior-period adjustment + net income + shares issued − dividends declared = ending. Net income comes in from the income statement; ending equity goes to the balance sheet.</p>
+</div>
+<div>
+<h3>Income statement (period)</h3>
+<div class="je">  Sales − discounts − returns
+= Net sales
+− Cost of sales
+= Gross profit
+− Selling expenses − G&amp;A
+= Operating income
++ Other revenues and gains
+− Other expenses and losses
+= Income before tax
+− Income tax
+= Income from continuing operations
+± Discontinued operations (net of tax)
+= Net income</div>
+<table><tr><td class="k">Helps assess</td><td>Past performance; future cash flows and their risk; sustainable earnings; <b>management's efficient and profitable use of resources</b></td></tr>
+<tr><td class="k">Limitations</td><td>Depends on methods and estimates (quality of earnings); past only; leaves out items that cannot be measured reliably (some unrealized gains go to OCI; brand value)</td></tr>
+<tr><td class="k">Single vs multiple step</td><td>Single: revenues minus expenses. Multiple: separates operating from non-operating and shows gross profit and operating income.</td></tr></table>
+</div></div>
+
+<h3>Statement of cash flows</h3>
+<table><tr><td class="k">Purpose</td><td>Cash receipts and payments in three groups plus the net change in cash. Shows liquidity, <b>solvency</b> (operating cash flow is the key), financial flexibility.</td></tr>
+<tr><td class="k">Limitations</td><td>Leaves out non-cash transactions; classification takes judgment; historical.</td></tr>
+<tr><td class="k">Built from</td><td>Comparative balance sheets, the current income statement, selected transaction data.</td></tr>
+<tr><td class="k">Method</td><td><b>Only the indirect method is tested</b>: start with net income, adjust for non-cash items and working-capital changes. Direct method is rare because firms do not keep cash-receipt and cash-payment records by category.</td></tr></table>
+<div class="rule">Worked bridge: Net income 40,000 + depreciation 18,000 − gain on machine 4,000 + decrease in A/R 5,000 − increase in inventory 10,000 − increase in prepaids 3,000 − decrease in A/P 8,000 = <b>cash from operations 38,000</b>. Investing: +18,000 sale − 60,000 purchase = −42,000. Financing: +41,000 stock − 20,000 loan − 10,000 dividends = +11,000. Cash 20,000 → 27,000.</div>
+<div class="rule">Hidden numbers: depreciation expense = change in accumulated depreciation + accumulated depreciation removed on a disposal (cost − book value). Dividends paid = net income − change in retained earnings.</div>
+<div class="trap">Interest paid is operating even though the loan is financing. Dividends received are operating; dividends paid are financing. Buying treasury stock is financing.</div>
+
+<!-- ===================== A.4 ===================== -->
+<div class="page"></div>
+<h2>A.4 Internal controls</h2>
+<div class="grid2">
+<div>
+<h3>Governance and control</h3>
+<table><tr><td class="k">Governance</td><td>The system by which an organization is directed and controlled. Goal: long-term shareholder value while balancing other stakeholders. Risk management and control are components of it.</td></tr>
+<tr><td class="k">Agency problem</td><td>Owners (principals) hire managers (agents) whose interests differ; the board monitors management.</td></tr>
+<tr><td class="k">Responsibility</td><td><b>Board: ultimate responsibility.</b> Senior management: establishes and maintains the system.</td></tr>
+<tr><td class="k">COSO definition</td><td>A process, effected by board, management and personnel, giving reasonable assurance of: (1) effective and efficient operations, (2) reliable financial reporting, (3) compliance with laws.</td></tr>
+<tr><td class="k">Reasonable assurance</td><td>Never absolute. Collusion, management override and cost-benefit limits mean controls can fail. Cost must not exceed benefit.</td></tr>
+<tr><td class="k">Ultimate objective</td><td>Organizational effectiveness: achieving objectives and goals.</td></tr></table>
+<h3>Strong vs weak controls</h3>
+<table><tr><th>Strong system gives</th><th>Weak system risks</th></tr>
+<tr><td>Better decisions from reliable data<br>Protected assets<br>Lower external audit cost (auditor relies on controls)</td><td>Employee theft<br>Loss of critical information<br>Inefficiency, poor decisions<br>Higher audit fees</td></tr></table>
+</div>
+<div>
+<h3>Risk vocabulary</h3>
+<table><tr><td class="k">Responses</td><td>Accept · Treat (reduce, usually with controls) · Transfer · Avoid</td></tr>
+<tr><td class="k">Inherent → residual</td><td>Inherent (gross) risk before controls; managed risk is mitigated; <b>residual (net)</b> risk remains and is what profit rewards.</td></tr>
+<tr><td class="k">Inherent risk (reporting)</td><td>Susceptibility to misstatement with no controls</td></tr>
+<tr><td class="k">Control risk</td><td>Controls fail to prevent, detect or correct in time</td></tr>
+<tr><td class="k">Detection risk</td><td>Auditors or checkers fail to find the misstatement</td></tr>
+<tr><td class="k">Control-risk drivers</td><td>Control consciousness · design (segregation) · communication · consistent application · independent checks · monitoring</td></tr></table>
+<h3>Structure and management style</h3>
+<ul><li>Centralized: standardized, easy to enforce. Decentralized: varied, hard to make uniform.</li>
+<li>Rigid hierarchy (army): least flexible, least risky, most control. Flat and free: flexible, risky.</li>
+<li>Commitment shows in: money for information systems, use of budgets and standards, attitude to auditors, open-door contact with staff. Warning signs: a small clique decides everything, aggressive reporting, pressure to hit earnings targets.</li></ul>
+</div></div>
+<h3>Segregation of duties: four jobs, four people</h3>
+<table><tr><th>Authorization</th><th>Recordkeeping</th><th>Custody</th><th>Reconciliation</th></tr>
+<tr><td>Approve credit, sign purchase orders, set pay rates</td><td>Journal entries, posting payments, payroll preparation</td><td>Hold cash, checks, securities, inventory</td><td>Bank reconciliation, physical counts vs records</td></tr></table>
+<ul><li>A/R adjuster ≠ payment poster. Cash handler ≠ write-off approver. Deposit preparer ≠ bank reconciler.</li>
+<li>Purchase-order issuer ≠ receiving recorder (stops fictitious-vendor fraud).</li>
+<li>IT: separate requesting, authorizing, developing, reviewing, implementing a change.</li>
+<li>Segregation does not stop <b>collusion</b>. When separation is impossible, use <b>compensating controls</b>: audit trails, application reconciliation, exception reports reviewed by a supervisor, transaction logs, supervisory review.</li></ul>
+<h3>Safeguarding assets</h3>
+<table><tr><th>Cash and payments</th><th>Physical access</th><th>Logical access</th></tr>
+<tr><td>Registers, lockbox, intact daily deposits, treasury custody<br>Pre-numbered forms<br><b>Three-way match</b>: purchase order + invoice + receiving report, then cancel the voucher<br>Credit memos and write-offs approved independently<br>Payroll from approved time cards; checks handed out by treasury; unclaimed checks held independently</td><td>Locks (metal, electronic, biometric)<br>Deadman doors, alarms, cameras, guards<br>Color-coded visitor badges, escorted visitors<br>Single entry point<br>Bonded employees</td><td>Unique passwords, biometrics<br>Encryption, firewalls, anti-malware<br>Backup and recovery<br>Secure PC storage</td></tr></table>
+<p>Compare records with assets using an <b>independent person</b>; frequency depends on value and cost (cash daily, inventory less often).</p>
+
+<!-- ===================== A.5 ===================== -->
+<div class="page"></div>
+<h2>A.5 Managing daily finances</h2>
+<div class="grid2">
+<div>
+<h3>Working capital</h3>
+<p class="big">Net working capital = Current assets − Current liabilities</p>
+<p>Goal: shorten the operating cycle (buy → hold → sell → collect) and the cash cycle (operating cycle minus days you take to pay suppliers). More liquid assets earn less; shorter-term debt costs less.</p>
+<table><tr><th>Policy</th><th>Financing</th><th>Result</th></tr>
+<tr><td class="k">Aggressive</td><td>Short-term liabilities fund longer-term assets</td><td>Highest return, risk of insolvency</td></tr>
+<tr><td class="k">Conservative</td><td>Long-term money funds even current assets</td><td>Safest, lowest return</td></tr>
+<tr><td class="k">Maturity matching</td><td>Match asset life to financing term</td><td>Middle ground; a machine is financed with retained earnings or a long-term loan</td></tr></table>
+<h3>Cash</h3>
+<table><tr><td class="k">Why hold it</td><td><b>Transaction, precautionary, speculative.</b> Profit is not a motive; cash earns the least.</td></tr>
+<tr><td class="k">How much</td><td>Depends on revenue pattern and seasonality, operating expenses, contingencies, growth opportunities, market conditions.</td></tr>
+<tr><td class="k">Forecast says</td><td>Deficit → arrange short-term financing early. Surplus → invest part of it.</td></tr></table>
+<h3>Receivables</h3>
+<table><tr><td class="k">Credit policy</td><td>Set by top management, run by the credit department: credit period, credit standards, limits, discount rate and period. Balance extra sales against default (credit) risk.</td></tr>
+<tr><td class="k">Loosen it</td><td>Sales up, receivables up, bad debts and collection costs up, opportunity cost up. A cash discount speeds collection.</td></tr>
+<tr><td class="k">Factoring</td><td>Selling receivables below face value. <b>With recourse</b>: you still cover defaults; a sale only if you give up control, the recourse obligation can be estimated, and the factor cannot force a repurchase; otherwise it is a loan. <b>Without recourse</b>: factor bears the risk, costs more, treated as a sale with a loss.</td></tr></table>
+</div>
+<div>
+<h3>Inventory</h3>
+<table><tr><td class="k">Types</td><td>Raw materials (traceable) · work in process · finished goods · materials and supplies (not traceable)</td></tr>
+<tr><td class="k">Why hold it</td><td>Supply and demand mismatch, production delays, quantity discounts, level operations, avoid stockouts</td></tr>
+<tr><td class="k">Two questions</td><td>When to order? How much?</td></tr></table>
+<table><tr><th>Ordering costs</th><th>Carrying costs</th><th>Stockout costs</th></tr>
+<tr><td>Preparing and placing orders; discounts lost by ordering too little</td><td>Storage, freight-in and insurance on shipment, facility rent and depreciation, insurance, property tax, security, spoilage, theft, obsolescence, opportunity cost of the money</td><td>Lost sales and goodwill. Watch lead time: order placed → goods ready to use</td></tr></table>
+<div class="trap">Shipping goods out to customers is <b>not</b> a carrying cost.</div>
+<table><tr><td class="k">Just-in-time</td><td>Inventory arrives as needed; demand driven; no warehousing. Cuts carrying cost, theft, control effort, property tax; needs reliable suppliers (small safety stock); exposes waste and defective parts. <b>Less carrying cost, more stockout cost.</b></td></tr>
+<tr><td class="k">MRP</td><td>Computer system that turns the master production schedule into purchase and production schedules; tracks stock, orders, lead times, usage; fewer rush orders.</td></tr></table>
+<h3>Payables</h3>
+<p>Trade credit is borrowing; use it only when cheaper than other money (cost depends on the discount you give up). Ten-step cycle: requisition → <b>purchase order (legally binding)</b> → receive and check goods (receiving report) → vendor invoice → <b>three-way match</b> → approval → record liability → authorize payment → pay → reconcile and confirm. Benefits: trade credit, no late fees, tracking, fraud prevention (duplicate invoices), smoother cash flow, supplier goodwill, better reporting.</p>
+</div></div>
+
+<!-- ===================== B.1 part 1 ===================== -->
+<div class="page"></div>
+<h2>B.1 Receivables, inventory, PP&amp;E, intangibles, liabilities</h2>
+<div class="grid2">
+<div>
+<h3>Receivables</h3>
+<table><tr><td class="k">Valuation</td><td>Short-term at <b>net realizable value</b>; noncurrent at <b>present value</b>. Recorded net of trade discounts. Notes receivable are written promises. Nontrade receivables (employee advances, dividends receivable) shown separately.</td></tr>
+<tr><td class="k">2/10, n/30</td><td>2% off if paid in 10 days, else full amount in 30. <b>Gross method</b>: book full amount, record Sales Discount when taken. <b>Net method</b>: book at 98%; a late payer produces Sales Discount Forfeited (other revenue).</td></tr>
+<tr><td class="k">Allowance, % of sales</td><td>Expense = % × credit sales. Existing allowance balance is ignored. 1% × 10,000,000 = 100,000.</td></tr>
+<tr><td class="k">Allowance, aging</td><td>Compute the required ending allowance, then expense = required − existing. Aging 420k×3% + 18k×10% + 14k×30% + 50k×75% = 56,100; less 12,500 on hand = <b>43,600</b>.</td></tr>
+<tr><td class="k">Roll-forwards</td><td>A/R: Beg + credit sales − collections − write-offs = End. Allowance: Beg + expense + recoveries − write-offs = End.</td></tr></table>
+<h3>Inventory</h3>
+<table><tr><td class="k">Periodic</td><td>Purchases account all year; count at year end; COGS = Beg + Purchases − Returns − End.</td></tr>
+<tr><td class="k">Perpetual</td><td>Records updated with every purchase and sale; annual count checks them.</td></tr>
+<tr><td class="k">FIFO</td><td>Oldest costs to COGS, newest stay. Rising prices: lowest COGS, highest income and ending inventory. Same result periodic or perpetual.</td></tr>
+<tr><td class="k">LIFO</td><td>Newest costs to COGS, oldest stay. Rising prices: highest COGS, lowest income. Periodic and perpetual can differ.</td></tr></table>
+<div class="rule">Parts Co.: 2,000 @5.00, buy 1,500 @5.40, sell 700, buy 400 @5.65, sell 1,300. FIFO: COGS 10,000, ending 10,360. LIFO: COGS 10,860, ending 9,500.</div>
+</div>
+<div>
+<h3>Property, plant and equipment</h3>
+<table><tr><td class="k">Cost includes</td><td>Purchase price, property taxes and import duties, transport in, installation and trial runs, interest during construction of a self-built asset (expensed once it is ready).</td></tr>
+<tr><td class="k">Depreciation</td><td>Systematic, rational allocation of cost over the periods that benefit. Land is not depreciated. See the formula sheet.</td></tr>
+<tr><td class="k">Accelerated vs straight-line</td><td>Early years: more expense, lower income, more accumulated depreciation, lower retained earnings. Gross fixed assets identical. Double-declining ignores salvage until the floor (final year 29,600 lands on 100,000).</td></tr>
+<tr><td class="k">Retirement</td><td>Sale, exchange, abandonment, involuntary conversion. Depreciate up to the date; remove cost and accumulated depreciation; proceeds − book value = gain or loss, shown below operating income within continuing operations.</td></tr></table>
+<h3>Intangibles</h3>
+<table><tr><td class="k">Purchased</td><td>At cost including costs to prepare for use; if exchanged for other assets, at the more reliable fair value.</td></tr>
+<tr><td class="k">Internally created</td><td>Only direct costs such as legal fees. <b>R&amp;D is always expensed.</b> <b>Internally generated goodwill is never recorded</b>; goodwill arises only when buying another company.</td></tr>
+<tr><td class="k">Finite life</td><td>Amortize cost minus residual over the useful life.</td></tr>
+<tr><td class="k">Indefinite life</td><td>No amortization; impairment test at least yearly.</td></tr></table>
+<h3>Liabilities and financing</h3>
+<table><tr><td class="k">Leave out of current</td><td>A debt due within a year stays long-term if it will be settled from non-current assets (a dedicated fund) or the company has <b>both the intent and the ability to refinance</b> (actual refinancing before issuance, or a non-cancelable agreement).</td></tr>
+<tr><td class="k">Short-term sources</td><td>Trade credit · unsecured bank loans (promissory note; <b>line of credit</b> = available if the bank has funds; <b>revolving credit</b> = guaranteed) · commercial paper · secured loans on receivables or inventory (field warehousing, warehouse receipts), chattel mortgages, repurchase agreements · factoring · bankers' acceptances. A required <b>compensating balance</b> raises the effective interest rate.</td></tr>
+<tr><td class="k">Long-term sources</td><td>Term loans, leases, bonds (large reputable firms). Higher rates for the longer maturity.</td></tr></table>
+</div></div>
+
+<!-- ===================== B.1 part 2 ===================== -->
+<div class="page"></div>
+<h2>B.1 Revenue recognition and equity</h2>
+<h3>Five steps</h3>
+<table><tr><th style="width:150px">Step</th><th>What to check</th><th>Worked number</th></tr>
+<tr><td class="k">1 Contract</td><td>Approved and committed · rights identifiable · payment terms identifiable · commercial substance · collection probable. Cash received before a valid contract or performance is a <b>liability</b>.</td><td>Company A receives 9,000 on May 1, delivers June 15: revenue June 15.</td></tr>
+<tr><td class="k">2 Performance obligations</td><td>One for each <b>distinct</b> good or service: the customer can benefit from it alone <b>and</b> it is separately identifiable.</td><td>Software + optional support = 2. Software + heavy customization = 1.</td></tr>
+<tr><td class="k">3 Transaction price</td><td>Variable amounts: <b>expected value</b> (many outcomes) or <b>most likely amount</b> (two outcomes). Financing component if payment is more than a year away: revenue at the cash price, rest is interest. Noncash consideration at fair value. Rebates and coupons <b>reduce</b> the price. Sales tax excluded.</td><td>0.5×360k + 0.3×320k + 0.2×300k = 336,000. Sale for 13,310 in 3 years, cash price 10,000: revenue 10,000; interest 1,000, 1,100, 1,210. 5% probable rebate on 200,000: revenue 190,000.</td></tr>
+<tr><td class="k">4 Allocate</td><td>By relative standalone selling price; estimate it if not observable.</td><td>300,000 contract; SSP 250,000 + 3 × 50,000 = 400,000 → license 187,500, support 112,500.</td></tr>
+<tr><td class="k">5 Recognize</td><td>When control transfers (point in time) or as it transfers (over time). See the decision table on page 4. Progress over time by output (units, milestones) or input (cost-to-cost); straight-line if effort is even.</td><td>Support 112,500 ÷ 3 = 37,500 per year.</td></tr></table>
+<h3>Special cases</h3>
+<table><tr><td class="k">Right of return</td><td>Revenue only for units expected to stay sold; a refund liability (allowance for returns, contra-revenue); an asset for goods expected back. 40 units at 1,000, 4 expected back: net sales 36,000.</td></tr>
+<tr><td class="k">Repurchase agreement</td><td>Forward or call: repurchase price below original = <b>lease</b>; at or above = <b>financing</b>. Put option: no incentive to exercise = sale with return; incentive and price below original = lease; at or above original and above market = financing.</td></tr>
+<tr><td class="k">Bill-and-hold</td><td>Revenue when control passes if: substantive reason, goods identified as the customer's, ready to ship, cannot be redirected.</td></tr>
+<tr><td class="k">Principal vs agent</td><td>Principal controls the good before transfer: revenue <b>gross</b>. Agent only arranges: revenue = <b>commission</b>. Agent signs: someone else fulfills, no inventory risk, no pricing power, paid by commission, no credit risk.</td></tr>
+<tr><td class="k">Consignment</td><td>Consignor keeps title and the inventory (plus freight); revenue only when the dealer <b>reports a sale</b>. Dealer records commission revenue and a payable. COGS on 10,000 of 30,000 cost with 1,500 freight = 10,500.</td></tr></table>
+<h3>Expense recognition</h3>
+<table><tr><td class="k">Cause and effect (matching)</td><td>COGS, sales-return allowance, bad-debt allowance, warranty accrual</td></tr>
+<tr><td class="k">Systematic and rational allocation</td><td>Depreciation, prepaid insurance, interest and lease cost by passage of time</td></tr>
+<tr><td class="k">Immediate</td><td>Officers' salaries, general and administrative costs, a patent found worthless</td></tr></table>
+<h3>Equity</h3>
+<table><tr><td class="k">Common stock</td><td>Votes, residual claim, pre-emptive right to keep ownership share. Par, no-par, book value, market value.</td></tr>
+<tr><td class="k">Preferred stock</td><td>Dividend preference and priority after debt; usually no vote; dividend not owed until declared; may be convertible, callable, sinking fund, participating. <b>Cumulative</b>: arrears (not a liability) must be paid before common. Noncumulative: current year only.</td></tr>
+<tr><td class="k">Treasury stock</td><td>Issued but <b>not outstanding</b>: no vote, no dividend. Contra-equity; reduces assets and equity. Bought to lift EPS and ROE, support the price, or supply shares for compensation.</td></tr>
+<tr><td class="k">Retained earnings</td><td>Free, or appropriated (restricted) by the board. Accumulated OCI holds gains and losses that bypass net income and retained earnings.</td></tr>
+<tr><td class="k">Prior-period adjustment</td><td>Correction of an earlier error (cash to accrual, missed expense): opening retained earnings, net of tax; not in this year's income.</td></tr>
+<tr><td class="k">Change in principle</td><td>Average cost to FIFO, completed-contract to percentage-of-completion: cumulative effect, net of tax, to opening retained earnings.</td></tr>
+<tr><td class="k">Change in estimate</td><td>Useful life, salvage, collectability, <b>and depreciation method</b>: prospective only.</td></tr></table>
+
+<!-- ===================== B.2 / B.3 ===================== -->
+<div class="page"></div>
+<h2>B.2 Common-size analysis · B.3 Ratios</h2>
+<div class="grid2">
+<div>
+<h3>Vertical common-size</h3>
+<p>Each item as a % of the same year's base: <b>total assets</b> on the balance sheet, <b>net sales</b> on the income statement. Compares companies of different sizes, periods, or the industry average. "Advertising is 2% of sales."</p>
+<h3>Horizontal common-size (base year)</h3>
+<p>Each item as a % of its base-year value. Also called trend or variation analysis. Growth rate = index − 100. If sales go from 100 to 125, growth is 25%.</p>
+<div class="rule">Largest change test: divide current by prior for every line. 500 ÷ 600 = 83% is a 17% move and beats +10%, +8%, +5%.</div>
+<h3>Reading the Future Tech case</h3>
+<table><tr><th>Signal</th><th>Meaning</th></tr>
+<tr><td>Gross margin 25% → 22% → 19%</td><td>Cost of sales growing faster than prices</td></tr>
+<tr><td>G&amp;A 3% → 7% of sales</td><td>Overhead out of control</td></tr>
+<tr><td>Inventory index 100 → 207 → 426</td><td>Stock piling up faster than sales</td></tr>
+<tr><td>Cash 25% → 6% of assets; A/P 2% → 25%</td><td>Growth financed by stretching suppliers</td></tr>
+<tr><td>Operating cash flow far below net income</td><td>Profit on paper, not in the bank</td></tr></table>
+</div>
+<div>
+<h3>How to read each ratio family</h3>
+<table><tr><td class="k">Liquidity</td><td>Can it pay what is due soon? Quick ratio is stricter than current because inventory (a library, a department store) may take long to sell. Too high a current ratio means idle assets.</td></tr>
+<tr><td class="k">Leverage</td><td>How much is borrowed and can it service the interest? Creditors like low debt ratios; cyclical firms keep them low; owners accept more because debt magnifies returns. Interest is tax deductible, dividends are not. Operating leverage = fixed costs magnify the effect of sales swings on operating income.</td></tr>
+<tr><td class="k">Activity</td><td>How fast do assets turn into sales and cash? Shorter operating and cash cycles are better. Too low a DSO can mean credit terms so tight that sales are lost.</td></tr>
+<tr><td class="k">Profitability</td><td>Margins per dollar of sales; ROA is earning power of the assets; ROE is return to owners. <b>ROE above ROA means borrowed money earned more than it cost.</b> If operating margin falls while gross margin holds, the problem is other operating costs.</td></tr></table>
+<div class="trap">Fictitious inventory inflates total assets: <b>total asset turnover falls</b> unexpectedly. The current ratio would go up, not down. DSO and P/E are unaffected.</div>
+<div class="rule">Average balances: (beginning + ending) ÷ 2. Beechwood's equity includes the reserve for bond retirement but not the bonds: (467,000 + 534,000) ÷ 2 = 500,500; ROE = 96,000 ÷ 500,500 = 19.2%.</div>
+<div class="rule">From a quick ratio to inventory: current assets = NWC + current liabilities; inventory = current assets − quick ratio × current liabilities.</div>
+</div></div>
+</body></html>

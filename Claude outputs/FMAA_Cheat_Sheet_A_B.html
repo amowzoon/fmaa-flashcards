@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>FMAA Cheat Sheet: Sections A and B</title>
+<style>
+@page{size:Letter;margin:11mm 10mm 12mm 10mm}
+*{box-sizing:border-box}
+body{font:8.6pt/1.28 "Segoe UI",Arial,Helvetica,sans-serif;color:#111;margin:0}
+h1{font-size:14pt;margin:0 0 2px;color:#123c7a}
+.sub{font-size:8pt;color:#555;margin-bottom:6px}
+h2{font-size:10.5pt;margin:8px 0 4px;padding:2px 6px;background:#123c7a;color:#fff;border-radius:3px;break-after:avoid}
+h3{font-size:9pt;margin:0 0 3px;color:#123c7a;border-bottom:1px solid #123c7a;break-after:avoid}
+.cols{column-count:2;column-gap:7mm}
+.box{break-inside:avoid;border:1px solid #c9d2df;border-radius:4px;padding:5px 6px 4px;margin:0 0 5px;background:#fff}
+.box.k{background:#f3f7fd}
+.id{float:right;font-size:7pt;color:#123c7a;font-weight:700;background:#e5edf9;padding:0 5px;border-radius:8px;margin-left:6px}
+table{border-collapse:collapse;width:100%;font-size:8pt;margin:2px 0 3px}
+td,th{border:1px solid #d5dbe5;padding:2px 4px;vertical-align:top;text-align:left}
+th{background:#eaf0f8;font-weight:600}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+ul{margin:1px 0 2px 14px;padding:0}li{margin:0 0 1px}
+.f{display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center;margin:2px 0;font-size:8pt}
+.fr{display:inline-flex;flex-direction:column;align-items:center;font-size:7.6pt;white-space:nowrap;line-height:1.15;vertical-align:middle}
+.fr>span:first-child{border-bottom:1px solid #111;padding:0 3px 1px}.fr>span:last-child{padding:1px 3px 0}
+.fn{font-weight:600;min-width:96px;font-size:8pt}.eq{color:#666;padding:0 2px}
+.trap{background:#fff6e0;border-left:3px solid #e0a020;padding:2px 5px;margin:2px 0;font-size:8pt}
+.rule{background:#e9f7ee;border-left:3px solid #2e9e5b;padding:2px 5px;margin:2px 0;font-size:8pt}
+.je{font-family:Consolas,Menlo,monospace;font-size:7.3pt;white-space:pre-wrap;overflow-wrap:anywhere;margin:2px 0 3px;background:#f7f7f7;padding:3px 5px;border-radius:3px}
+b{font-weight:700}
+.idx{column-count:4;column-gap:5mm;font-size:7.6pt;line-height:1.3}
+.idx div{break-inside:avoid}
+.small{font-size:7.6pt;color:#444}
+.pb{break-before:page}
+.tag{display:inline-block;font-size:7pt;background:#e5edf9;color:#123c7a;padding:0 4px;border-radius:3px;margin-right:3px}
+</style></head><body>
+
+<h1>FMAA Cheat Sheet: Section A (General Accounting &amp; Financial Management) and Section B (Financial Statement Analysis)</h1>
+<div class="sub">Built from the PRC e-books A.1–A.5 and B.1–B.3. Use the index to jump to a numbered box. QUC numbers are PRC quiz items. <b>Bold = the fact the exam turns on.</b> Orange = trap. Green = rule of thumb.</div>
+
+<h2>INDEX (keyword → box)</h2>
+<div class="idx">
+<div>Accounting cycle → A2.2</div><div>Accounting equation → A1.3</div><div>Accrual vs cash → A1.4</div><div>Accruals / deferrals → A1.4, A2.3</div><div>Adjusting entries → A2.3</div><div>Agent vs principal → B1.13</div><div>Aging / allowance → B1.2</div><div>A/P cycle (10 steps) → A5.6</div><div>Asset retirement → B1.8</div><div>Balance sheet uses / limits → A3.2</div><div>Bill-and-hold → B1.13</div><div>Bonds, LT debt → B1.10</div><div>Business forms → A1.2</div><div>Cash discounts (gross/net) → B1.1</div><div>Cash flow classification → A3.6</div><div>Cash flow, indirect method → A3.7</div><div>Cash motives → A5.2</div><div>Changes in estimate / principle → A3.4, B1.16</div><div>Closing entries → A2.4</div><div>Common-size (vertical/horizontal) → B2.1</div><div>Conservatism / matching → A1.4</div><div>Consignment → B1.5, B1.13</div><div>Contra / adjunct accounts → A2.1</div><div>Control risk / detection risk → A4.3</div><div>Corporate governance → A4.1</div><div>COSO → A4.2</div><div>Credit policy → A5.3</div><div>Current vs long-term → A3.3, B1.9</div><div>Depreciation methods → B1.6</div><div>Discontinued ops / unusual items → A3.4</div><div>Dividends (cash, stock, splits) → B1.17</div><div>Equity components → A3.3, B1.15</div><div>Expense recognition (3 ways) → B1.14</div><div>Factoring → A5.3</div><div>FIFO / LIFO → B1.5</div><div>FOB terms → B1.5</div><div>Income statement format → A3.4</div><div>Intangibles, R&amp;D, goodwill → B1.7</div><div>Internal control objectives → A4.2</div><div>Inventory costs (product/period) → B1.4</div><div>Inventory costs (order/carry/stockout) → A5.4</div><div>JIT / MRP → A5.4</div><div>Journal entry templates → A2.5</div><div>Leverage (financial/operating) → B3.2</div><div>Liquidity ratios → B3.1</div><div>Net working capital → A5.1</div><div>Permanent vs temporary → A2.4</div><div>Preferred stock → B1.15</div><div>Prior-period adjustment → B1.16</div><div>Profitability ratios → B3.4</div><div>Ratios (activity) → B3.3</div><div>Reasonable assurance → A4.2</div><div>Receivables valuation → B1.2</div><div>Refinancing short-term debt → B1.9</div><div>Revenue 5 steps → B1.11</div><div>Revenue over time vs point → B1.12</div><div>Reversing entries → A2.4</div><div>Risk responses → A4.3</div><div>Safeguarding assets → A4.5</div><div>Segregation of duties → A4.4</div><div>Short-term financing → B1.10</div><div>Statement of changes in equity → A3.5</div><div>Subsequent events → A3.2</div><div>Treasury stock → B1.15</div><div>Trial balances → A2.2</div><div>Users of statements → A3.1</div><div>Working capital policies → A5.1</div><div>Worked numbers (all quiz calcs) → CALC</div>
+</div>
+
+<h2>SECTION A</h2>
+<div class="cols">
+
+<div class="box"><span class="id">A1.1</span><h3>Three types of accounting</h3>
+<table><tr><th>Type</th><th>Users</th><th>Standards</th><th>Focus</th></tr>
+<tr><td>Financial</td><td>External: creditors, shareholders, investors, lenders, government</td><td>GAAP / IFRS; change over time, differ by country</td><td>Past; issued each period</td></tr>
+<tr><td>Managerial</td><td>Internal decision makers</td><td><b>None mandatory</b>; similar across countries; stable</td><td><b>Past AND future; issued as needed</b></td></tr>
+<tr><td>Tax</td><td>Tax authorities</td><td>Local tax law</td><td>Beyond FMAA</td></tr></table>
+<div class="trap">QUC 12328: specific to managerial only = <b>reports prepared based on management needs</b>.</div>
+<div class="small">ICMA: accounting = identifying, classifying, measuring, recording, communicating, in monetary terms, financial transactions/events of an entity.</div></div>
+
+<div class="box"><span class="id">A1.2</span><h3>Forms of business</h3>
+<table><tr><th>Form</th><th>Separate entity</th><th>Liability</th><th>Key facts</th></tr>
+<tr><td>Sole proprietorship</td><td>No</td><td>Unlimited</td><td>Life = owner's life; one owner keeps all profit/loss</td></tr>
+<tr><td>General partnership</td><td>No</td><td>All unlimited</td><td>Easy to form, even without intent; any change = new partnership</td></tr>
+<tr><td>Limited partnership</td><td>By statute (LP certificate)</td><td>GP unlimited; LP limited</td><td>≥1 GP + ≥1 LP; <b>only GPs manage</b>; LP name not in firm name; LP interest ≈ security</td></tr>
+<tr><td>LLP</td><td>Statutory filing</td><td>All limited except own malpractice</td><td>Professional services; all may manage</td></tr>
+<tr><td>Corporation (C)</td><td><b>Yes</b></td><td>Limited</td><td>Unlimited life; shareholders elect board → board appoints mgmt; <b>double taxation</b>; public corps: SEC, PCAOB</td></tr>
+<tr><td>S-corp</td><td>–</td><td>–</td><td>No corporate tax; <b>≤75 shareholders; one class of stock</b></td></tr>
+<tr><td>LLC / JV / Prof. corp / Nonprofit</td><td colspan="3">LLC: limited liability + preferential tax (conditions). JV: 2+ parties, specific purpose, shared risk (QUC 11942). Prof. corp: licensed professionals only. Nonprofit: tax-exempt, surplus reinvested.</td></tr></table></div>
+
+<div class="box k"><span class="id">A1.3</span><h3>Accounting equation &amp; definitions</h3>
+<div class="f"><b>Assets (Dr) = Liabilities (Cr) + Equity (Cr)</b></div>
+<ul><li><b>Asset</b>: probable future economic benefit obtained/controlled from past transactions.</li>
+<li><b>Liability</b>: probable future sacrifice of economic benefits from present obligations from past transactions.</li>
+<li><b>Equity</b>: residual interest in assets after liabilities = contributed capital + retained earnings.</li>
+<li><b>Revenue/Expense</b>: inflows/outflows from <b>ongoing major or central operations</b>. <b>Gain/Loss</b>: from <b>peripheral or incidental</b> transactions (laptop maker: selling laptop = revenue; selling its machine above book value = gain).</li>
+<li>Journal = book of original entry (chronological). Ledger = book of final entry. General ledger = all accounts.</li></ul></div>
+
+<div class="box"><span class="id">A1.4</span><h3>Principles</h3>
+<ul><li><b>Accrual</b> (GAAP/IFRS): revenue when earned, expense when incurred. Cash basis tolerated for small firms. Cash received before delivery = <b>liability</b> (TV paid Dec 4, delivered Jan 9 → revenue in Jan).</li>
+<li><b>Conservatism</b>: recognize expenses/liabilities ASAP under uncertainty; revenue/assets only when assured. <span class="tag">QUC 12322</span> choose solution <b>least likely to overstate assets/income</b> (or understate liabilities/expenses).</li>
+<li><b>Consistency</b>: same policies period to period; change only when justified permanently.</li>
+<li><b>Matching</b>: expenses in the period of the related revenue. <span class="tag">QUC 317</span> catalogues printed Dec for Jan promo = deferred cost (matching). <span class="tag">QUC 314</span> manufacturing labor expensed when the <b>product is sold</b>.</li>
+<li><b>Accruals</b>: earned/incurred, no cash yet. <b>Deferrals</b>: cash moved, belongs to a future period. Depreciation = allocate tangible cost; amortization = allocate cost over periods consumed.</li></ul></div>
+
+<div class="box k"><span class="id">A2.1</span><h3>Normal balances</h3>
+<table><tr><th>Increase with Dr</th><th>Increase with Cr</th></tr><tr><td>Assets, expenses, losses, <b>contra-liability</b> (Discount on N/P), <b>contra-equity</b> (Treasury stock), owner drawings</td><td>Liabilities, equity, revenues, gains, <b>contra-asset</b> (Accum. depreciation, Allowance for doubtful debts), <b>adjunct to liability</b> (Premium on N/P)</td></tr></table>
+<div class="rule">Contra = opposite balance of what it reduces. Adjunct = same balance as what it adds to.</div></div>
+
+<div class="box k"><span class="id">A2.2</span><h3>Accounting cycle (order is tested)</h3>
+<ol style="margin:0 0 2px 16px;padding:0"><li>Identify &amp; measure</li><li>Journalize (date, Dr, Cr, equal amounts, description)</li><li><b>Post</b> to ledger</li><li>Unadjusted trial balance (<b>not a statement</b>; only catches Dr ≠ Cr)</li><li><b>Adjust</b></li><li>Adjusted TB</li><li>Statements: IS → changes in equity → BS → CFS</li><li><b>Close</b></li><li>Post-closing TB (permanent accounts only)</li><li><b>Reverse</b> (optional, start of next period, exact opposite of adjusting entry)</li></ol>
+<div class="trap">QUC 2638: <b>posting → adjusting → closing → reversing</b>. QUC 319: reversing entries are optional and are the exact opposite of prior adjustments.</div>
+<div class="small">BestPort totals: unadjusted TB 87,300 · adjusted TB 87,300 · post-closing TB 86,100 · NI 7,800.</div></div>
+
+<div class="box"><span class="id">A2.3</span><h3>Adjusting entries (4 kinds)</h3>
+<table><tr><th>Type</th><th>Entry</th></tr><tr><td>Accrued revenue</td><td>Dr Receivable / Cr Revenue → A↑ OE↑ (QUC 3294)</td></tr><tr><td>Accrued expense</td><td>Dr Expense / Cr Payable</td></tr><tr><td>Prepaid expense used</td><td>Dr Expense / Cr Prepaid</td></tr><tr><td>Unearned revenue earned</td><td>Dr Unearned revenue / Cr Revenue</td></tr></table>
+<div class="trap">QUC 2235: Dr Prepaid Property Taxes / Cr Property Tax Expense = recognizes a <b>prepaid (deferred) expense</b>.</div></div>
+
+<div class="box"><span class="id">A2.4</span><h3>Closing · permanent vs temporary</h3>
+<div class="je">Revenue            9,000
+   Income Summary            9,000
+Income Summary     1,200
+   Rent Exp / Supplies Exp   1,200
+Income Summary     7,800
+   Retained Earnings         7,800</div>
+<b>Permanent (real)</b>: all assets, liabilities, equity, <b>contra-assets</b> (QUC 12317: Allowance for doubtful accounts). <b>Temporary</b>: revenues, expenses, gains, losses, drawings/dividends, Income Summary.</div>
+
+<div class="box"><span class="id">A2.5</span><h3>Journal entry templates (BestPort)</h3>
+<div class="je">Owner invests cash      Dr Cash / Cr Capital
+Prepay rent             Dr Prepaid Rent / Cr Cash
+Buy asset for cash      Dr Equipment / Cr Cash
+Cash for future service Dr Cash / Cr Unearned Revenue
+Buy on credit           Dr Supplies / Cr A/P
+Land: cash + note       Dr Land / Cr Cash, Cr N/P
+Pay note                Dr N/P / Cr Cash
+Service, cash           Dr Cash / Cr Revenue
+Service, invoice        Dr A/R / Cr Revenue
+Write-off (allowance)   Dr Allowance / Cr A/R
+Recovery                Dr A/R / Cr Allowance,
+                        then Dr Cash / Cr A/R
+Declare dividend        Dr Retained Earnings / Cr Dividends Payable
+Buy treasury stock      Dr Treasury Stock / Cr Cash</div></div>
+
+<div class="box"><span class="id">A3.1</span><h3>Users of financial statements</h3>
+Internal: management (plan/control, assess strength, allocate, financing), employees. External primary: <b>investors</b> (risk/return), <b>lenders/creditors</b> (ability to pay). Other: government/regulators, unions, advisors/rating agencies, stock exchanges, competitors, customers, public.</div>
+
+<div class="box"><span class="id">A3.2</span><h3>Balance sheet</h3>
+<b>Helps assess</b>: operating capability, capital structure/risk/creditworthiness, enterprise value, future cash flows, <b>liquidity</b> (time to convert to cash) and <b>financial flexibility</b> (alter amounts/timing of cash flows). <span class="tag">QUC 1752</span> helps evaluate <b>economic resources and obligations</b>.<br>
+<b>Limitations</b>: historical cost (not fair value); estimates/judgments; omits unrecordable items (people); snapshot.<br>
+<b>Subsequent events</b>: conditions existing at BS date → <b>adjust</b>; conditions arising after (stock issue/split, pending combination, litigation from later event, fire/flood, later receivable losses) → <b>disclose only</b>.<br>
+Supplemental info: contingencies · accounting policies · contractual situations (covenants, leases, pensions, options) · post-BS events. Disclosure techniques: parenthetical, notes, cross-reference/contra items, supporting schedules.</div>
+
+<div class="box"><span class="id">A3.3</span><h3>Classification</h3>
+<b>Current</b> = within <b>1 year or operating cycle, whichever is LONGER</b>. Current assets in liquidity order: cash, marketable securities, receivables, inventories, prepaids. Then LT investments, PP&amp;E (land not depreciated), intangibles, other assets (deferred charges, noncurrent receivables, special funds, advances to subsidiaries).<br>
+Current liabilities: payables, collections in advance, current portion of LTD. Long-term: bonds, LT notes, leases, pensions, deferred taxes, contingencies (warranties). Short-term debt with <b>intent + ability to refinance</b> long-term → long-term (see B1.9).<br>
+Equity: capital stock (par) · APIC · retained earnings (free / appropriated by board) · AOCI · less treasury stock. Disclose <b>authorized, issued, outstanding</b>.</div>
+
+<div class="box k"><span class="id">A3.4</span><h3>Income statement</h3>
+<div class="je">Sales − discounts − returns     = Net sales
+− Cost of sales                  = Gross profit
+− Selling − G&amp;A                  = Operating income
++ Other rev/gains − other exp/losses (interest, loss on land)
+                                 = Income before tax
+− Income tax                     = Income, continuing ops
+± Discontinued ops (net of tax)  = Net income</div>
+<ul><li>Uses: past performance, predict cash flows and risk, sustainable earnings. <span class="tag">QUC 1751</span> assessing management's <b>efficient, profitable use of resources</b> = IS (not CFS).</li>
+<li>Limits: methods/estimates (quality of earnings); past-oriented; excludes unmeasurable items (some unrealized gains → OCI; brand).</li>
+<li><b>Unusual/infrequent items</b> (write-downs, restructuring, FX, PP&amp;E disposal, strikes, disasters, expropriation): before tax in Other; <b>not net of tax</b>; "extraordinary" no longer allowed.</li>
+<li><b>Discontinued ops</b>: clearly distinguishable segment/product line; <b>net of tax</b>. NOT: part of a line, relocation, phasing out a product, technology change.</li>
+<li><span class="tag">QUC 2507</span> $500k employee inventory theft = <b>loss, separate line item</b>.</li>
+<li><b>Change in estimate</b> (useful life, salvage, collectability QUC 2793, depreciation method): <b>prospective</b>, never retroactive, not an error.</li>
+<li>IS footnotes: depreciation detail, revenue recognition method, tax detail, EPS.</li></ul></div>
+
+<div class="box"><span class="id">A3.5</span><h3>Statement of changes in equity</h3>
+Beginning ± prior-period adjustment + net income + shares issued − dividends declared = ending.
+<div class="rule">Owner's equity NI: End equity = Beg + investments − withdrawals + NI. <span class="tag">QUC 325</span> (270−171) = (210−120) + 72 − 75 + NI → NI = <b>12,000</b>.</div></div>
+
+<div class="box k"><span class="id">A3.6</span><h3>Cash flow classification</h3>
+<table><tr><th>Operating</th><th>Investing</th><th>Financing</th></tr><tr><td>Customers, suppliers, employees, taxes; <b>interest PAID</b>; <b>interest &amp; dividends RECEIVED</b></td><td>Buy/sell PP&amp;E, intangibles, other companies' securities; loans made to others &amp; their collection (principal)</td><td>Issue stock; <b>repurchase treasury stock</b>; borrow/repay principal; <b>dividends PAID</b></td></tr></table>
+<div class="trap">QUC 6104 asset $5k = investing out, loan $10k = financing in · QUC 6106 only interest paid $250k is operating · QUC 1960 treasury stock = financing · QUC 1475 credit-card interest: equity ↓, operating outflow.</div>
+Purpose: liquidity (nearness to cash), <b>solvency</b> (meet liabilities as they mature; operating CF is key), financial flexibility. Limits: excludes non-cash items; classification judgment; historical. Sources: comparative BS, current IS, selected transaction data. <b>Only the indirect method is tested.</b></div>
+
+<div class="box k"><span class="id">A3.7</span><h3>Indirect method: net income → operating cash</h3>
+<table><tr><th>Item</th><th>Do</th></tr><tr><td>Non-cash expense (depreciation, amortization, impairment, bond-discount amortization)</td><td><b>Add</b></td></tr><tr><td>Non-cash revenue (undistributed equity-method income)</td><td>Subtract</td></tr><tr><td>Gain on PP&amp;E sale / debt extinguishment</td><td><b>Subtract</b></td></tr><tr><td>Loss on same</td><td>Add</td></tr><tr><td>Operating asset ↑ (A/R, inventory, prepaids)</td><td>Subtract</td></tr><tr><td>Operating asset ↓</td><td>Add</td></tr><tr><td>Operating liability ↑ (A/P, accruals)</td><td>Add</td></tr><tr><td>Operating liability ↓</td><td>Subtract</td></tr><tr><td>Interest paid in cash; asset purchases</td><td>No adjustment</td></tr></table>
+<div class="rule">QUC 1881: 60,000 + depreciation 5,000 + bond discount amort. 6,000 = <b>71,000</b> (interest 4,000 is cash: ignore).</div>
+<div class="small">Derive depreciation: ΔAccum. dep. + accum. dep. removed on disposal (cost − BV). Derive dividends: NI − ΔRetained earnings. Worked: NI 40,000 + dep 18,000 − gain 4,000 + ↓A/R 5,000 − ↑inv 10,000 − ↑prepaid 3,000 − ↓A/P 8,000 = <b>CFO 38,000</b>; investing −42,000; financing +11,000; Δcash +7,000.</div></div>
+
+<div class="box"><span class="id">A4.1</span><h3>Governance</h3>
+System by which organizations are directed and controlled; goal = long-term shareholder value while balancing stakeholders. Governance = framework; <b>risk management</b> (identify, assess, manage, control) and <b>control</b> are its components. <b>Agency problem</b>: owners (principals) vs managers (agents) → board monitors.</div>
+
+<div class="box k"><span class="id">A4.2</span><h3>Internal control</h3>
+<ul><li>Control = any action to manage risk and give <b>reasonable assurance</b> objectives are achieved. <b>Board = ultimate responsibility; management establishes and maintains.</b></li>
+<li><b>COSO</b>: process by board, management, personnel for reasonable assurance of (1) effective/efficient operations, (2) reliable financial reporting, (3) compliance.</li>
+<li><span class="tag">QUC 6450</span> ultimate objective of managerial control = <b>organizational effectiveness</b>. <span class="tag">QUC 7645</span> cost ≤ benefit and not hindering efficiency = <b>reasonable assurance</b> (collusion, override, cost/benefit prevent absolute assurance).</li>
+<li>Strong IC: better decisions, protected assets, lower audit cost. Weak IC: theft, lost information, inefficiency, poor decisions, higher audit fees.</li>
+<li>Structure: centralized = standardized controls; clear reporting lines; large = sophisticated. Rigid (army) = least flexible, least risk; flat = flexible, risky.</li>
+<li><span class="tag">QUC 7763</span> best sign of commitment = <b>funds allocated annually to improve information systems</b> (bad: small group decides, aggressive reporting, earnings-projection pressure).</li></ul></div>
+
+<div class="box"><span class="id">A4.3</span><h3>Risk</h3>
+Responses: <b>accept · treat (reduce, via controls) · transfer · avoid</b>. Inherent (gross) → managed + <b>residual (net)</b>; profit rewards residual risk.<br>
+Reporting risks: <b>Inherent</b> (susceptible absent controls) · <b>Control</b> (controls fail to prevent/detect/correct timely; QUC 128) · <b>Detection</b> (auditors fail to find). Control risk factors: control consciousness, design (segregation), communication, consistent application, independent checks, monitoring.</div>
+
+<div class="box k"><span class="id">A4.4</span><h3>Segregation of duties</h3>
+Separate: <b>Authorization · Recordkeeping · Custody · Reconciliation</b>. Does not stop collusion.<br>
+Sales: A/R adjuster ≠ payment poster; cash custodian ≠ write-off approver; deposit preparer ≠ bank reconciler. Purchases: PO issuer ≠ receiving recorder (fictitious vendor). Payroll: rates/hiring/prep/distribution/reconciliation separate.
+<div class="trap">QUC 7646 violation: <b>cashier prepares weekly deposit slip for all receipts</b> (custody + recording; not timely).</div>
+IS: separate requirement, authorization, development, review, implementation. <b>Compensating controls</b> when separation impossible: audit trails, application reconciliation, exception reports at supervisory level, transaction logs, supervisory review.</div>
+
+<div class="box"><span class="id">A4.5</span><h3>Safeguarding assets</h3>
+Access limited to authorized personnel (physical + indirect via documents). Cash: registers, lockbox, intact daily deposits, treasury custody, pre-numbered forms, <b>3-way match</b> (PO + invoice + receiving report) then cancel vouchers. Credit memos/write-offs approved independently of sales/credit. Payroll from approved time cards; checks distributed by treasury; unclaimed checks held independently. Securities: dual control. Physical: locks/biometrics, deadman doors, alarms, cameras, guards, color badges, escorted visitors, single entry, bonded staff. Logical: passwords, biometrics, encryption, firewalls, anti-malware, backups. Reconcile records to assets by an <b>independent person</b>; frequency by value/cost (cash daily, inventory less often).</div>
+
+<div class="box k"><span class="id">A5.1</span><h3>Working capital</h3>
+<b>NWC = Current assets − Current liabilities.</b> Goal: minimize operating cycle (acquire→hold→sell→collect) and cash cycle (operating cycle − payables days). More liquid = lower return; shorter liabilities = cheaper.<br>
+Policies: <b>Aggressive</b> (ST liabilities fund longer assets; high return, insolvency risk) · <b>Conservative</b> (LT financing of CA; lowest return) · <b>Maturity matching</b>.
+<div class="trap">QUC 12090: cash↓ + fixed assets↑ → <b>NWC decreases</b> (cash↔inventory, cash↓+A/P↓: no change; cash↑ via LTD: increase). QUC 6882: finance a machine with <b>retained earnings or long-term loan</b>.</div></div>
+
+<div class="box"><span class="id">A5.2</span><h3>Cash</h3>
+Motives: <b>transaction, speculation, precautionary</b> (not "profit", QUC 6189). Level depends on revenue pattern/seasonality, opex, contingencies, opportunities, market. Forecast deficit → arrange ST financing; surplus → invest.</div>
+
+<div class="box"><span class="id">A5.3</span><h3>Receivables management</h3>
+Credit policy (top mgmt sets, credit dept applies): period, standards, limits, discount %/period; balance vs <b>default (credit) risk</b>. Longer period / relaxed standards → ↑sales, ↑A/R, ↑bad debts &amp; collection cost. Cash discount → faster collection.<br>
+<b>Factoring</b> = selling A/R below face (QUC 589). With recourse = sale only if seller surrenders control, recourse estimable, no forced repurchase; else borrowing. Without recourse = factor bears default risk (costlier): Dr Cash, Dr Loss on sale, Cr A/R.</div>
+
+<div class="box"><span class="id">A5.4</span><h3>Inventory management</h3>
+Types: raw materials, WIP, finished goods, materials &amp; supplies (untraceable). Reasons to hold: supply/demand gaps, process delays, quantity discounts, level operations, avoid stockouts. Questions: when? how much?<br>
+<b>Ordering</b> costs (placing orders, lost discounts) · <b>Carrying</b> (storage, freight-in &amp; insurance on shipment, facility rent/depreciation, insurance, property tax, security, spoilage/theft/obsolescence, opportunity cost) · <b>Stockout</b> (lost goodwill/profit; mind lead time). <span class="tag">QUC 6214</span> shipping-out is <b>not</b> carrying.<br>
+<b>JIT</b>: demand-driven, no warehousing, needs reliable suppliers (small safety stock), exposes inefficiencies; <b>↓carrying, ↑stockout</b>. <b>MRP</b>: computer system converts master production schedule into purchasing/production schedule; tracks levels, orders, lead times.</div>
+
+<div class="box"><span class="id">A5.6</span><h3>Accounts payable</h3>
+Use trade credit only when cheaper than other funding (cost depends on discount offered). Cycle: requisition → <b>PO (legally binding)</b> → validate receipt (receiving report) → vendor invoice → <b>3-way match</b> → approval → record liability → payment authorization → payment → documentation/reconciliation (vendor statements) → confirmation. Benefits: trade credit, no late fees, tracking, fraud prevention (duplicates), cash-flow smoothing, supplier relations, better reporting.</div>
+
+</div>
+
+<h2 class="pb">SECTION B</h2>
+<div class="cols">
+
+<div class="box"><span class="id">B1.1</span><h3>Cash (sales) discounts: 2/10, n/30</h3>
+<b>Gross method</b>: record at gross; discount taken → Dr Cash 1,960, Dr Sales Discount 40 / Cr A/R 2,000 (deduction from sales). <b>Net method</b>: record 4,900; late payment → Dr A/R 60 / Cr <b>Sales Discount Forfeited</b> (Other Revenue). A/R recorded net of <b>trade</b> discounts. Notes receivable = written promise (current/noncurrent by maturity). Nontrade receivables reported separately.</div>
+
+<div class="box k"><span class="id">B1.2</span><h3>Receivables valuation &amp; allowance</h3>
+Short-term at <b>net realizable value</b>; noncurrent at <b>present value</b>. Allowance method: Dr Bad Debt Expense / Cr Allowance (contra-asset).<br>
+<b>% of sales</b> (IS approach): expense = % × credit sales, ignore existing allowance (1% × 10M = 100,000).<br>
+<b>% of receivables / aging</b> (BS approach): required ending allowance − existing balance = expense. Aging: 420k×3% + 18k×10% + 14k×30% + 50k×75% = 56,100; less 12,500 existing = <b>43,600</b>.<br>
+Roll-forwards: A/R: Beg + credit sales − collections − write-offs = End. Allowance: Beg + expense + recoveries − write-offs = End.
+<div class="rule">QUC 7398 collection pattern 60/25/15: May 1 A/R = 15% × March + 40% × April = 0.15×280k + 0.40×260k = <b>146,000</b>.</div></div>
+
+<div class="box"><span class="id">B1.4</span><h3>Inventory: product vs period cost</h3>
+<b>Capitalize</b>: purchase price, <b>freight-in</b>, insurance in transit, DM + DL + factory OH, (sometimes) purchasing dept costs, interest on self-constructed/discrete-project assets. <b>Expense (period)</b>: selling, G&amp;A, <b>freight-out</b>, general interest.<br>
+Periodic: COGS = Beg inv + Purchases − Purchase returns − End inv (count). Perpetual: continuous records; annual count reconciles.</div>
+
+<div class="box k"><span class="id">B1.5</span><h3>Ownership · FIFO / LIFO</h3>
+<b>Consigned goods → consignor's</b> inventory (incl. freight to consignee). <b>FOB shipping point → buyer's</b> (title at carrier). <b>FOB destination → seller's</b> until buyer's dock.<br>
+<table><tr><th></th><th>FIFO</th><th>LIFO</th></tr><tr><td>COGS from</td><td>Oldest costs</td><td>Newest costs</td></tr><tr><td>Rising prices</td><td><b>Lowest COGS, highest NI &amp; ending inv.</b></td><td>Highest COGS, lowest NI</td></tr><tr><td>Periodic vs perpetual</td><td>Same</td><td>May differ</td></tr></table>
+Parts Co.: 2,000@5.00, +1,500@5.40, sell 700, +400@5.65, sell 1,300 → FIFO COGS 10,000 / EI 10,360; LIFO COGS 10,860 / EI 9,500. <span class="tag">QUC 12113</span> FIFO EI 11,500 units all from purchases at 7.50 = <b>86,250</b>.</div>
+
+<div class="box k"><span class="id">B1.6</span><h3>PP&amp;E &amp; depreciation (cost 1,000,000; salvage 100,000; 5 yr; 20,000 hr)</h3>
+Cost = all to make ready: price, taxes/duties, transport-in, installation/trial runs, construction-period interest (expense after ready).
+<div class="f"><span class="fn">Straight-line</span><span class="fr"><span>Cost − Salvage</span><span>Life</span></span><span class="eq">=</span>900,000 ÷ 5 = <b>180,000</b>/yr</div>
+<div class="f"><span class="fn">Activity</span><span class="fr"><span>Cost − Salvage</span><span>Capacity</span></span>× usage<span class="eq">=</span>45/hr × 3,000 = <b>135,000</b></div>
+<div class="f"><span class="fn">SYD</span>(Cost − Salvage) × <span class="fr"><span>remaining life</span><span>n(n+1)/2 = 15</span></span><span class="eq">→</span>300k, 240k, 180k, 120k, 60k</div>
+<div class="f"><span class="fn">Double-declining</span>Book value × 2/n (ignore salvage until floor)<span class="eq">→</span>400k, 240k, 144k, 86.4k, <b>29.6k</b> (to BV 100k)</div>
+<div class="rule">DB vs SL early years: higher depreciation, lower NI, higher accum. dep., lower RE; gross fixed assets same. QUC 7000 SYD 250k/50k/5yr: Y3 = 200k×3/15 = <b>40,000</b>; accum = 200k×12/15 = <b>160,000</b>.</div></div>
+
+<div class="box"><span class="id">B1.7</span><h3>Intangibles</h3>
+Purchased → cost (incl. prep costs); by exchange → fair value given or received (more reliable). Internally created → direct costs only (legal fees); <b>R&amp;D expensed always</b>; <b>internal goodwill never capitalized</b> (only via acquisition). Finite life → amortize (cost − residual); indefinite → no amortization, impairment test yearly.</div>
+
+<div class="box"><span class="id">B1.8</span><h3>Asset retirement</h3>
+Sale, exchange, abandonment, involuntary conversion. Depreciate to retirement date; remove asset + accum. dep.; proceeds − BV = gain/loss, <b>below operating income in continuing ops</b>. <span class="tag">QUC 1478</span> BV 700k − 495k = 205k; gain 75k → price <b>280,000</b>.</div>
+
+<div class="box k"><span class="id">B1.9</span><h3>Liabilities: current vs long-term</h3>
+Exclude from current liabilities a debt due within a year if (1) settled from non-current assets (dedicated fund) or (2) <b>intent AND ability to refinance</b> (actual LT refinancing before issuance, or non-cancelable agreement). <span class="tag">QUC 546</span> both 140k (refinanced Feb 1) and 200k (agreement Feb 7) excluded = <b>340,000</b>.</div>
+
+<div class="box"><span class="id">B1.10</span><h3>Financing sources</h3>
+Short-term: trade credit; unsecured bank loans (promissory note; <b>line of credit</b> = if available; <b>revolving credit</b> = guaranteed); <b>compensating balances</b> raise effective rate; commercial paper; secured (pledged A/R or inventory: field warehousing, warehouse receipts; chattel mortgage on movables; repurchase agreement); factoring; bankers' acceptances. Long-term: term loans, leases, bonds (large reputable firms); higher rates for maturity risk.</div>
+
+<div class="box k"><span class="id">B1.11</span><h3>Revenue: 5 steps (asset-liability approach)</h3>
+Core: recognize revenue depicting transfer of goods/services in the amount the entity expects to be entitled to.
+<ol style="margin:0 0 2px 16px;padding:0"><li><b>Contract</b>: approved/committed, rights identifiable, payment terms, commercial substance, collection probable. Not met + cash received → liability until nonrefundable and obligations done/terminated.</li>
+<li><b>Performance obligations</b>: each <b>distinct</b> (separately beneficial AND separately identifiable). Software + separately sold support = 2; software + heavy customization = 1.</li>
+<li><b>Transaction price</b> (excl. sales tax): variable → <b>expected value</b> (many outcomes: 0.5×360k + 0.3×320k + 0.2×300k = 336,000) or <b>most likely</b> (2 outcomes); <b>financing</b> if &gt;1 yr (13,310 due in 3 yrs, cash price 10,000 → revenue 10,000; interest 1,000/1,100/1,210 at 10%); noncash → fair value; rebates/coupons <b>reduce</b> price (5% probable rebate on 200k → 190,000).</li>
+<li><b>Allocate</b> by relative standalone selling price: 300k contract; SSP 250k + 3×50k = 400k → license 187,500, support 112,500.</li>
+<li><b>Recognize</b> when/as <b>control</b> transfers (see B1.12).</li></ol></div>
+
+<div class="box k"><span class="id">B1.12</span><h3>Over time vs point in time</h3>
+<b>Over time</b> if any: customer consumes as you perform (services, support); you build/enhance a customer-controlled asset (building on their land); no alternative use <b>and</b> enforceable right to payment for work to date. Measure by <b>output</b> (units, milestones) or <b>input</b> (cost-to-cost most common; straight-line if even). Support 112,500 ÷ 3 = 37,500/yr.<br>
+<b>Point in time</b> indicators: right to payment, legal title, possession, risks &amp; rewards, acceptance. Warehouse with refundable deposit + pay on completion → point in time; progress payments + no alternative use + full right to consideration → over time.
+<div class="trap">QUC 11810: 100k gal × $3, 50k delivered by year-end → revenue <b>150,000</b> regardless of cash. QUC 525: annual lawn fee paid in advance → <b>over the year as performed</b>.</div></div>
+
+<div class="box"><span class="id">B1.13</span><h3>Special revenue cases</h3>
+<ul><li><b>Right of return</b>: revenue only for expected keeps; refund liability (allowance for returns, contra-revenue); asset for expected returned goods. 40 × 1,000 (cost 800), 4 expected back → net sales 36,000.</li>
+<li><b>Repurchase agreements</b>: forward/call → lease if repurchase &lt; original price; financing if ≥. Put → sale with return if no incentive; lease if incentive &amp; repurchase &lt; original; financing if ≥ original and &gt; market.</li>
+<li><b>Bill-and-hold</b>: control passes if substantive reason, product identified, ready to ship, can't be redirected.</li>
+<li><b>Principal</b> (controls good) → gross; <b>agent</b> (arranges) → net commission. Agent signs: other party fulfills, no inventory risk, no pricing discretion, commission, no credit risk.</li>
+<li><b>Consignment</b>: consignor keeps title/inventory (+freight); revenue on <b>notification</b>; consignee books commission + payable. COGS = (10k/30k) × 31,500 = 10,500.</li></ul></div>
+
+<div class="box"><span class="id">B1.14</span><h3>Expense recognition (3 methods)</h3>
+<b>Cause and effect (matching)</b>: COGS, sales-return allowance, bad-debt allowance, warranties. <b>Systematic &amp; rational allocation</b>: depreciation, prepaid insurance, interest/leases by time. <b>Immediate</b>: officers' salaries, G&amp;A, worthless patent.</div>
+
+<div class="box k"><span class="id">B1.15</span><h3>Equity</h3>
+Common stock: vote, residual claim; par / no-par; book value = (assets − liabilities − preferred) ÷ common shares. Issue 1,000 × $50 par at $75: Dr Cash 75,000 / Cr Common 50,000 / Cr APIC 25,000. Pre-emptive right value (rights-on) = (price − subscription) ÷ (rights per share + 1).<br>
+<b>Preferred</b>: dividend preference, priority after debt; usually no vote; not guaranteed until declared; may be convertible, callable, sinking fund, participating. <b>Cumulative</b>: arrears (not a liability until declared) paid before common.<br>
+<b>Treasury stock</b>: issued, <b>not outstanding</b> (no vote/dividend); Dr Treasury / Cr Cash; contra-equity; reduces assets and equity. Reasons: boost EPS/ROE, support price, shares for compensation.<br>
+Retained earnings: free vs appropriated (board). <b>AOCI</b>: bypasses IS and RE; permanent.</div>
+
+<div class="box"><span class="id">B1.16</span><h3>Adjustments to prior periods</h3>
+<table><tr><th>Event</th><th>Treatment</th></tr><tr><td>Prior-period adjustment (error: cash→accrual, missed expense)</td><td>Opening RE, net of tax; not in current NI</td></tr><tr><td>Change in principle (avg cost→FIFO; completed-contract→POC)</td><td>Cumulative effect, net of tax, to opening RE (retroactive)</td></tr><tr><td>Change in estimate (life, salvage, collectability, <b>depreciation method</b>)</td><td>Prospective only</td></tr></table></div>
+
+<div class="box k"><span class="id">B1.17</span><h3>Dividends &amp; splits</h3>
+Cash dividend = liability <b>at declaration</b>: Dr RE / Cr Dividends Payable; pay: Dr Div. Payable / Cr Cash.<br>
+<b>Small stock dividend (&lt;20–25%)</b>: RE at <b>fair value</b>; Cr Common (par) + APIC. <b>Large (&gt;20–25%)</b>: RE at <b>par</b>. Split: memo entry only.
+<div class="trap">QUC 12115: 5% × 100,000 × $18 = RE ↓ <b>90,000</b>. QUC 11813: cash dividend distributed + stock dividend declared → total equity change <b>$0</b> (cash dividend left equity at declaration; stock dividend reclassifies within equity).</div></div>
+
+<div class="box k"><span class="id">B2.1</span><h3>Common-size analysis</h3>
+<b>Vertical</b>: each item ÷ same-year base. Base = <b>total assets</b> (BS, QUC 2419) or <b>net sales</b> (IS). "Advertising is 2% of sales" (QUC 6910). NI 120k ÷ sales 600k = <b>20%</b> (QUC 12057).<br>
+<b>Horizontal</b> (base year / trend / variation): item ÷ base-year item. Growth = index − 100. Salaries 622,310 ÷ 568,920 = 1.0938 → <b>9.38%</b> (QUC 12182). Largest % change (QUC 12059): inventory 500/600 = 83% → 17% beats sales 10%, NI 8%, assets 5%.<br>
+Future Tech signal: gross margin 25→19%, G&amp;A 3→7%, inventory index 100→426, cash 25→6% of assets, CFO ≪ NI.</div>
+
+<div class="box k"><span class="id">B3.1</span><h3>Liquidity ratios</h3>
+<div class="f"><span class="fn">Current</span><span class="fr"><span>Current assets</span><span>Current liabilities</span></span></div>
+<div class="f"><span class="fn">Quick (acid-test)</span><span class="fr"><span>CA − Inventory − Prepaids</span><span>CL</span></span><span class="eq">=</span><span class="fr"><span>Cash + Mkt. sec. + Receivables</span><span>CL</span></span></div>
+<div class="f"><span class="fn">Cash ratio</span><span class="fr"><span>Cash + Marketable securities</span><span>CL</span></span></div>
+<div class="f"><span class="fn">Cash flow ratio</span><span class="fr"><span>Cash flow from operations</span><span>Average CL</span></span></div>
+<div class="f"><span class="fn">NWC / NWC ratio</span>CA − CL &nbsp;·&nbsp; NWC ÷ Total assets</div>
+<div class="rule">QUC 11968: CL 2.0M, NWC 0.3M → CA 2.3M; quick 0.8 = (2.3M − Inv) ÷ 2.0M → Inventory <b>700,000</b>.</div></div>
+
+<div class="box k"><span class="id">B3.2</span><h3>Leverage ratios</h3>
+<div class="f"><span class="fn">Debt to assets</span><span class="fr"><span>Total debt (CL + LTD)</span><span>Total assets</span></span><span class="small">creditors want low; cyclical firms keep low</span></div>
+<div class="f"><span class="fn">Debt to equity</span><span class="fr"><span>Total debt</span><span>Common equity</span></span><span class="small">optimal = minimizes WACC</span></div>
+<div class="f"><span class="fn">LTD to equity</span><span class="fr"><span>Total debt − CL</span><span>Common equity</span></span></div>
+<div class="f"><span class="fn">Times interest earned</span><span class="fr"><span>EBIT</span><span>Interest expense</span></span><span class="eq">=</span><span style="white-space:nowrap">20M ÷ 5M = <b>4</b> (QUC 11969)</span></div>
+<div class="rule">Lenders prefer high TIE with high debt over low TIE with low debt. Financial leverage: interest deductible, magnifies gains and losses. Operating leverage: high fixed costs magnify the effect of sales changes on operating income.</div></div>
+
+<div class="box k"><span class="id">B3.3</span><h3>Activity ratios (360-day year)</h3>
+<div class="f"><span class="fn">Inventory turnover</span><span class="fr"><span>COGS</span><span>Average inventory</span></span><span class="eq">·</span>Days in inventory = 360 ÷ turnover</div>
+<div class="f"><span class="fn">A/R turnover</span><span class="fr"><span>Net credit sales</span><span>Average receivables</span></span><span class="eq">·</span><span style="white-space:nowrap">DSO = 360 ÷ turnover</span></div>
+<div class="f"><span class="fn">A/P turnover</span><span class="fr"><span>Net credit purchases</span><span>Average payables</span></span><span class="eq">·</span>Days payables = 360 ÷ turnover</div>
+<div class="f"><span class="fn">Operating cycle</span>Days inventory + Days receivables</div>
+<div class="f"><span class="fn">Cash cycle</span><span style="white-space:nowrap">Days inventory + Days receivables − Days payables</span></div>
+<div class="f"><span class="fn">Asset turnover</span><span class="fr"><span>Sales</span><span>Avg total (or fixed) assets</span></span></div>
+<div class="rule">QUC 6026: 3.6M ÷ [(320k + 400k)/2] = <b>10</b>. QUC 140: fictitious inventory → <b>total asset turnover falls</b> (current ratio rises; DSO, P/E unaffected).</div></div>
+
+<div class="box k"><span class="id">B3.4</span><h3>Profitability ratios</h3>
+<div class="f"><span class="fn">Gross margin</span><span class="fr"><span>Net sales − COGS</span><span>Net sales</span></span></div>
+<div class="f"><span class="fn">Operating margin</span><span class="fr"><span>Operating income</span><span>Net sales</span></span></div>
+<div class="f"><span class="fn">Net margin</span><span class="fr"><span>Net income</span><span>Net sales</span></span></div>
+<div class="f"><span class="fn">ROA</span><span class="fr"><span>Net income</span><span>Average total assets</span></span></div>
+<div class="f"><span class="fn">ROE</span><span class="fr"><span>Net income − Preferred dividends</span><span>Average common equity</span></span></div>
+<div class="rule"><b>ROE &gt; ROA → leverage is working.</b> Operating margin falling while gross margin holds → other operating costs out of control. QUC 6068 Beechwood: 96,000 ÷ avg equity [(300k+12k+155k) + (300k+28k+206k)] ÷ 2 = 500,500 → <b>19.2%</b> (include reserve for bond retirement; exclude bonds).</div></div>
+
+</div>
+
+<h2 class="pb">CALC: every quiz calculation in one place</h2>
+<table style="font-size:7.8pt"><tr><th>QUC</th><th>Ask</th><th>Method</th><th class="n">Answer</th></tr>
+<tr><td>325</td><td>Net income from equity change</td><td>End equity − Beg equity − investments + withdrawals</td><td class="n">12,000</td></tr>
+<tr><td>1881</td><td>Cash flow from income</td><td>Income + non-cash expenses (depreciation, discount amortization); ignore cash interest</td><td class="n">71,000</td></tr>
+<tr><td>6106</td><td>Operating section total</td><td>Interest paid only (dividends = financing, equipment = investing)</td><td class="n">250,000</td></tr>
+<tr><td>7398</td><td>A/R balance May 1</td><td>Uncollected share of prior months: 15% × Mar + 40% × Apr</td><td class="n">146,000</td></tr>
+<tr><td>12113</td><td>FIFO ending inventory</td><td>Ending units × latest purchase cost (11,500 × 7.50)</td><td class="n">86,250</td></tr>
+<tr><td>7000</td><td>SYD year 3 / accumulated</td><td>(250k − 50k) × 3/15; × 12/15</td><td class="n">40,000 / 160,000</td></tr>
+<tr><td>1478</td><td>Selling price of asset</td><td>Book value (cost − accum. dep.) + gain</td><td class="n">280,000</td></tr>
+<tr><td>546</td><td>ST debt excludable from CL</td><td>Refinanced or non-cancelable agreement before issuance: both</td><td class="n">340,000</td></tr>
+<tr><td>12115</td><td>Small stock dividend, RE effect</td><td>Shares × % × market price (5% × 100,000 × 18)</td><td class="n">−90,000</td></tr>
+<tr><td>11810</td><td>Revenue year 1</td><td>Units delivered × price (50,000 × 3)</td><td class="n">150,000</td></tr>
+<tr><td>11813</td><td>Equity change: cash div paid + stock div declared</td><td>Cash dividend already out at declaration; stock dividend internal</td><td class="n">0</td></tr>
+<tr><td>12057</td><td>Common-size NI</td><td>NI ÷ sales (120k ÷ 600k)</td><td class="n">20%</td></tr>
+<tr><td>12059</td><td>Largest horizontal change</td><td>Current ÷ prior for each; inventory 500/600 = 83%</td><td class="n">Inventory (−17%)</td></tr>
+<tr><td>12182</td><td>Growth rate</td><td>(622,310 ÷ 568,920) − 1</td><td class="n">9.38%</td></tr>
+<tr><td>6026</td><td>A/R turnover</td><td>Credit sales ÷ average A/R (3.6M ÷ 360k)</td><td class="n">10.0</td></tr>
+<tr><td>6068</td><td>ROE</td><td>NI ÷ average total equity (96,000 ÷ 500,500)</td><td class="n">19.2%</td></tr>
+<tr><td>11968</td><td>Inventory from quick ratio</td><td>CA = NWC + CL; Inv = CA − quick × CL</td><td class="n">700,000</td></tr>
+<tr><td>11969</td><td>Times interest earned</td><td>EBIT ÷ interest (20M ÷ 5M)</td><td class="n">4</td></tr>
+<tr><td>guide</td><td>Aging allowance expense</td><td>Required allowance (Σ bucket × %) − existing balance (56,100 − 12,500)</td><td class="n">43,600</td></tr>
+<tr><td>guide</td><td>Expected value price</td><td>Σ probability × outcome (0.5×360k + 0.3×320k + 0.2×300k)</td><td class="n">336,000</td></tr>
+<tr><td>guide</td><td>Allocate price to obligations</td><td>Price × SSP share (300k × 250/400; 300k × 150/400)</td><td class="n">187,500 / 112,500</td></tr>
+<tr><td>guide</td><td>Financing component</td><td>Revenue = cash price; interest = 10% × carrying amount each year</td><td class="n">10,000; 1,000/1,100/1,210</td></tr>
+<tr><td>guide</td><td>Consignment COGS</td><td>Cost sold ÷ cost shipped × (cost + freight)</td><td class="n">10,500</td></tr>
+<tr><td>guide</td><td>Indirect method CFO</td><td>NI 40,000 + 18,000 − 4,000 + 5,000 − 10,000 − 3,000 − 8,000</td><td class="n">38,000</td></tr>
+<tr><td>guide</td><td>DDB final year</td><td>Book value − salvage (129,600 − 100,000)</td><td class="n">29,600</td></tr>
+</table>
+</body></html>

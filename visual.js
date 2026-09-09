@@ -5,7 +5,7 @@ const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[
 const $=(s,r)=>(r||document).querySelector(s);
 const fmt=n=>Math.round(n).toLocaleString();
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
-let sub="maps",pick={diagram:"cycle",anim:"bestport",sim:"cashflow",map:"A1",chart:"margins"},step=0,ctx=null,ui={};
+let sub="stmts",pick={diagram:"cycle",anim:"bestport",sim:"cashflow",map:"A1",chart:"margins",stmt:"bs"},stSel=null,stQuiz=false,step=0,ctx=null,ui={};
 const frac=(num,den)=>`<span class="frac"><span>${esc(num)}</span><span>${esc(den)}</span></span>`;
 const method=t=>`<div class="method">Technique: ${t}</div>`;
 
@@ -261,11 +261,15 @@ function drawMap(){
 function render(){
   const c=ctx.content;
   const opts=(o,cur,lab)=>`<select id="vpick">${Object.keys(o).map(k=>`<option value="${k}" ${cur===k?"selected":""}>${lab(k)}</option>`).join("")}</select>`;
-  const picker={maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
-  const body={maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
-  c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${[["maps","Mind maps"],["diagrams","Diagrams"],["anim","Examples"],["charts","Charts"],["sims","Sort"],["match","Match"]].map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div>${picker}</div>${body}</div>`;
+  const ST=window.FMAA_STATEMENTS;const stMap=Object.fromEntries(ST.list);
+  const picker={stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
+  const body={stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
+  c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${[["stmts","Statements"],["maps","Mind maps"],["diagrams","Diagrams"],["anim","Examples"],["charts","Charts"],["sims","Sort"],["match","Match"]].map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div>${picker}</div>${body}</div>`;
   c.querySelectorAll(".vtabs button").forEach(b=>b.onclick=()=>{sub=b.dataset.v;step=0;ui={};render();});
-  const vp=$("#vpick",c);if(vp)vp.onchange=e=>{pick[{maps:"map",diagrams:"diagram",anim:"anim",charts:"chart",sims:"sim"}[sub]]=e.target.value;step=0;ui={};sim={sel:null,placed:{},set:null};render();};
+  const vp=$("#vpick",c);if(vp)vp.onchange=e=>{pick[{stmts:"stmt",maps:"map",diagrams:"diagram",anim:"anim",charts:"chart",sims:"sim"}[sub]]=e.target.value;step=0;ui={};stSel=null;sim={sel:null,placed:{},set:null};render();};
+  if(sub==="stmts"){c.querySelectorAll(".sl.click").forEach(r=>r.onclick=()=>{stSel=+r.dataset.i;render();});
+    const n=ST.count(pick.stmt),step_=d=>{let i=stSel==null?(d>0?-1:n):stSel;for(let t=0;t<n;t++){i=(i+d+n)%n;if(ST.hasE(pick.stmt,i))break;}stSel=i;render();const el=c.querySelector(".sl.on");if(el)el.scrollIntoView({block:"nearest"});};
+    $("#stNext",c).onclick=()=>step_(1);$("#stPrev",c).onclick=()=>step_(-1);$("#stQuiz",c).onclick=()=>{stQuiz=!stQuiz;render();};}
   c.querySelectorAll(".vn").forEach(n=>n.onclick=()=>{if(sub==="maps"){ui.open[+n.dataset.i]=!ui.open[+n.dataset.i];}else step=+n.dataset.i;render();});
   c.querySelectorAll("[data-fam]").forEach(b=>b.onclick=()=>{step=+b.dataset.fam;ui.r=0;render();});
   c.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ui.r=+b.dataset.r;render();});

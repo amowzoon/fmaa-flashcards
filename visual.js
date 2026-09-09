@@ -208,6 +208,7 @@ indirect:{title:"Indirect method: add or subtract?",intro:"The indirect method s
 control:{title:"Which control duty is this?",intro:"Segregation of duties means no single person should control a transaction end to end. Four duties must sit with different people: AUTHORIZATION (approving that it may happen), RECORDKEEPING (writing it in the books), CUSTODY (physically holding the asset), and RECONCILIATION (comparing the records with the assets). If one person has two of these, they can both commit and hide a fraud.",buckets:["Authorization","Recordkeeping","Custody","Reconciliation"],items:[["Approving customer credit limits","Authorization","Deciding whether a sale on credit may happen."],["Posting payments to customer accounts","Recordkeeping","Entering transactions in the subsidiary ledger."],["Opening the mail and holding checks","Custody","Physical possession of cash."],["Comparing bank statement to cash ledger","Reconciliation","Records versus the bank's independent record."],["Signing purchase orders","Authorization","Approving a purchase."],["Counting physical inventory against records","Reconciliation","Assets versus what the books say."],["Keeping the securities in the safe","Custody","Physical possession of an asset."],["Preparing journal entries","Recordkeeping","Writing the books."]]},
 costs:{title:"Inventory cost: capitalize or expense?",intro:"A product (inventory) cost is any cost of getting inventory ready for sale: the purchase price, freight IN, insurance in transit, and for manufacturers direct materials, direct labor and factory overhead. It sits on the balance sheet until the goods are sold. A period cost is expensed immediately: selling, general and administrative costs, freight OUT, and general interest.",buckets:["Inventory (product) cost","Period cost"],items:[["Freight-in","Inventory (product) cost","Cost of bringing goods to the warehouse."],["Freight-out to customers","Period cost","A selling cost incurred after the sale."],["Factory overhead","Inventory (product) cost","Indirect manufacturing cost attaches to the product."],["Officers' salaries","Period cost","General and administrative; not related to making goods."],["Insurance in transit","Inventory (product) cost","Part of getting the goods to the company."],["Advertising","Period cost","A selling expense."],["Direct labor","Inventory (product) cost","Wages of people making the product."],["General interest on borrowings","Period cost","Only interest on self-constructed or discrete-project assets can be capitalized."]]},
 revenue:{title:"Revenue: over time or point in time?",intro:"Revenue is recognized when control transfers. It transfers OVER TIME if any one is true: the customer consumes the benefit as you perform (routine services), you are building or improving an asset the customer already controls, or the asset has no alternative use to you AND you have an enforceable right to be paid for work done so far. If none applies, revenue is recognized at a POINT IN TIME, when the customer gets control (title, possession, risks and rewards, acceptance).",buckets:["Over time","Point in time"],items:[["Three-year technical support contract","Over time","The customer consumes support as it is provided; recognize 37,500 per year in the example."],["Pizza sold at the counter","Point in time","Control passes when the pizza is handed over."],["Building on the customer's land","Over time","The customer controls the asset being enhanced."],["Custom machine, no alternative use, right to payment for work done","Over time","Both conditions of the third test are met."],["Warehouse with refundable deposit and payment only on completion","Point in time","No enforceable right to payment for work done, so the over-time test fails."],["Bill-and-hold furniture meeting all criteria","Point in time","Control passed at signing even though the goods stayed in the warehouse."],["Monthly lawn service paid annually in advance","Over time","Each monthly visit is a distinct obligation satisfied as performed (QUC 525)."],["Consigned goods sold by the dealer","Point in time","The consignor recognizes revenue when notified that the dealer sold the goods."]]},
+ale:{title:"Asset, liability or equity?",intro:"Assets are what the company owns or controls with future benefit. Liabilities are what it owes. Equity is what is left for the owners: contributed capital plus retained earnings, minus treasury stock. Contra accounts belong to the section they reduce.",buckets:["Asset","Liability","Equity"],items:[["Accounts receivable","Asset","Customers owe the company: future cash."],["Unearned revenue","Liability","Cash received, goods or services still owed."],["Retained earnings","Equity","Profits kept in the business."],["Prepaid insurance","Asset","Paid ahead; future benefit."],["Accumulated depreciation","Asset","A contra-asset: it lives in the asset section reducing PP&E."],["Bonds payable","Liability","Long-term debt owed to bondholders."],["Additional paid-in capital","Equity","Amount shareholders paid above par."],["Treasury stock","Equity","Contra-equity: reduces stockholders' equity."],["Wages payable","Liability","Accrued expense owed to employees."],["Goodwill","Asset","Intangible bought with another company."],["Allowance for doubtful debts","Asset","Contra-asset reducing receivables."],["Current portion of long-term debt","Liability","Due within a year."],["Common stock","Equity","Par value of shares issued."],["Inventory","Asset","Goods held for sale."],["Income taxes payable","Liability","Tax owed, not yet paid."],["Accumulated other comprehensive income","Equity","Gains and losses that bypass net income."]]},
 mixed:{title:"Mixed set (interleaved)",buckets:null,items:null}};
 let sim={sel:null,placed:{},set:null};
 function simSet(){if(pick.sim!=="mixed")return SIMS[pick.sim];if(!sim.set){const keys=Object.keys(SIMS).filter(k=>k!=="mixed");const k=shuffle(keys.slice()).slice(0,2);const it=[];k.forEach(x=>SIMS[x].items.forEach(i=>it.push([i[0],i[1],i[2]])));sim.set={title:"Mixed: "+k.map(x=>SIMS[x].title).join(" + "),intro:k.map(x=>SIMS[x].intro).join("  |  "),buckets:[].concat(...k.map(x=>SIMS[x].buckets)),items:shuffle(it).slice(0,12)};}return sim.set;}
@@ -226,17 +227,72 @@ function bindSim(){const s=simSet();
     b.onclick=put;b.ondragover=e=>e.preventDefault();b.ondrop=e=>{e.preventDefault();sim.sel=+e.dataTransfer.getData("text");put();};});
   const r=$("#vreset",ctx.content);if(r)r.onclick=()=>{sim={sel:null,placed:{},set:null};render();};}
 // Matching game (Quizlet Match): 6 term/definition pairs from the flashcard deck, timed
-let mt={tiles:[],sel:null,done:0,start:0,best:null,wrong:0};
-function newMatch(){const secs=ctx.state.secs.filter(s=>s!=="AB");const cards=shuffle((window.FMAA_CARDS||[]).map((c,i)=>({sec:c[0],f:c[1],b:c[2]})).filter(c=>secs.includes(c.sec)&&c.f.length<70&&c.b.length<140)).slice(0,6);
+let mt={tiles:[],sel:null,done:0,start:0,best:null,wrong:0,n:0,saved:false};
+function newMatch(){let secs=ctx.state.secs.filter(x=>x!=="AB");if(!secs.length)secs=["A1","A2","A3","A4","A5","B1","B2","B3"];
+  let pool_=(window.FMAA_CARDS||[]).map(c=>({sec:c[0],f:c[1],b:c[2]})).filter(c=>secs.includes(c.sec)&&c.f.length<70&&c.b.length<140);
+  if(pool_.length<6)pool_=(window.FMAA_CARDS||[]).map(c=>({sec:c[0],f:c[1],b:c[2]})).filter(c=>c.f.length<70&&c.b.length<140);
+  const cards=shuffle(pool_).slice(0,6);mt.n=cards.length;
   mt.tiles=shuffle([].concat(...cards.map((c,i)=>[{id:i,t:c.f,k:"f"},{id:i,t:c.b,k:"b"}])));mt.sel=null;mt.done=0;mt.start=Date.now();mt.wrong=0;}
-function drawMatch(){if(!mt.tiles.length)newMatch();const t=((Date.now()-mt.start)/1000).toFixed(0);const finished=mt.done===6;
-  if(finished){ctx.state.visual=ctx.state.visual||{};const secs=(Date.now()-mt.start)/1000;if(!ctx.state.visual.matchBest||secs<ctx.state.visual.matchBest){ctx.state.visual.matchBest=Math.round(secs);ctx.save();}}
+function drawMatch(){if(!mt.tiles.length)newMatch();const t=((Date.now()-mt.start)/1000).toFixed(0);const finished=mt.n>0&&mt.done===mt.n;
+  if(finished&&!mt.saved){mt.saved=true;ctx.state.visual=ctx.state.visual||{};const secs=(Date.now()-mt.start)/1000;if(!ctx.state.visual.matchBest||secs<ctx.state.visual.matchBest){ctx.state.visual.matchBest=Math.round(secs);ctx.save();}}
   return `<div class="vinfo"><div class="vt">Match · pair each prompt with its answer${finished?` · done in ${t}s (${mt.wrong} misses)`:""}${ctx.state.visual&&ctx.state.visual.matchBest?` · best ${ctx.state.visual.matchBest}s`:""}</div><div class="meta">Tap two tiles that belong together. Uses cards from the sections ticked in the sidebar.</div></div>
   <div class="mgrid">${mt.tiles.map((x,i)=>x.gone?`<div class="mtile gone"></div>`:`<div class="mtile ${x.k} ${mt.sel===i?"sel":""} ${x.flash||""}" data-i="${i}">${esc(x.t)}</div>`).join("")}</div>
   <div class="controls"><button class="primary" id="mnew">New set</button></div>${method("retrieval practice under light time pressure (matching)")}`;}
 function bindMatch(){ctx.content.querySelectorAll(".mtile[data-i]").forEach(el=>el.onclick=()=>{const i=+el.dataset.i;if(mt.sel===null){mt.sel=i;render();return;}if(mt.sel===i){mt.sel=null;render();return;}
   const a=mt.tiles[mt.sel],b=mt.tiles[i];if(a.id===b.id&&a.k!==b.k){a.gone=b.gone=true;mt.done++;}else{mt.wrong++;a.flash=b.flash="bad";setTimeout(()=>{a.flash=b.flash="";render();},400);}mt.sel=null;render();});
-  const n=$("#mnew",ctx.content);if(n)n.onclick=()=>{newMatch();render();};}
+  const n=$("#mnew",ctx.content);if(n)n.onclick=()=>{mt.saved=false;newMatch();render();};}
+
+
+// ================= BUILD A MINI BALANCE SHEET =================
+const ACC=[["Cash","A",1],["Accounts receivable","A",1],["Inventory","A",1],["Prepaid rent","A",1],["Marketable securities","A",1],["Supplies","A",1],["Equipment (net)","A",0],["Land","A",0],["Buildings (net)","A",0],["Patent","A",0],["Goodwill","A",0],["Investment in affiliate","A",0],
+ ["Accounts payable","L",1],["Wages payable","L",1],["Unearned revenue","L",1],["Income taxes payable","L",1],["Notes payable (due in 6 months)","L",1],["Current portion of long-term debt","L",1],["Bonds payable (due in 10 years)","L",0],["Long-term notes payable","L",0],["Deferred tax liability","L",0],
+ ["Common stock","E",0],["Additional paid-in capital","E",0],["Preferred stock","E",0],["Accumulated other comprehensive income","E",0]];
+const AMT=()=>[2,3,4,5,6,8,10,12,15,18,20,25,30,40][Math.random()*14|0]*1000;
+let bd={items:[],placed:{},stage:1,q:null,ans:"",res:null,score:0,total:0};
+function newBuild(){
+  const pick_=(cat,n)=>shuffle(ACC.filter(a=>a[1]===cat)).slice(0,n).map(a=>({n:a[0],c:a[1],cur:a[2],v:AMT()}));
+  const items=[...pick_("A",4),...pick_("L",3),...pick_("E",1)];
+  const A=items.filter(i=>i.c==="A").reduce((s,i)=>s+i.v,0),L=items.filter(i=>i.c==="L").reduce((s,i)=>s+i.v,0),E0=items.filter(i=>i.c==="E").reduce((s,i)=>s+i.v,0);
+  let re=A-L-E0;if(re<=0){items.find(i=>i.n==="Cash"||i.c==="A").v+= -re+5000;re=5000;}
+  items.push({n:"Retained earnings",c:"E",cur:0,v:re});
+  bd.items=shuffle(items);bd.placed={};bd.stage=1;bd.ans="";bd.res=null;
+  const ca=items.filter(i=>i.c==="A"&&i.cur).reduce((s,i)=>s+i.v,0),cl=items.filter(i=>i.c==="L"&&i.cur).reduce((s,i)=>s+i.v,0),TA=items.filter(i=>i.c==="A").reduce((s,i)=>s+i.v,0),TL=items.filter(i=>i.c==="L").reduce((s,i)=>s+i.v,0),TE=TA-TL;
+  const qs=[["Total assets",TA,"Add every asset, including the non-current ones."],["Total liabilities",TL,"Add every liability, current and long-term."],["Total stockholders' equity",TE,"Assets − liabilities, or add the equity accounts."],["Total current assets",ca,"Only assets that turn into cash or get used within a year: cash, receivables, inventory, prepaids, securities, supplies."],["Net working capital",ca-cl,"Current assets − current liabilities."]];
+  if(cl>0)qs.push(["Current ratio (2 decimals)",Math.round(100*ca/cl)/100,"Current assets ÷ current liabilities = "+fmt(ca)+" ÷ "+fmt(cl)+"."]);
+  bd.q=qs[Math.random()*qs.length|0];
+}
+function drawBuild(){
+  if(!bd.items.length)newBuild();
+  const it=bd.items,pl=bd.placed,left=it.map((x,i)=>i).filter(i=>pl[i]==null),ok=Object.keys(pl).filter(i=>pl[i]===it[i].c).length;
+  const cats={A:"Assets",L:"Liabilities",E:"Equity"};
+  if(bd.stage===1){
+    return `<div class="vinfo"><div class="vt">Build a balance sheet · step 1: sort the accounts</div><div class="meta">Tap an account, then the section it belongs in. ${Object.keys(pl).length}/${it.length} placed · ${ok} correct</div></div>
+    <div class="simtray">${left.map(i=>`<div class="simitem ${bd.sel===i?"sel":""}" data-i="${i}">${esc(it[i].n)} <span class="amt">${fmt(it[i].v)}</span></div>`).join("")||`<div class="meta">${ok===it.length?"All correct. ":"Fix the red ones, then "}<b>Continue</b> to see the statement.</div>`}</div>
+    <div class="simb" style="grid-template-columns:1fr 1fr 1fr">${["A","L","E"].map(b=>`<div class="bucket" data-b="${b}"><div class="bh">${cats[b]}</div>${it.map((x,i)=>pl[i]===b?`<div class="simitem ${x.c===b?"ok":"bad"}" data-i="${i}" data-back="1">${esc(x.n)} <span class="amt">${fmt(x.v)}</span>${x.c===b?"":" ✗"}</div>`:"").join("")}</div>`).join("")}</div>
+    <div class="controls">${left.length===0&&ok===it.length?`<button class="primary" id="bdGo">Continue →</button>`:""}<button id="bdNew">New set</button></div>${method("categorisation, then construction: classify the accounts, then assemble and read the statement")}`;
+  }
+  const sec=c=>it.filter(x=>x.c===c);const cur=x=>x.cur?"":" (non-current)";
+  const row=x=>`<tr class="sl i1"><td class="lab">${esc(x.n)}<span class="meta"> ${x.c==="E"?"":cur(x)}</span></td><td class="num">${fmt(x.v)}</td></tr>`;
+  const tot=(c)=>sec(c).reduce((s,x)=>s+x.v,0);
+  return `<div class="stmt"><div class="sh"><b>Mini balance sheet</b><span class="meta">built from the accounts you sorted</span></div><table class="stab">
+    <tr class="sl kh"><td>Assets</td><td></td></tr>${sec("A").sort((a,b)=>b.cur-a.cur).map(row).join("")}<tr class="sl kt"><td class="lab">Total assets</td><td class="num">${fmt(tot("A"))}</td></tr>
+    <tr class="sl kh"><td>Liabilities</td><td></td></tr>${sec("L").sort((a,b)=>b.cur-a.cur).map(row).join("")}<tr class="sl ks"><td class="lab">Total liabilities</td><td class="num">${fmt(tot("L"))}</td></tr>
+    <tr class="sl kh"><td>Equity</td><td></td></tr>${sec("E").map(row).join("")}<tr class="sl ks"><td class="lab">Total equity</td><td class="num">${fmt(tot("E"))}</td></tr>
+    <tr class="sl kt"><td class="lab">Total liabilities and equity</td><td class="num">${fmt(tot("L")+tot("E"))}</td></tr></table></div>
+    <div class="vinfo"><div class="vt">Step 2: read the statement · score ${bd.score}/${bd.total}</div><div>From the statement above, what is the <b>${esc(bd.q[0])}</b>?</div>
+    <div class="pickrow"><input id="bdAns" type="number" step="any" placeholder="your answer" value="${bd.ans}"><button class="primary" id="bdChk">Check</button></div>
+    ${bd.res===null?"":bd.res?`<div class="ok">Correct: ${fmt(bd.q[1])}. ${esc(bd.q[2])}</div>`:`<div class="no">Answer: ${fmt(bd.q[1])}. ${esc(bd.q[2])}</div>`}
+    <div class="controls"><button id="bdBack">← Re-sort</button><button class="primary" id="bdNew">New set →</button></div></div>${method("worked example you built yourself, then a retrieval question on it")}`;
+}
+function bindBuild(){const c=ctx.content;
+  c.querySelectorAll(".simitem").forEach(el=>{const i=+el.dataset.i;el.onclick=()=>{if(el.dataset.back){delete bd.placed[i];bd.sel=null;}else bd.sel=bd.sel===i?null:i;render();};});
+  c.querySelectorAll(".bucket").forEach(b=>b.onclick=()=>{if(bd.sel==null)return;bd.placed[bd.sel]=b.dataset.b;bd.sel=null;render();});
+  const g=$("#bdGo",c);if(g)g.onclick=()=>{bd.stage=2;render();};
+  const nw=$("#bdNew",c);if(nw)nw.onclick=()=>{newBuild();render();};
+  const bk=$("#bdBack",c);if(bk)bk.onclick=()=>{bd.stage=1;render();};
+  const inp=$("#bdAns",c);if(inp){inp.oninput=e=>bd.ans=e.target.value;inp.onkeydown=e=>{if(e.key==="Enter")$("#bdChk",c).click();};
+    $("#bdChk",c).onclick=()=>{const a=parseFloat(bd.ans);if(isNaN(a))return;const ok=Math.abs(a-bd.q[1])<=Math.max(0.011,Math.abs(bd.q[1])*0.005);if(bd.res===null){bd.total++;if(ok)bd.score++;}bd.res=ok;render();};}
+}
 
 // ================= MIND MAPS (with recall mode) =================
 const MAPS={
@@ -262,9 +318,9 @@ function render(){
   const c=ctx.content;
   const opts=(o,cur,lab)=>`<select id="vpick">${Object.keys(o).map(k=>`<option value="${k}" ${cur===k?"selected":""}>${lab(k)}</option>`).join("")}</select>`;
   const ST=window.FMAA_STATEMENTS;const stMap=Object.fromEntries(ST.list);
-  const picker={stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
-  const body={stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
-  c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${[["stmts","Statements"],["maps","Mind maps"],["diagrams","Diagrams"],["anim","Examples"],["charts","Charts"],["sims","Sort"],["match","Match"]].map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div>${picker}</div>${body}</div>`;
+  const picker={build:"",stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
+  const body={build:drawBuild,stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
+  c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${[["stmts","Statements"],["build","Build"],["maps","Mind maps"],["diagrams","Diagrams"],["anim","Examples"],["charts","Charts"],["sims","Sort"],["match","Match"]].map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div>${picker}</div>${body}</div>`;
   c.querySelectorAll(".vtabs button").forEach(b=>b.onclick=()=>{sub=b.dataset.v;step=0;ui={};render();});
   const vp=$("#vpick",c);if(vp)vp.onchange=e=>{pick[{stmts:"stmt",maps:"map",diagrams:"diagram",anim:"anim",charts:"chart",sims:"sim"}[sub]]=e.target.value;step=0;ui={};stSel=null;sim={sel:null,placed:{},set:null};render();};
   if(sub==="stmts"){c.querySelectorAll(".sl.click").forEach(r=>r.onclick=()=>{stSel=+r.dataset.i;render();});
@@ -278,7 +334,7 @@ function render(){
   if(pv)pv.onclick=()=>{step=Math.max(0,step-1);render();};
   const rv=$("#vreveal",c);if(rv)rv.onclick=()=>{ui.reveal=1;render();};
   const ms=$("#mshow",c),mr=$("#mrecall",c);if(ms)ms.onclick=()=>{ui.recall=0;render();};if(mr)mr.onclick=()=>{ui.recall=1;ui.open={};render();};
-  if(sub==="sims")bindSim();if(sub==="match")bindMatch();
+  if(sub==="sims")bindSim();if(sub==="match")bindMatch();if(sub==="build")bindBuild();
   if(sub==="anim"&&pick.anim==="faded"){$("#fdr",c).onchange=e=>fade.dr=e.target.value;$("#fcr",c).onchange=e=>fade.cr=e.target.value;
     $("#fchk",c).onclick=()=>{const a=BP[fade.i][1];const ok=a.some(x=>x[1]&&x[0]===fade.dr)&&a.some(x=>x[2]&&x[0]===fade.cr);if(fade.res===null&&ok)fade.score++;fade.res=ok;render();};
     $("#fnext",c).onclick=()=>{fade.i=(fade.i+1)%BP.length;fade.dr=fade.cr="";fade.res=null;render();};$("#fprev",c).onclick=()=>{fade.i=(fade.i+BP.length-1)%BP.length;fade.dr=fade.cr="";fade.res=null;render();};}

@@ -128,6 +128,11 @@ textarea{width:min(860px,100%);margin-top:12px;background:var(--panel2);color:va
 .ht{display:flex;justify-content:space-between;gap:8px;font-size:14px;margin-bottom:4px;padding-bottom:4px;border-bottom:1px dashed var(--border)}
 .hrow{display:flex;justify-content:space-between;gap:8px;padding:1px 0}.hrow .num,.ht .num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .hn{margin-top:5px;font-size:12px;opacity:.75;line-height:1.35}
+body.mode-visual .notvis,body.mode-visual .keys{display:none!important}body:not(.mode-visual) #visNav{display:none}
+#visNav .vnav{display:block;width:100%;text-align:left;padding:7px 9px;margin:3px 0;border-radius:6px;background:transparent;border:1px solid transparent;line-height:1.25}#visNav .vnav b{display:block;font-size:13px}#visNav .vnav span{font-size:11px;color:var(--muted)}#visNav .vnav:hover{background:var(--panel2)}#visNav .vnav.on{background:var(--accent);border-color:var(--accent)}#visNav .vnav.on b,#visNav .vnav.on span{color:#fff}
+.vtabs{display:none}.vcrumb{display:flex;align-items:baseline;gap:10px;font-size:15px}
+@media (max-width:760px){.vtabs{display:flex;overflow-x:auto;width:100%;scrollbar-width:none}.vtabs button{white-space:nowrap}.vcrumb{display:none}}
+.sder{font-size:11px;color:var(--muted);font-weight:400;margin-top:2px;white-space:normal}
 .szlab{display:inline-flex;align-items:center;gap:6px;margin-left:auto}.szlab select{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px}
 .sycell{display:flex;gap:10px;align-items:center;justify-content:flex-end}.syres{font-size:16px;font-weight:700;white-space:nowrap}.syres.good{color:var(--good)}.syres.bad{color:var(--bad)}
 .stab .num{width:auto}
@@ -201,14 +206,15 @@ details.vinfo summary{cursor:pointer;color:var(--muted);font-size:13px}
 </header>
 <main>
   <aside class="side">
-    <h3>Sections</h3>
-    <div id="secList"></div>
-    <div style="display:flex;gap:6px;margin-top:6px"><button id="selAll" style="flex:1;padding:4px">All</button><button id="selNone" style="flex:1;padding:4px">None</button></div>
-    <h3>Filter</h3>
-    <label><span>Show</span><select id="filter"><option value="all">all cards</option><option value="unlearned">not yet known</option><option value="starred">starred</option><option value="missed">missed in Learn</option><option value="due">due for review</option></select></label>
-    <h3>Mastery</h3>
-    <div class="bar"><i id="masteryBar" style="width:0"></i></div>
-    <div id="masteryTxt" class="cnt"></div>
+    <div id="visNav"></div>
+    <h3 class="notvis">Sections</h3>
+    <div id="secList" class="notvis"></div>
+    <div class="notvis" style="display:flex;gap:6px;margin-top:6px"><button id="selAll" style="flex:1;padding:4px">All</button><button id="selNone" style="flex:1;padding:4px">None</button></div>
+    <h3 class="notvis">Filter</h3>
+    <label class="notvis"><span>Show</span><select id="filter"><option value="all">all cards</option><option value="unlearned">not yet known</option><option value="starred">starred</option><option value="missed">missed in Learn</option><option value="due">due for review</option></select></label>
+    <h3 class="notvis">Mastery</h3>
+    <div class="bar notvis"><i id="masteryBar" style="width:0"></i></div>
+    <div id="masteryTxt" class="cnt notvis"></div>
     <button id="btnResetM" style="display:none">Reset progress</button>
     <h3 class="keys">Keys</h3>
     <div class="keys" style="color:var(--muted);line-height:1.8">
@@ -224,7 +230,7 @@ details.vinfo summary{cursor:pointer;color:var(--muted);font-size:13px}
 </div>
 <script src="deck.js?v=6"></script>
 <script src="statements.js?v=1"></script>
-<script src="visual.js?v=10"></script>
+<script src="visual.js?v=11"></script>
 <script>
 (function(){
 const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis",AB:"Abbreviations"};
@@ -258,7 +264,7 @@ $("#filter").onchange=e=>{state.filter=e.target.value;save();rebuild();};
 $("#selAll").onclick=()=>{state.secs=Object.keys(SECS);save();rebuild();};
 $("#selNone").onclick=()=>{state.secs=[];save();rebuild();};
 const side=document.querySelector(".side"),bd=$("#backdrop");
-const closeSide=()=>{side.classList.remove("open");bd.classList.remove("show");};
+const closeSide=()=>{side.classList.remove("open");bd.classList.remove("show");};window.closeSide=closeSide;
 $("#menuBtn").onclick=()=>{side.classList.toggle("open");bd.classList.toggle("show");};
 bd.onclick=closeSide;
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",closeSide));
@@ -410,6 +416,7 @@ function renderStats(){
 
 function rebuild(){
   document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.mode===state.mode));
+  document.body.classList.toggle("mode-visual",state.mode==="visual");
   renderSide();
   ({flash:renderFlash,learn:renderLearn,write:renderWrite,test:renderTest,visual:()=>window.renderVisual({content,state,save}),browse:renderBrowse,stats:renderStats})[state.mode]();
 }

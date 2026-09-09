@@ -342,12 +342,13 @@ function drawStory(){
     return `<tr class="sl i1 ${bad?"srow-bad":ok?"srow-ok":""}"><td class="lab">${esc(k)}${k==="Accumulated depreciation"?' <span class="meta">(contra-asset: enter as a positive number)</span>':""}</td><td class="num"><div class="sycell"><input class="sin" data-k="${esc(k)}" type="number" step="any" value="${u==null?"":esc(u)}" ${sy.checked?"disabled":""}>${sy.checked?`<span class="syres ${ok?"good":"bad"}">${ok?"✓":"✗ "+shown}</span>`:""}</div></td></tr>`;};
   const sec=(c,title)=>`<tr class="sl kh"><td>${title}</td><td></td></tr>${rows.filter(o=>o[1]===c).map(cell).join("")}<tr class="sl kt"><td class="lab">Total ${title.toLowerCase()}</td><td class="num">${sy.checked?fmt(tot(c)):"?"}</td></tr>`;
   const n=rows.length,right=sy.checked?rows.filter(o=>Math.abs(parseFloat(sy.inputs[o[0]])-Math.abs(sy.bal[o[0]]))<1).length:0;
-  return `<div class="vinfo"><div class="vt">${esc(sy.name)}: build the balance sheet from the story</div>
+  return `<div class="sywrap"><div class="vinfo sycol"><div class="vt">${esc(sy.name)}: the story</div>
   <ol class="story">${sy.events.map((e,i)=>`<li>${esc(e.t)}${sy.checked?`<div class="why small">${esc(e.why)}</div>`:""}</li>`).join("")}</ol>
-  <div class="meta">Work out each ending balance and type it in. Retained earnings = revenues − expenses (this is the first year). ${sy.checked?`Score ${right}/${n}.`:""}</div></div>
-  <div class="stmt"><div class="sh"><b>${esc(sy.name)}: balance sheet at year end</b><span class="meta">${sy.checked?"Assets "+fmt(tot("A"))+" = Liabilities "+fmt(tot("L"))+" + Equity "+fmt(tot("E")):"fill in every line"}</span></div>
-  <table class="stab">${sec("A","Assets")}${sec("L","Liabilities")}${sec("E","Equity")}</table></div>
-  <div class="controls">${sy.checked?`<button class="primary" id="syNew">New story →</button><button id="syRetry">Try again</button>`:`<button class="primary" id="syChk">Check</button><button id="syNew">New story</button>`}</div>${method("transfer: translate events in words into account balances, the way exam word problems do")}`;
+  <div class="meta" style="text-align:left">Work out each ending balance and type it into the balance sheet. Retained earnings = revenues − expenses (first year). ${sy.checked?`<b>Score ${right}/${n}.</b>`:""}</div>
+  <div class="controls" style="justify-content:flex-start">${sy.checked?`<button class="primary" id="syNew">New story →</button><button id="syRetry">Try again</button>`:`<button class="primary" id="syChk">Check</button><button id="syNew">New story</button>`}</div></div>
+  <div class="stmt sycol"><div class="sh"><b>Balance sheet at year end</b><span class="meta">${sy.checked?"A "+fmt(tot("A"))+" = L "+fmt(tot("L"))+" + E "+fmt(tot("E")):"fill in every line"}</span></div>
+  <table class="stab sytab">${sec("A","Assets")}${sec("L","Liabilities")}${sec("E","Equity")}</table></div></div>
+  ${method("transfer: translate events in words into account balances, the way exam word problems do")}`;
 }
 function bindStory(){const c=ctx.content;
   c.querySelectorAll(".sin").forEach(i=>{i.oninput=e=>sy.inputs[i.dataset.k]=e.target.value;i.onkeydown=e=>{if(e.key==="Enter"){const b=$("#syChk",c);if(b)b.click();}};});

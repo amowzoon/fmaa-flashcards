@@ -5,7 +5,7 @@ const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[
 const $=(s,r)=>(r||document).querySelector(s);
 const fmt=n=>Math.round(n).toLocaleString();
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
-let sub="drills",pick={diagram:"cycle",anim:"bestport",sim:"cashflow",map:"A1",chart:"margins",stmt:"bs"},stSel=null,stQuiz=false,step=0,ctx=null,ui={};
+let group="visual",subs={visual:"stmts",exam:"drills"};let sub="stmts",pick={diagram:"cycle",anim:"bestport",sim:"cashflow",map:"A1",chart:"margins",stmt:"bs"},stSel=null,stQuiz=false,step=0,ctx=null,ui={};
 const frac=(num,den)=>`<span class="frac"><span>${esc(num)}</span><span>${esc(den)}</span></span>`;
 const method=t=>`<div class="method">Technique: ${t}</div>`;
 
@@ -549,12 +549,13 @@ function render(){
   const ST=window.FMAA_STATEMENTS;const stMap=Object.fromEntries(ST.list);
   const picker={drills:"",tx:"",mx:"",story:"",build:"",stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
   const body={drills:drawDrills,tx:drawTx,mx:drawMx,story:drawStory,build:drawBuild,stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
-  const TABS=[["drills","Drills","exam-style word problems, endless"],["tx","Transactions","effects on the accounting equation (exam table)"],["story","Story","turn a word problem into statements"],["stmts","Statements","read a full statement line by line"],["build","Build","sort accounts, assemble a mini balance sheet"],["mx","Match (exam)","terms to lettered definitions, with extras"],["maps","Mind maps","see how topics connect"],["diagrams","Diagrams","process flows, step by step"],["anim","Examples","worked and faded examples"],["charts","Charts","ratios and trends as pictures"],["sims","Sort","drag items into categories"],["match","Match","pair terms with meanings"]];
+  const TABS_ALL=[["drills","Drills","exam-style word problems, endless"],["tx","Transactions","effects on the accounting equation (exam table)"],["story","Story","turn a word problem into statements"],["stmts","Statements","read a full statement line by line"],["build","Build","sort accounts, assemble a mini balance sheet"],["mx","Match (exam)","terms to lettered definitions, with extras"],["maps","Mind maps","see how topics connect"],["diagrams","Diagrams","process flows, step by step"],["anim","Examples","worked and faded examples"],["charts","Charts","ratios and trends as pictures"],["sims","Sort","drag items into categories"],["match","Match","pair terms with meanings"]];
+  const EXAM=["drills","tx","story","mx"];const TABS=TABS_ALL.filter(t=>EXAM.includes(t[0])===(group==="exam"));if(!TABS.some(t=>t[0]===sub))sub=TABS[0][0];subs[group]=sub;
   const cur=TABS.find(t=>t[0]===sub);
   c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${TABS.map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div><div class="vcrumb"><b>${esc(cur[1])}</b><span class="meta">${esc(cur[2])}</span></div>${picker}</div>${body}</div>`;
-  const nav=document.getElementById("visNav");if(nav){nav.innerHTML=`<h3>Visual activities</h3>${TABS.map(([k,l,d])=>`<button class="vnav ${sub===k?"on":""}" data-v="${k}"><b>${l}</b><span>${d}</span></button>`).join("")}`;
-    nav.querySelectorAll(".vnav").forEach(b=>b.onclick=()=>{sub=b.dataset.v;step=0;ui={};render();if(window.closeSide)window.closeSide();});}
-  c.querySelectorAll(".vtabs button").forEach(b=>b.onclick=()=>{sub=b.dataset.v;step=0;ui={};render();});
+  const nav=document.getElementById("visNav");if(nav){nav.innerHTML=`<h3>${group==="exam"?"Exam practice":"Visual activities"}</h3>${TABS.map(([k,l,d])=>`<button class="vnav ${sub===k?"on":""}" data-v="${k}"><b>${l}</b><span>${d}</span></button>`).join("")}`;
+    nav.querySelectorAll(".vnav").forEach(b=>b.onclick=()=>{sub=b.dataset.v;subs[group]=sub;step=0;ui={};render();if(window.closeSide)window.closeSide();});}
+  c.querySelectorAll(".vtabs button").forEach(b=>b.onclick=()=>{sub=b.dataset.v;subs[group]=sub;step=0;ui={};render();});
   const vp=$("#vpick",c);if(vp)vp.onchange=e=>{pick[{stmts:"stmt",maps:"map",diagrams:"diagram",anim:"anim",charts:"chart",sims:"sim"}[sub]]=e.target.value;step=0;ui={};stSel=null;sim={sel:null,placed:{},set:null};render();};
   if(sub==="stmts"){c.querySelectorAll(".sl.click").forEach(r=>r.onclick=()=>{stSel=+r.dataset.i;render();});
     const n=ST.count(pick.stmt),step_=d=>{let i=stSel==null?(d>0?-1:n):stSel;for(let t=0;t<n;t++){i=(i+d+n)%n;if(ST.hasE(pick.stmt,i))break;}stSel=i;render();const el=c.querySelector(".sl.on");if(el)el.scrollIntoView({block:"nearest"});};
@@ -575,5 +576,5 @@ function render(){
     $("#rchk",c).onclick=()=>{const r=RATIOS[rw.order[rw.i%rw.order.length]],v=r.v();let a=parseFloat(rw.ans);if(isNaN(a))return;if(r.fam==="Profitability"){if(a>1)a=a/100;}const ok=Math.abs(a-v)<=Math.max(0.02*Math.abs(v),r.den===""?1:0.011);if(rw.res===null&&ok)rw.score++;rw.res=ok;render();};
     $("#rhint",c).onclick=()=>{ui.hint=1;render();};$("#rnext",c).onclick=()=>{rw.i++;rw.ans="";rw.res=null;ui.hint=0;render();};}
 }
-window.renderVisual=function(c){ctx=c;render();};
+window.renderVisual=function(c,g){ctx=c;group=g||"visual";sub=subs[group];render();};
 })();

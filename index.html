@@ -140,6 +140,10 @@ body.mode-visual .notvis,body.mode-visual .keys{display:none!important}body:not(
 .txnone{display:block;margin-top:6px;font-size:12px;color:var(--muted);cursor:pointer}tr.txok>td:first-child{border-left:3px solid var(--good)}tr.txbad>td:first-child{border-left:3px solid var(--bad)}
 .mxwrap{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;margin-top:10px;text-align:left}.mxt td{padding:5px 6px;font-size:14px;vertical-align:middle}.mxt select{font-size:14px;width:60px;padding:4px}.mxdefs{margin:0;padding-left:26px;font-size:13px;line-height:1.4}.mxdefs li{margin-bottom:6px}
 @media (max-width:760px){.mxwrap{grid-template-columns:1fr}}
+.exgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;margin-top:10px;text-align:left}
+.excard{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px}.exh{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.exh b{font-size:14px;margin-right:auto}
+.tagx{font-size:11px;padding:2px 7px;border-radius:10px;border:1px solid var(--border);color:var(--muted)}.tagx.seen{color:var(--good);border-color:var(--good)}.tagx.inferred{color:var(--warn);border-color:var(--warn)}
+.exf{color:var(--text);opacity:.9;line-height:1.4;margin-bottom:6px}.exl{margin:4px 0 8px;padding-left:18px;line-height:1.45}.exl li{margin-bottom:2px}
 .szlab{display:inline-flex;align-items:center;gap:6px;margin-left:auto}.szlab select{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px}
 .sycell{display:flex;gap:10px;align-items:center;justify-content:flex-end}.syres{font-size:16px;font-weight:700;white-space:nowrap}.syres.good{color:var(--good)}.syres.bad{color:var(--bad)}
 .stab .num{width:auto}
@@ -219,7 +223,7 @@ details.vinfo summary{cursor:pointer;color:var(--muted);font-size:13px}
     <div id="secList" class="notvis"></div>
     <div class="notvis" style="display:flex;gap:6px;margin-top:6px"><button id="selAll" style="flex:1;padding:4px">All</button><button id="selNone" style="flex:1;padding:4px">None</button></div>
     <h3 class="notvis">Filter</h3>
-    <label class="notvis"><span>Show</span><select id="filter"><option value="all">all cards</option><option value="unlearned">not yet known</option><option value="starred">starred</option><option value="missed">missed in Learn</option><option value="due">due for review</option></select></label>
+    <label class="notvis"><span>Show</span><select id="filter"><option value="all">all cards</option><option value="core">exam core only</option><option value="unlearned">not yet known</option><option value="starred">starred</option><option value="missed">missed in Learn</option><option value="due">due for review</option></select></label>
     <h3 class="notvis">Mastery</h3>
     <div class="bar notvis"><i id="masteryBar" style="width:0"></i></div>
     <div id="masteryTxt" class="cnt notvis"></div>
@@ -236,17 +240,17 @@ details.vinfo summary{cursor:pointer;color:var(--muted);font-size:13px}
   <section class="content" id="content"></section>
 </main>
 </div>
-<script src="deck.js?v=7"></script>
+<script src="deck.js?v=9"></script>
 <script src="statements.js?v=1"></script>
-<script src="visual.js?v=16"></script>
+<script src="visual.js?v=18"></script>
 <script>
 (function(){
-const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis",AB:"Abbreviations",PQ:"Practice set (exam style)"};
+const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis",AB:"Abbreviations"};
 const CARDS=window.FMAA_CARDS.map((c,i)=>({id:i,sec:c[0],front:c[1],back:c[2]}));
 const MCQ=window.FMAA_MCQ.map((q,i)=>({id:i,sec:q[0],q:q[1],choices:q[2],ans:q[3],why:q[4]}));
 const LS="fmaa_fc_v1";
 let state=load();
-function load(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.cards){if(!s.pq){s.pq=1;if(!s.secs.includes('PQ'))s.secs.push('PQ');}return s;}}catch(e){}return {cards:{},secs:Object.keys(SECS),mode:"flash",filter:"all",test:{done:0,right:0}};}
+function load(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.cards){s.secs=s.secs.filter(x=>x!=='PQ');return s;}}catch(e){}return {cards:{},secs:Object.keys(SECS),mode:"flash",filter:"all",test:{done:0,right:0}};}
 function save(){try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
 function cs(id){return state.cards[id]||(state.cards[id]={lvl:0,seen:0,miss:0,star:0,due:0});}
 // lvl: 0 new, 1 learning, 2 known (needs 2 consecutive correct in Learn), star flag
@@ -255,7 +259,7 @@ const content=document.getElementById("content");
 const $=s=>document.querySelector(s);
 function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
-function pool(){return CARDS.filter(c=>state.secs.includes(c.sec)).filter(c=>{const s=cs(c.id);switch(state.filter){case"unlearned":return s.lvl<2;case"starred":return !!s.star;case"missed":return s.miss>0;case"due":return s.lvl>=2&&s.due&&s.due<=Date.now();default:return true;}});}
+function pool(){return CARDS.filter(c=>state.secs.includes(c.sec)).filter(c=>{const s=cs(c.id);switch(state.filter){case"core":return window.FMAA_CORE.has(c.id);case"unlearned":return s.lvl<2;case"starred":return !!s.star;case"missed":return s.miss>0;case"due":return s.lvl>=2&&s.due&&s.due<=Date.now();default:return true;}});}
 function mcqPool(){return MCQ.filter(q=>state.secs.includes(q.sec));}
 
 // ---------- sidebar ----------
@@ -389,7 +393,7 @@ function renderWrite(){
 let ts={qs:[],i:0,picked:[],done:false};
 function startTest(){ts.qs=shuffle(mcqPool().slice());ts.i=0;ts.picked=[];ts.done=false;renderTest();}
 function renderTest(){
-  if(!ts.qs.length){content.innerHTML=`<div class="stage"><div class="stats"><div class="stat"><b>${mcqPool().length}</b><span>quiz questions in selected sections</span></div><div class="stat"><b>${state.test.done?Math.round(100*state.test.right/state.test.done)+"%":"—"}</b><span>lifetime accuracy (${state.test.right}/${state.test.done})</span></div></div><div class="controls" style="margin-top:20px"><button class="primary" id="st">Start test</button></div><div class="meta">PRC session quiz items (QUC) plus the exam-style practice set (tick "Practice set" in the sidebar), all with explanations. For endless computation questions with fresh numbers, use Visual → Drills.</div></div>`;$("#st").onclick=startTest;return;}
+  if(!ts.qs.length){content.innerHTML=`<div class="stage"><div class="stats"><div class="stat"><b>${mcqPool().length}</b><span>quiz questions in selected sections</span></div><div class="stat"><b>${state.test.done?Math.round(100*state.test.right/state.test.done)+"%":"—"}</b><span>lifetime accuracy (${state.test.right}/${state.test.done})</span></div></div><div class="controls" style="margin-top:20px"><button class="primary" id="st">Start test</button></div><div class="meta">PRC session quiz items (QUC) plus the exam-style practice questions, spread across their topic sections, all with explanations. For endless computation questions with fresh numbers, use Visual → Drills.</div></div>`;$("#st").onclick=startTest;return;}
   if(ts.done){const r=ts.picked.filter((p,i)=>p===ts.qs[i].ans).length;
     content.innerHTML=`<div class="stage" style="justify-content:flex-start"><div class="stats"><div class="stat"><b>${r}/${ts.qs.length}</b><span>score · ${Math.round(100*r/ts.qs.length)}%</span></div></div>
     <div class="list" style="margin-top:14px"><table><tr><th>#</th><th>Sec</th><th>Question</th><th>You</th><th>Ans</th></tr>${ts.qs.map((q,i)=>`<tr style="color:${ts.picked[i]===q.ans?"var(--good)":"var(--bad)"}"><td>${i+1}</td><td>${q.sec}</td><td>${esc(q.q)}<div style="color:var(--muted);font-size:12px">${esc(q.why)}</div></td><td>${ts.picked[i]>=0?"ABCD"[ts.picked[i]]:"—"}</td><td>${"ABCD"[q.ans]}</td></tr>`).join("")}</table></div>

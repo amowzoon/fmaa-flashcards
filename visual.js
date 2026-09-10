@@ -248,7 +248,7 @@ const ACC=[["Cash","A",1],["Accounts receivable","A",1],["Inventory","A",1],["Pr
  ["Accounts payable","L",1],["Wages payable","L",1],["Unearned revenue","L",1],["Income taxes payable","L",1],["Notes payable (due in 6 months)","L",1],["Current portion of long-term debt","L",1],["Bonds payable (due in 10 years)","L",0],["Long-term notes payable","L",0],["Deferred tax liability","L",0],
  ["Common stock","E",0],["Additional paid-in capital","E",0],["Preferred stock","E",0],["Accumulated other comprehensive income","E",0]];
 const AMT=()=>[2,3,4,5,6,8,10,12,15,18,20,25,30,40][Math.random()*14|0]*1000;
-let SZ=(()=>{try{return Object.assign({build:8,story:5,is:true,cf:true},JSON.parse(localStorage.getItem("fmaa_vis_size")||"{}"));}catch(e){return {build:8,story:5,is:true,cf:true};}})();
+let SZ=(()=>{try{return Object.assign({build:8,story:5,bs:true,is:true,cf:true},JSON.parse(localStorage.getItem("fmaa_vis_size")||"{}"));}catch(e){return {build:8,story:5,bs:true,is:true,cf:true};}})();
 function setSize(k,v){SZ[k]=v;try{localStorage.setItem("fmaa_vis_size",JSON.stringify(SZ));}catch(e){}}
 const sizeSel=(id,k,lo,hi,unit)=>`<label class="meta szlab">Size <select id="${id}">${Array.from({length:hi-lo+1},(_,i)=>lo+i).map(n=>`<option value="${n}" ${SZ[k]===n?"selected":""}>${n} ${unit}</option>`).join("")}</select></label>`;
 let bd={items:[],placed:{},stage:1,q:null,ans:"",res:null,score:0,total:0};
@@ -351,7 +351,7 @@ function drawStory(){
     return `<tr class="sl i${ind||1} ${bad?"srow-bad":ok?"srow-ok":""}"><td class="lab">${esc(x.l)}${der}</td><td class="num"><div class="sycell"><input class="sin" data-k="${esc(x.k)}" type="number" step="any" value="${u==null?"":esc(u)}" ${sy.checked?"disabled":""}>${sy.checked?`<span class="syres ${ok?"good":"bad"}">${ok?"✓":"✗ "+(x.v<0?"("+fmt(-x.v)+")":fmt(x.v))}</span>`:""}</div></td></tr>`;};
   const trow=(l,v,cls)=>`<tr class="sl ${cls||"kt"}"><td class="lab">${esc(l)}</td><td class="num">${sy.checked?(v<0?"("+fmt(-v)+")":fmt(v)):"?"}</td></tr>`;
   const {IS,CF}=storyStmts();
-  const allLines=[...rows.map(o=>({k:o[0],v:Math.abs(sy.bal[o[0]])})),...(SZ.is?IS.lines:[]),...(SZ.cf?CF.lines:[])];
+  const allLines=[...(SZ.bs?rows.map(o=>({k:o[0],v:Math.abs(sy.bal[o[0]])})):[]),...(SZ.is?IS.lines:[]),...(SZ.cf?CF.lines:[])];
   const n=allLines.length,right=sy.checked?allLines.filter(x=>Math.abs(parseFloat(sy.inputs[x.k])-x.v)<1).length:0;
   const isHtml=SZ.is?`<div class="stmt sycol"><div class="sh"><b>Income statement for the year</b><span class="meta">${sy.checked?"net income "+fmt(IS.ni):"revenues, then expenses"}</span></div><table class="stab sytab"><tr class="sl kh"><td>Revenues</td><td></td></tr>${IS.rev.map(x=>sline(x)).join("")}<tr class="sl kh"><td>Expenses</td><td></td></tr>${IS.exp.map(x=>sline(x)).join("")}${trow("Total expenses",IS.texp,"kt")}${trow("Net income",IS.ni,"kt")}</table></div>`:"";
   const cfHtml=SZ.cf?`<div class="stmt sycol"><div class="sh"><b>Cash flow statement (indirect)</b><span class="meta">${sy.checked?"ends at cash "+fmt(sy.bal["Cash"]):"enter outflows as negatives"}</span></div><table class="stab sytab"><tr class="sl kh"><td>Operating activities</td><td></td></tr>${CF.op.map(x=>sline(x)).join("")}${trow("Cash from operating activities",CF.cfo)}<tr class="sl kh"><td>Investing activities</td><td></td></tr>${CF.inv.length?CF.inv.map(x=>sline(x)).join(""):'<tr class="sl i1"><td class="lab meta">none</td><td></td></tr>'}${trow("Cash from investing activities",CF.cfi)}<tr class="sl kh"><td>Financing activities</td><td></td></tr>${CF.fin.map(x=>sline(x)).join("")}${trow("Cash from financing activities",CF.cff)}${trow("Net change in cash (= ending cash, started at 0)",CF.cfo+CF.cfi+CF.cff)}</table></div>`:"";
@@ -359,10 +359,10 @@ function drawStory(){
   <ol class="story">${sy.events.map((e,i)=>`<li>${esc(e.t)}${sy.checked?`<div class="why small">${esc(e.why)}</div>`:""}</li>`).join("")}</ol>
   <div class="meta" style="text-align:left">Work out each line from the events. Retained earnings = net income (first year, no dividends). ${SZ.cf?"Cash flow uses the indirect method: start from net income, add back non-cash expenses, adjust for working-capital changes (an asset going up uses cash, a liability going up frees cash)":""} ${sy.checked?`<b>Score ${right}/${n}.</b>`:""}</div>
   <div class="controls" style="justify-content:flex-start">${sy.checked?`<button class="primary" id="syNew">New story →</button><button id="syRetry">Try again</button>`:`<button class="primary" id="syChk">Check</button><button id="syNew">New story</button>`}${sizeSel("sySz","story",2,8,"events")}</div>
-  <div class="controls" style="justify-content:flex-start;gap:14px"><label class="meta"><input type="checkbox" id="syIS" ${SZ.is?"checked":""}> Income statement</label><label class="meta"><input type="checkbox" id="syCF" ${SZ.cf?"checked":""}> Cash flow statement</label></div></div>
-  <div class="stmt sycol"><div class="sh"><b>Balance sheet at year end</b><span class="meta">${sy.checked?"A "+fmt(tot("A"))+" = L "+fmt(tot("L"))+" + E "+fmt(tot("E")):"fill in every line"}</span></div>
-  <table class="stab sytab">${sec("A","Assets")}${sec("L","Liabilities")}${sec("E","Equity")}</table></div>${isHtml}${cfHtml}</div>
-  ${sy.checked?howBuilt(rows):""}
+  <div class="controls" style="justify-content:flex-start;gap:14px"><label class="meta"><input type="checkbox" id="syBS" ${SZ.bs?"checked":""}> Balance sheet</label><label class="meta"><input type="checkbox" id="syIS" ${SZ.is?"checked":""}> Income statement</label><label class="meta"><input type="checkbox" id="syCF" ${SZ.cf?"checked":""}> Cash flow statement</label></div></div>
+  ${SZ.bs?`<div class="stmt sycol"><div class="sh"><b>Balance sheet at year end</b><span class="meta">${sy.checked?"A "+fmt(tot("A"))+" = L "+fmt(tot("L"))+" + E "+fmt(tot("E")):"fill in every line"}</span></div>
+  <table class="stab sytab">${sec("A","Assets")}${sec("L","Liabilities")}${sec("E","Equity")}</table></div>`:""}${isHtml}${cfHtml}</div>
+  ${sy.checked&&SZ.bs?howBuilt(rows):""}
   ${method("transfer: translate events in words into account balances, the way exam word problems do")}`;
 }
 function storyStmts(){
@@ -396,7 +396,7 @@ function bindStory(){const c=ctx.content;
   const nw=$("#syNew",c);if(nw)nw.onclick=()=>{newStory();render();};
   const rt=$("#syRetry",c);if(rt)rt.onclick=()=>{sy.checked=false;render();};
   const sz=$("#sySz",c);if(sz)sz.onchange=()=>{setSize("story",+sz.value);newStory();render();};
-  [["#syIS","is"],["#syCF","cf"]].forEach(([id,k])=>{const el=$(id,c);if(el)el.onchange=()=>{setSize(k,el.checked);render();};});
+  [["#syBS","bs"],["#syIS","is"],["#syCF","cf"]].forEach(([id,k])=>{const el=$(id,c);if(el)el.onchange=()=>{setSize(k,el.checked);if(!SZ.bs&&!SZ.is&&!SZ.cf)setSize(k,true);render();};});
 }
 
 // ================= MIND MAPS (with recall mode) =================

@@ -133,6 +133,13 @@ body.mode-visual .notvis,body.mode-visual .keys{display:none!important}body:not(
 .vtabs{display:none}.vcrumb{display:flex;align-items:baseline;gap:10px;font-size:15px}
 @media (max-width:760px){.vtabs{display:flex;overflow-x:auto;width:100%;scrollbar-width:none}.vtabs button{white-space:nowrap}.vcrumb{display:none}}
 .sder{font-size:11px;color:var(--muted);font-weight:400;margin-top:2px;white-space:normal}
+.txwrap{width:min(1200px,100%);overflow-x:auto}.txtab{width:100%;min-width:760px;border-collapse:collapse;font-size:13px;background:var(--panel);border-radius:8px}
+.txtab th{text-align:left;padding:8px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border-bottom:1px solid var(--border)}.txtab td{padding:8px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.35}
+.txslot{display:flex;gap:4px;margin:2px 0}.txslot select{flex:1;min-width:0;font-size:12px;padding:4px}.txslot input{width:86px;font-size:13px;padding:4px 6px;text-align:right}
+.txcell.ok{background:rgba(46,204,113,.10)}.txcell.bad{background:rgba(255,92,92,.10)}.txcell.dim{opacity:.35}.txans{font-size:11px;color:var(--muted);margin-top:3px;white-space:nowrap}
+.txnone{display:block;margin-top:6px;font-size:12px;color:var(--muted);cursor:pointer}tr.txok>td:first-child{border-left:3px solid var(--good)}tr.txbad>td:first-child{border-left:3px solid var(--bad)}
+.mxwrap{display:grid;grid-template-columns:1fr 1.4fr;gap:16px;margin-top:10px;text-align:left}.mxt td{padding:5px 6px;font-size:14px;vertical-align:middle}.mxt select{font-size:14px;width:60px;padding:4px}.mxdefs{margin:0;padding-left:26px;font-size:13px;line-height:1.4}.mxdefs li{margin-bottom:6px}
+@media (max-width:760px){.mxwrap{grid-template-columns:1fr}}
 .szlab{display:inline-flex;align-items:center;gap:6px;margin-left:auto}.szlab select{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:13px}
 .sycell{display:flex;gap:10px;align-items:center;justify-content:flex-end}.syres{font-size:16px;font-weight:700;white-space:nowrap}.syres.good{color:var(--good)}.syres.bad{color:var(--bad)}
 .stab .num{width:auto}
@@ -228,17 +235,17 @@ details.vinfo summary{cursor:pointer;color:var(--muted);font-size:13px}
   <section class="content" id="content"></section>
 </main>
 </div>
-<script src="deck.js?v=6"></script>
+<script src="deck.js?v=7"></script>
 <script src="statements.js?v=1"></script>
-<script src="visual.js?v=13"></script>
+<script src="visual.js?v=14"></script>
 <script>
 (function(){
-const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis",AB:"Abbreviations"};
+const SECS={A1:"A.1 Terminology & Definitions",A2:"A.2 Recording Transactions",A3:"A.3 Financial Statements",A4:"A.4 Internal Controls",A5:"A.5 Daily Finances",B1:"B.1 Recognition & Valuation",B2:"B.2 Basic FS Analysis",B3:"B.3 Ratio Analysis",AB:"Abbreviations",PQ:"Practice set (exam style)"};
 const CARDS=window.FMAA_CARDS.map((c,i)=>({id:i,sec:c[0],front:c[1],back:c[2]}));
 const MCQ=window.FMAA_MCQ.map((q,i)=>({id:i,sec:q[0],q:q[1],choices:q[2],ans:q[3],why:q[4]}));
 const LS="fmaa_fc_v1";
 let state=load();
-function load(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.cards)return s;}catch(e){}return {cards:{},secs:Object.keys(SECS),mode:"flash",filter:"all",test:{done:0,right:0}};}
+function load(){try{const s=JSON.parse(localStorage.getItem(LS));if(s&&s.cards){if(!s.pq){s.pq=1;if(!s.secs.includes('PQ'))s.secs.push('PQ');}return s;}}catch(e){}return {cards:{},secs:Object.keys(SECS),mode:"flash",filter:"all",test:{done:0,right:0}};}
 function save(){try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
 function cs(id){return state.cards[id]||(state.cards[id]={lvl:0,seen:0,miss:0,star:0,due:0});}
 // lvl: 0 new, 1 learning, 2 known (needs 2 consecutive correct in Learn), star flag
@@ -381,7 +388,7 @@ function renderWrite(){
 let ts={qs:[],i:0,picked:[],done:false};
 function startTest(){ts.qs=shuffle(mcqPool().slice());ts.i=0;ts.picked=[];ts.done=false;renderTest();}
 function renderTest(){
-  if(!ts.qs.length){content.innerHTML=`<div class="stage"><div class="stats"><div class="stat"><b>${mcqPool().length}</b><span>quiz questions in selected sections</span></div><div class="stat"><b>${state.test.done?Math.round(100*state.test.right/state.test.done)+"%":"—"}</b><span>lifetime accuracy (${state.test.right}/${state.test.done})</span></div></div><div class="controls" style="margin-top:20px"><button class="primary" id="st">Start test</button></div><div class="meta">Questions are the actual PRC session quiz items (QUC) with explanations.</div></div>`;$("#st").onclick=startTest;return;}
+  if(!ts.qs.length){content.innerHTML=`<div class="stage"><div class="stats"><div class="stat"><b>${mcqPool().length}</b><span>quiz questions in selected sections</span></div><div class="stat"><b>${state.test.done?Math.round(100*state.test.right/state.test.done)+"%":"—"}</b><span>lifetime accuracy (${state.test.right}/${state.test.done})</span></div></div><div class="controls" style="margin-top:20px"><button class="primary" id="st">Start test</button></div><div class="meta">PRC session quiz items (QUC) plus the exam-style practice set (tick "Practice set" in the sidebar), all with explanations. For endless computation questions with fresh numbers, use Visual → Drills.</div></div>`;$("#st").onclick=startTest;return;}
   if(ts.done){const r=ts.picked.filter((p,i)=>p===ts.qs[i].ans).length;
     content.innerHTML=`<div class="stage" style="justify-content:flex-start"><div class="stats"><div class="stat"><b>${r}/${ts.qs.length}</b><span>score · ${Math.round(100*r/ts.qs.length)}%</span></div></div>
     <div class="list" style="margin-top:14px"><table><tr><th>#</th><th>Sec</th><th>Question</th><th>You</th><th>Ans</th></tr>${ts.qs.map((q,i)=>`<tr style="color:${ts.picked[i]===q.ans?"var(--good)":"var(--bad)"}"><td>${i+1}</td><td>${q.sec}</td><td>${esc(q.q)}<div style="color:var(--muted);font-size:12px">${esc(q.why)}</div></td><td>${ts.picked[i]>=0?"ABCD"[ts.picked[i]]:"—"}</td><td>${"ABCD"[q.ans]}</td></tr>`).join("")}</table></div>

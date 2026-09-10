@@ -5,7 +5,7 @@ const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[
 const $=(s,r)=>(r||document).querySelector(s);
 const fmt=n=>Math.round(n).toLocaleString();
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
-let sub="stmts",pick={diagram:"cycle",anim:"bestport",sim:"cashflow",map:"A1",chart:"margins",stmt:"bs"},stSel=null,stQuiz=false,step=0,ctx=null,ui={};
+let sub="drills",pick={diagram:"cycle",anim:"bestport",sim:"cashflow",map:"A1",chart:"margins",stmt:"bs"},stSel=null,stQuiz=false,step=0,ctx=null,ui={};
 const frac=(num,den)=>`<span class="frac"><span>${esc(num)}</span><span>${esc(den)}</span></span>`;
 const method=t=>`<div class="method">Technique: ${t}</div>`;
 
@@ -248,7 +248,7 @@ const ACC=[["Cash","A",1],["Accounts receivable","A",1],["Inventory","A",1],["Pr
  ["Accounts payable","L",1],["Wages payable","L",1],["Unearned revenue","L",1],["Income taxes payable","L",1],["Notes payable (due in 6 months)","L",1],["Current portion of long-term debt","L",1],["Bonds payable (due in 10 years)","L",0],["Long-term notes payable","L",0],["Deferred tax liability","L",0],
  ["Common stock","E",0],["Additional paid-in capital","E",0],["Preferred stock","E",0],["Accumulated other comprehensive income","E",0]];
 const AMT=()=>[2,3,4,5,6,8,10,12,15,18,20,25,30,40][Math.random()*14|0]*1000;
-let SZ=(()=>{try{return Object.assign({build:8,story:5,bs:true,is:true,cf:true},JSON.parse(localStorage.getItem("fmaa_vis_size")||"{}"));}catch(e){return {build:8,story:5,bs:true,is:true,cf:true};}})();
+let SZ=(()=>{try{return Object.assign({build:8,story:5,bs:true,is:true,cf:true,tx:6},JSON.parse(localStorage.getItem("fmaa_vis_size")||"{}"));}catch(e){return {build:8,story:5,bs:true,is:true,cf:true,tx:6};}})();
 function setSize(k,v){SZ[k]=v;try{localStorage.setItem("fmaa_vis_size",JSON.stringify(SZ));}catch(e){}}
 const sizeSel=(id,k,lo,hi,unit)=>`<label class="meta szlab">Size <select id="${id}">${Array.from({length:hi-lo+1},(_,i)=>lo+i).map(n=>`<option value="${n}" ${SZ[k]===n?"selected":""}>${n} ${unit}</option>`).join("")}</select></label>`;
 let bd={items:[],placed:{},stage:1,q:null,ans:"",res:null,score:0,total:0};
@@ -304,7 +304,7 @@ const R=(a,b,step)=>{step=step||1000;return a+Math.floor(Math.random()*((b-a)/st
 const NAMES=["Harbor Tools","Northwind Design","Maple Street Bakery","Cobalt Repairs","Summit Tutoring","Redwood Landscaping","Pixel Print Co.","Blue Fern Clinic"];
 // each event: text, fx (account deltas), why. RE deltas are income-statement effects.
 const EVENTS=[
- ()=>{const v=R(40000,90000,5000);return {t:`The owner invests $${fmt(v)} cash to start the business.`,s:"Owner invests",cf:"F",fx:{"Cash":v,"Owner's capital":v},why:"Cash up, owner's capital up. No income effect."};},
+ ()=>{const v=R(40000,90000,5000);return {t:`Stockholders invest $${fmt(v)} cash in exchange for common stock.`,s:"Stock issued",cf:"F",fx:{"Cash":v,"Common stock":v},why:"Cash up, common stock up. Owner financing is equity, not revenue."};},
  ()=>{const m=R(2000,5000,500),n=[3,4,6][Math.random()*3|0];return {t:`It rents a building for $${fmt(m)} a month and pays ${n} months in advance.`,s:`Rent paid in advance (${n} × ${fmt(m)})`,fx:{"Cash":-m*n,"Prepaid rent":m*n},m,n,tag:"rent",why:`${n} × ${fmt(m)} = ${fmt(m*n)} leaves cash and becomes a prepaid asset (future benefit).`};},
  ()=>{const v=R(8000,30000,1000),c=Math.round(v*0.4/1000)*1000;return {t:`It buys equipment for $${fmt(v)}, paying $${fmt(c)} cash and signing a two-year note for the rest.`,s:"Equipment purchase",cf:"I",sx:{"Cash":"Equipment: cash part","Notes payable":"Equipment: financed part"},fx:{"Equipment":v,"Cash":-c,"Notes payable":v-c},why:`Equipment at full cost ${fmt(v)}; cash down ${fmt(c)}; the unpaid ${fmt(v-c)} is a note payable.`};},
  ()=>{const v=R(3000,12000,1000);return {t:`A customer pays $${fmt(v)} in advance for work to be done next quarter.`,s:"Customer pays in advance",fx:{"Cash":v,"Unearned revenue":v},why:"Cash received but nothing earned yet: a liability to perform, not revenue."};},
@@ -315,7 +315,7 @@ const EVENTS=[
  ()=>{const v=R(2000,6000,1000);return {t:`It pays $${fmt(v)} on the note payable.`,s:"Payment on note",cf:"F",fx:{"Cash":-v,"Notes payable":-v},dep:"Notes payable",why:"Paying down a liability: both cash and the note fall. No income effect."};},
  ()=>{const v=R(1000,3000,500);return {t:`It collects $${fmt(v)} from a client who was invoiced earlier.`,s:"Collected from client",fx:{"Cash":v,"Accounts receivable":-v},dep:"Accounts receivable",why:"Cash up, receivable down. Revenue was already recognized when invoiced, so no income effect now."};},
  ()=>{const v=R(500,2000,500);return {t:`It pays $${fmt(v)} of what it owes suppliers.`,s:"Paid suppliers",fx:{"Cash":-v,"Accounts payable":-v},dep:"Accounts payable",why:"Cash down, payable down. No income effect."};},
- ()=>{const v=R(2000,5000,1000);return {t:`The owner withdraws $${fmt(v)} cash for personal use.`,s:"Owner withdrawal",cf:"F",fx:{"Cash":-v,"Owner's capital":-v},why:"A withdrawal reduces owner's capital; it is not an expense."};}
+ ()=>{const v=R(2000,5000,1000);return {t:`It declares and pays a $${fmt(v)} cash dividend to stockholders.`,s:"Dividends paid (not an expense)",cf:"F",div:true,fx:{"Cash":-v,"Retained earnings":-v},why:"Dividends reduce retained earnings directly; they are a distribution, not an expense, so net income is unaffected."};}
 ];
 const ADJ=[
  (st)=>{const e=st.find(x=>x.tag==="rent");if(!e)return null;return {t:`Year end: one month of the prepaid rent has been used up.`,s:"Rent used up (expense, no cash)",x:"Rent",fx:{"Prepaid rent":-e.m,"Retained earnings":-e.m},why:`Adjusting entry: rent expense ${fmt(e.m)}, prepaid rent falls by the same amount.`};},
@@ -323,7 +323,7 @@ const ADJ=[
  (st,bal)=>{const u=bal["Unearned revenue"]||0;if(u<=0)return null;const e=Math.round(u/2/500)*500||u;return {t:`Year end: half of the work paid for in advance has now been done.`,s:"Advance now earned (revenue, no cash)",fx:{"Unearned revenue":-e,"Retained earnings":e},why:`${fmt(e)} moves from the liability to revenue because it is now earned.`};},
  (st,bal)=>{const eq=bal["Equipment"]||0;if(eq<=0)return null;const d=Math.round(eq/5/100)*100;return {t:`Year end: the equipment has a five-year life and no salvage value; record straight-line depreciation.`,s:"Depreciation (expense, no cash)",x:"Depreciation",fx:{"Accumulated depreciation":-d,"Retained earnings":-d},why:`${fmt(eq)} ÷ 5 = ${fmt(d)} depreciation expense; accumulated depreciation (a contra-asset) grows by the same amount.`};}
 ];
-const ORDER=[["Cash","A",1],["Accounts receivable","A",1],["Supplies","A",1],["Prepaid rent","A",1],["Equipment","A",0],["Accumulated depreciation","A",0],["Accounts payable","L",1],["Unearned revenue","L",1],["Notes payable","L",0],["Owner's capital","E",0],["Retained earnings","E",0]];
+const ORDER=[["Cash","A",1],["Accounts receivable","A",1],["Supplies","A",1],["Prepaid rent","A",1],["Equipment","A",0],["Accumulated depreciation","A",0],["Accounts payable","L",1],["Unearned revenue","L",1],["Notes payable","L",0],["Common stock","E",0],["Retained earnings","E",0]];
 let sy={name:"",events:[],bal:{},inputs:{},checked:false,score:null};
 function newStory(){
   sy.name=NAMES[Math.random()*NAMES.length|0];const ev=[EVENTS[0]()];const bal={};const apply=e=>{for(const k in e.fx)bal[k]=(bal[k]||0)+e.fx[k];};apply(ev[0]);
@@ -331,7 +331,7 @@ function newStory(){
   for(const f of pool_){if(n>=SZ.story)break;const e=f();if(e.dep&&!(bal[e.dep]>0))continue;if(e.fx["Cash"]&&bal["Cash"]+e.fx["Cash"]<0)continue;if(e.fx["Notes payable"]<0&&bal["Notes payable"]+e.fx["Notes payable"]<0)continue;if(e.fx["Accounts receivable"]<0&&(bal["Accounts receivable"]||0)+e.fx["Accounts receivable"]<0)continue;if(e.fx["Accounts payable"]<0&&(bal["Accounts payable"]||0)+e.fx["Accounts payable"]<0)continue;ev.push(e);apply(e);n++;}
   shuffle(ADJ.slice()).slice(0,2).forEach(f=>{const e=f(ev,bal);if(e){ev.push(e);apply(e);}});
   // guarantee a profit: make sure one revenue event exists and is big enough
-  let rev=ev.find(e=>e.fx["Retained earnings"]>0&&(e.fx["Cash"]>0||e.fx["Accounts receivable"]>0));
+  let rev=ev.find(e=>!e.div&&e.fx["Retained earnings"]>0&&(e.fx["Cash"]>0||e.fx["Accounts receivable"]>0));
   if(!rev){const v=R(6000,15000,1000);rev={t:`It performs services for cash, $${fmt(v)}.`,s:"Services for cash (revenue)",fx:{"Cash":v,"Retained earnings":v},why:"Earned and collected: revenue, which raises retained earnings."};ev.splice(1,0,rev);apply(rev);}
   if((bal["Retained earnings"]||0)<=0){const d=-(bal["Retained earnings"]||0)+R(2000,6000,1000);const acct=rev.fx["Cash"]>0?"Cash":"Accounts receivable";const nv=rev.fx[acct]+d;
     rev.fx[acct]=nv;rev.fx["Retained earnings"]=nv;rev.t=rev.t.replace(/\$[\d,]+/,"$"+fmt(nv));bal[acct]+=d;bal["Retained earnings"]+=d;}
@@ -357,7 +357,7 @@ function drawStory(){
   const cfHtml=SZ.cf?`<div class="stmt sycol"><div class="sh"><b>Cash flow statement (indirect)</b><span class="meta">${sy.checked?"ends at cash "+fmt(sy.bal["Cash"]):"enter uses of cash as negatives, e.g. −1000"}</span></div><table class="stab sytab"><tr class="sl kh"><td>Operating activities</td><td></td></tr>${CF.op.map(x=>sline(x)).join("")}${trow("Cash from operating activities",CF.cfo)}<tr class="sl kh"><td>Investing activities</td><td></td></tr>${CF.inv.length?CF.inv.map(x=>sline(x)).join(""):'<tr class="sl i1"><td class="lab meta">none</td><td></td></tr>'}${trow("Cash from investing activities",CF.cfi)}<tr class="sl kh"><td>Financing activities</td><td></td></tr>${CF.fin.map(x=>sline(x)).join("")}${trow("Cash from financing activities",CF.cff)}${trow("Net change in cash (= ending cash, started at 0)",CF.cfo+CF.cfi+CF.cff)}</table></div>`:"";
   return `<div class="sywrap"><div class="vinfo sycol"><div class="vt">${esc(sy.name)}: the story</div>
   <ol class="story">${sy.events.map((e,i)=>`<li>${esc(e.t)}${sy.checked?`<div class="why small">${esc(e.why)}</div>`:""}</li>`).join("")}</ol>
-  <div class="meta" style="text-align:left">Work out each line from the events. Retained earnings = net income (first year, no dividends). ${SZ.cf?"Cash flow uses the indirect method: start from net income, add back non-cash expenses, adjust for working-capital changes (an asset going up uses cash, a liability going up frees cash)":""} ${sy.checked?`<b>Score ${right}/${n}.</b>`:""}</div>
+  <div class="meta" style="text-align:left">Work out each line from the events. Retained earnings = net income − dividends (first year). ${SZ.cf?"Cash flow uses the indirect method: start from net income, add back non-cash expenses, adjust for working-capital changes (an asset going up uses cash, a liability going up frees cash)":""} ${sy.checked?`<b>Score ${right}/${n}.</b>`:""}</div>
   <div class="controls" style="justify-content:flex-start">${sy.checked?`<button class="primary" id="syNew">New story →</button><button id="syRetry">Try again</button>`:`<button class="primary" id="syChk">Check</button><button id="syNew">New story</button>`}${sizeSel("sySz","story",2,8,"events")}</div>
   <div class="controls" style="justify-content:flex-start;gap:14px"><label class="meta"><input type="checkbox" id="syBS" ${SZ.bs?"checked":""}> Balance sheet</label><label class="meta"><input type="checkbox" id="syIS" ${SZ.is?"checked":""}> Income statement</label><label class="meta"><input type="checkbox" id="syCF" ${SZ.cf?"checked":""}> Cash flow statement</label></div></div>
   ${SZ.bs?`<div class="stmt sycol"><div class="sh"><b>Balance sheet at year end</b><span class="meta">${sy.checked?"A "+fmt(tot("A"))+" = L "+fmt(tot("L"))+" + E "+fmt(tot("E")):"fill in every line"}</span></div>
@@ -367,7 +367,7 @@ function drawStory(){
 }
 function storyStmts(){
   const ev=sy.events,b=sy.bal,RE="Retained earnings";
-  const revEv=ev.filter(e=>e.fx[RE]>0),expEv=ev.filter(e=>e.fx[RE]<0);
+  const revEv=ev.filter(e=>!e.div&&e.fx[RE]>0),expEv=ev.filter(e=>!e.div&&e.fx[RE]<0);
   const rev=[{k:"is:rev",l:"Service revenue",v:revEv.reduce((s,e)=>s+e.fx[RE],0),src:revEv.map(e=>[e.s,e.fx[RE]])}];
   const byX={};expEv.forEach(e=>{byX[e.x]=byX[e.x]||[];byX[e.x].push(e);});
   const exp=Object.keys(byX).map(x=>({k:"is:"+x,l:x+" expense",v:-byX[x].reduce((s,e)=>s+e.fx[RE],0),src:byX[x].map(e=>[e.s,-e.fx[RE]])}));
@@ -382,7 +382,7 @@ function storyStmts(){
   const cfi=inv.reduce((s,x)=>s+x.v,0),cff=fin.reduce((s,x)=>s+x.v,0);
   return {IS:{rev,exp,texp,ni,lines:[...rev,...exp]},CF:{op,inv,fin,cfo,cfi,cff,lines:[...op,...inv,...fin]}};
 }
-const HOWNOTE={"Cash":"every cash in (+) and cash out (−), in order","Accounts receivable":"invoiced but not yet collected","Supplies":"bought − used = still on hand","Prepaid rent":"paid ahead − months used up","Equipment":"kept at original cost; wear goes to accumulated depreciation","Accumulated depreciation":"shown as a negative under assets (contra-asset)","Accounts payable":"bought on credit − paid to suppliers = still owed","Unearned revenue":"collected in advance − portion now earned","Notes payable":"amount financed − payments made","Owner's capital":"investments − withdrawals (withdrawals are not expenses)","Retained earnings":"revenues − expenses, including non-cash ones (supplies used, rent used, depreciation)"};
+const HOWNOTE={"Cash":"every cash in (+) and cash out (−), in order","Accounts receivable":"invoiced but not yet collected","Supplies":"bought − used = still on hand","Prepaid rent":"paid ahead − months used up","Equipment":"kept at original cost; wear goes to accumulated depreciation","Accumulated depreciation":"shown as a negative under assets (contra-asset)","Accounts payable":"bought on credit − paid to suppliers = still owed","Unearned revenue":"collected in advance − portion now earned","Notes payable":"amount financed − payments made","Common stock":"cash put in by stockholders","Retained earnings":"net income (revenues − expenses, including non-cash ones) − dividends"};
 function howBuilt(rows){
   const sg=v=>(v<0?"− ":"+ ")+fmt(Math.abs(v));
   const cards=rows.map(o=>{const k=o[0],v=sy.bal[k],u=parseFloat(sy.inputs[k]);const ok=!isNaN(u)&&Math.abs(u-Math.abs(v))<1;
@@ -419,13 +419,137 @@ function drawMap(){
 }
 
 // ================= RENDER =================
+
+// ================= TRANSACTIONS: effects on the accounting equation (exam table style) =================
+const TXA={A:["Cash","Accounts receivable","Supplies","Prepaid rent","Inventory","Equipment","Buildings","Land"],L:["Accounts payable","Notes payable","Unearned revenue","Wages payable","Dividends payable"],E:["Common stock","Service revenue","Sales revenue","Rent expense","Utilities expense","Wages expense","Supplies expense","Dividends"]};
+const TX=[
+ ()=>{const v=R(20000,100000,5000);return {t:`Issued common stock to investors for $${fmt(v)} cash.`,A:[["Cash",v]],L:[],E:[["Common stock",v]],why:"Owner financing: an asset up and equity up. Not revenue."};},
+ ()=>{const v=R(50000,500000,10000);return {t:`Borrowed $${fmt(v)} cash from the bank, signing a promissory note.`,A:[["Cash",v]],L:[["Notes payable",v]],E:[],why:"Creditor financing: asset up, liability up."};},
+ ()=>{const v=R(100000,900000,50000),c=Math.round(v*0.25/10000)*10000;return {t:`Bought a building for $${fmt(v)}, paying $${fmt(c)} in cash and signing a note for the rest.`,A:[["Buildings",v],["Cash",-c]],L:[["Notes payable",v-c]],E:[],why:`Two asset entries: the building at full cost (+${fmt(v)}) and cash down by the part paid (−${fmt(c)}); the unpaid ${fmt(v-c)} is a note payable.`};},
+ ()=>{const m=R(2000,12000,1000),n=[3,6,12][Math.random()*3|0];return {t:`Rented equipment at $${fmt(m)} per month and issued a check covering ${n} months' rent in advance.`,A:[["Cash",-m*n],["Prepaid rent",m*n]],L:[],E:[],why:`${n} × ${fmt(m)} = ${fmt(m*n)}. Paying ahead swaps one asset (cash) for another (prepaid rent). No expense until the months are used up.`};},
+ ()=>{const v=R(5000,150000,1000);return {t:`Provided $${fmt(v)} of services to customers and billed them.`,A:[["Accounts receivable",v]],L:[],E:[["Service revenue",v]],why:"Earned, so revenue is recognized now; the customers' promise to pay is a receivable."};},
+ ()=>{const v=R(2000,40000,1000);return {t:`Provided $${fmt(v)} of services for cash.`,A:[["Cash",v]],L:[],E:[["Service revenue",v]],why:"Earned and collected in the same step."};},
+ ()=>{const v=R(1000,30000,1000);return {t:`Purchased $${fmt(v)} of supplies on account.`,A:[["Supplies",v]],L:[["Accounts payable",v]],E:[],why:"Supplies are an asset until used; buying on account creates a payable."};},
+ ()=>{const v=R(500,3000,100);return {t:`Received a utility bill of $${fmt(v)} for the current period; it will be paid next month.`,A:[],L:[["Accounts payable",v]],E:[["Utilities expense",-v]],why:"The electricity was used this period, so the expense is incurred now even though no cash has moved. The unpaid bill is a payable."};},
+ ()=>{const n=R(100,500,100),a=R(300,600,50),b=a+R(20,80,10);return {t:`Raised sales prices on ${n} units from $${a} per unit to $${b} per unit.`,none:true,why:"A price-list change is not an exchange with another party. Nothing is recorded until units are actually sold."};},
+ ()=>{return {t:`Hired a new sales manager at a salary of $${fmt(R(4000,9000,500))} per month, starting next month.`,none:true,why:"An agreement to exchange in the future is not a transaction. Wages are recorded as the work is performed."};},
+ ()=>{const v=R(10000,60000,5000);return {t:`Signed a contract to provide $${fmt(v)} of consulting services next quarter; no cash has changed hands.`,none:true,why:"No performance and no cash yet, so nothing is recorded."};},
+ ()=>{const o=R(10000,60000,5000),p=[25,50][Math.random()*2|0];return {t:`Received a ${p}% deposit from a customer on a $${fmt(o)} order to be filled next month.`,A:[["Cash",o*p/100]],L:[["Unearned revenue",o*p/100]],E:[],why:`${p}% × ${fmt(o)} = ${fmt(o*p/100)} received before performing: a liability (unearned revenue), not revenue.`};},
+ ()=>{const v=R(2000,20000,500);return {t:`Paid employees $${fmt(v)} for work done this month.`,A:[["Cash",-v]],L:[],E:[["Wages expense",-v]],why:"Work already done: expense incurred and paid in one step."};},
+ ()=>{const v=R(1000,20000,500);return {t:`Paid $${fmt(v)} to suppliers for supplies bought earlier on account.`,A:[["Cash",-v]],L:[["Accounts payable",-v]],E:[],why:"Settling a payable: asset down, liability down. No expense now (the supplies were recorded when bought)."};},
+ ()=>{const v=R(1000,30000,500);return {t:`Collected $${fmt(v)} from customers billed last month.`,A:[["Cash",v],["Accounts receivable",-v]],L:[],E:[],why:"One asset replaces another. Revenue was recognized when billed, so equity is untouched."};},
+ ()=>{const v=R(1000,10000,500);return {t:`Declared and paid a $${fmt(v)} cash dividend.`,A:[["Cash",-v]],L:[],E:[["Dividends",-v]],why:"A distribution to owners reduces equity (retained earnings); it is not an expense."};},
+ ()=>{const v=R(500,5000,500);return {t:`A count shows $${fmt(v)} of supplies were used up during the month.`,A:[["Supplies",-v]],L:[],E:[["Supplies expense",-v]],why:"Using supplies is the expense; the asset falls by the same amount."};},
+ ()=>{const v=R(10000,80000,5000);return {t:`Purchased equipment for $${fmt(v)} cash.`,A:[["Equipment",v],["Cash",-v]],L:[],E:[],why:"Asset swap: equipment up, cash down. Not an expense; depreciation will expense it over its life."};}
+];
+let tx={rows:[],inp:{},checked:false};
+function newTx(){const n=Math.min(SZ.tx||6,TX.length);const all=shuffle(TX.map((f,i)=>i));let idx=all.slice(0,n);
+  if(!idx.some(i=>TX[i]().none)){const nones=all.filter(i=>TX[i]().none);idx[n-1]=nones[Math.random()*nones.length|0];}
+  tx.rows=idx.map(i=>TX[i]());tx.inp={};tx.checked=false;}
+const txKey=(a,v)=>a+"|"+Math.round(v);
+function txUser(r,c){const o=(tx.inp[r]||{})[c]||{};return [0,1].map(i=>o[i]||{}).filter(s=>s.a&&s.v!==""&&s.v!=null&&!isNaN(parseFloat(s.v))).map(s=>txKey(s.a,parseFloat(s.v)));}
+function txColOk(r,c){const row=tx.rows[r];const exp=(row.none?[]:row[c]).map(([a,v])=>txKey(a,v)).sort(),got=txUser(r,c).sort();return exp.length===got.length&&exp.every((x,i)=>x===got[i]);}
+function txRowOk(r){const row=tx.rows[r],none=!!(tx.inp[r]||{}).none;if(row.none)return none;if(none)return false;return ["A","L","E"].every(c=>txColOk(r,c));}
+function drawTx(){
+  if(!tx.rows.length)newTx();
+  const sgn=v=>(v<0?"−":"+")+fmt(Math.abs(v));
+  const slot=(r,c,i)=>{const s=((tx.inp[r]||{})[c]||{})[i]||{};return `<div class="txslot"><select data-r="${r}" data-c="${c}" data-i="${i}" ${tx.checked?"disabled":""}><option value="">account</option>${TXA[c].map(a=>`<option ${s.a===a?"selected":""}>${a}</option>`).join("")}</select><input type="number" step="any" placeholder="±" data-r="${r}" data-c="${c}" data-i="${i}" value="${s.v==null?"":esc(s.v)}" ${tx.checked?"disabled":""}></div>`;};
+  const cell=(r,c)=>{const row=tx.rows[r];const ok=tx.checked&&(row.none?txUser(r,c).length===0||(tx.inp[r]||{}).none:txColOk(r,c));const none=(tx.inp[r]||{}).none;
+    return `<td class="txcell ${tx.checked?(ok?"ok":"bad"):""} ${none&&!tx.checked?"dim":""}">${slot(r,c,0)}${slot(r,c,1)}${tx.checked&&!row.none?`<div class="txans">${row[c].length?row[c].map(([a,v])=>`${a} ${sgn(v)}`).join("<br>"):"nothing"}</div>`:""}</td>`;};
+  const n=tx.rows.length,right=tx.checked?tx.rows.filter((_,r)=>txRowOk(r)).length:0;
+  return `<div class="vinfo" style="width:min(1200px,100%)"><div class="vt">Transaction analysis: effects on the accounting equation</div><div class="intro">For each activity, name the account(s) and the signed amount in every column it touches (up to two per column; leave unused slots blank). Equity column: use the revenue, expense or dividend account name, with the sign of its effect on equity (an expense is −). If the activity is not a transaction, tick None.${tx.checked?` <b>Score ${right}/${n}.</b>`:""}</div></div>
+  <div class="txwrap"><table class="txtab"><tr><th style="width:36%">Activity</th><th>Assets</th><th>Liabilities</th><th>Stockholders' equity</th></tr>
+  ${tx.rows.map((row,r)=>{const none=(tx.inp[r]||{}).none;const rok=tx.checked&&txRowOk(r);return `<tr class="${tx.checked?(rok?"txok":"txbad"):""}"><td><b>${String.fromCharCode(65+r)}.</b> ${esc(row.t)}<label class="txnone"><input type="checkbox" data-none="${r}" ${none?"checked":""} ${tx.checked?"disabled":""}> None (not a transaction)</label>${tx.checked?`<div class="why small">${row.none?"<b>None.</b> ":""}${esc(row.why)}</div>`:""}</td>${cell(r,"A")}${cell(r,"L")}${cell(r,"E")}</tr>`;}).join("")}</table></div>
+  <div class="controls">${tx.checked?`<button class="primary" id="txNew">New set →</button><button id="txRetry">Try again</button>`:`<button class="primary" id="txChk">Check</button><button id="txNew">New set</button>`}${sizeSel("txSz","tx",3,10,"activities")}</div>
+  ${method("transaction analysis: the exam's table format, with a None trap in every set")}`;
+}
+function bindTx(){const c=ctx.content;
+  const set=(r,col,i,k,v)=>{tx.inp[r]=tx.inp[r]||{};tx.inp[r][col]=tx.inp[r][col]||{};tx.inp[r][col][i]=tx.inp[r][col][i]||{};tx.inp[r][col][i][k]=v;};
+  c.querySelectorAll(".txslot select").forEach(s=>s.onchange=()=>set(+s.dataset.r,s.dataset.c,+s.dataset.i,"a",s.value));
+  c.querySelectorAll(".txslot input").forEach(s=>s.oninput=()=>set(+s.dataset.r,s.dataset.c,+s.dataset.i,"v",s.value));
+  c.querySelectorAll("input[data-none]").forEach(s=>s.onchange=()=>{const r=+s.dataset.none;tx.inp[r]=tx.inp[r]||{};tx.inp[r].none=s.checked;render();});
+  const chk=$("#txChk",c);if(chk)chk.onclick=()=>{tx.checked=true;render();};
+  const nw=$("#txNew",c);if(nw)nw.onclick=()=>{newTx();render();};
+  const rt=$("#txRetry",c);if(rt)rt.onclick=()=>{tx.checked=false;render();};
+  const sz=$("#txSz",c);if(sz)sz.onchange=()=>{setSize("tx",+sz.value);newTx();render();};
+}
+
+// ================= DRILLS: exam-style computations, generated endlessly =================
+const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const CO2=["Maple Bakery","Orion Software","Delta Rentals","Harbor Tools","Summit Consulting","Pixel Print","Cobalt Repairs","Northwind Design"];
+const co=()=>CO2[Math.random()*CO2.length|0];
+const $$=v=>"$"+fmt(v);
+const DRILLS=[
+ ()=>{const r=R(50000,400000,5000),e=R(20000,r-10000,5000),d=R(1000,20000,1000);return {q:`${co()} recorded ${$$(r)} in revenues, ${$$(e)} in expenses, and ${$$(d)} of dividends for the year. What net income was reported?`,ans:r-e,ds:[r-e-d,r-d,r-e+d],why:`Net income = revenues − expenses = ${fmt(r)} − ${fmt(e)} = ${fmt(r-e)}. Dividends are a distribution, not an expense.`};},
+ ()=>{const l=R(10000,90000,5000),e=R(5000,60000,5000);return {q:`During the year ${co()}'s liabilities increased by ${$$(l)} and stockholders' equity increased by ${$$(e)}. What was the change in its assets?`,ans:l+e,ds:[l-e,e,l+e+R(5000,20000,5000)],why:`Assets = Liabilities + Equity, so the changes obey the same equation: ${fmt(l)} + ${fmt(e)} = ${fmt(l+e)} increase.`};},
+ ()=>{const a=R(400000,900000,10000),l=R(200000,a-100000,10000),da=R(10000,90000,2000),dl=R(5000,da-4000,2000);return {q:`At the end of last year ${co()}'s assets totaled ${$$(a)} and its liabilities ${$$(l)}. This year assets increased by ${$$(da)} and liabilities increased by ${$$(dl)}. Stockholders' equity at the end of this year is:`,ans:a-l+da-dl,ds:[da-dl,a-l,a-l+da+dl],why:`Beginning equity ${fmt(a)} − ${fmt(l)} = ${fmt(a-l)}. Change in equity = ${fmt(da)} − ${fmt(dl)} = ${fmt(da-dl)}. Ending equity ${fmt(a-l+da-dl)}.`};},
+ ()=>{const r=R(2,20,1)*1000000,n=R(1,Math.max(1,r/1000000-1),1)*1000000;return {q:`If ${co()} had ${$$(r)} in revenue and net income of ${$$(n)}, then its:`,choices:[`assets must have been ${$$(n)}.`,`expenses must have been ${$$(r-n)}.`,`expenses must have been ${$$(r+n)}.`,`assets must have been ${$$(r)}.`],ans:1,why:`Expenses = revenue − net income = ${fmt(r)} − ${fmt(n)} = ${fmt(r-n)}. Revenue and income say nothing about total assets.`};},
+ ()=>{const s=R(5,20,1)*1000000,c=R(2,s/1000000-1,1)*1000000;return {q:`${co()} sold ${$$(s)} of products in its first year and received payments of ${$$(c)} for them. The company's income statement would report:`,choices:[`sales revenue of ${$$(s)}.`,`sales revenue of ${$$(c)}.`,`expenses of ${$$(s-c)}.`,`accounts receivable of ${$$(s-c)}.`],ans:0,why:`Revenue is what was earned, ${fmt(s)}. The uncollected ${fmt(s-c)} is accounts receivable, an asset on the balance sheet, not an income statement item.`};},
+ ()=>{const a=R(80000,200000,10000),l=R(20000,60000,5000),cs=Math.round((a-l)*0.7/5000)*5000,re=a-l-cs,rv=R(4000,12000,1000),ex=R(1000,rv-1000,1000),d=R(500,2000,500);
+   const which=Math.random()*4|0;const stem=`${co()} began the year with assets ${$$(a)}, liabilities ${$$(l)}, common stock ${$$(cs)} and retained earnings ${$$(re)}. During the year it earned revenue of ${$$(rv)}, all received in cash, incurred expenses of ${$$(ex)}, all unpaid at year end, and paid dividends of ${$$(d)}. Nothing else happened. `;
+   const ni=rv-ex;
+   return [{q:stem+"Net income for the year is:",ans:ni,ds:[ni-d,rv,rv-d],why:`Net income = ${fmt(rv)} − ${fmt(ex)} = ${fmt(ni)}. Unpaid expenses still count (accrual basis); dividends do not.`},
+     {q:stem+"Retained earnings at the end of the year is:",ans:re+ni-d,ds:[re+ni,re+ni+d,re-d],why:`Ending RE = beginning RE + net income − dividends = ${fmt(re)} + ${fmt(ni)} − ${fmt(d)} = ${fmt(re+ni-d)}.`},
+     {q:stem+"Liabilities at the end of the year are:",ans:l+ex,ds:[l,l-ex,l+ex+d],why:`The unpaid expenses create a payable: ${fmt(l)} + ${fmt(ex)} = ${fmt(l+ex)}.`},
+     {q:stem+"Assets at the end of the year are:",ans:a+rv-d,ds:[a+rv,a+rv-ex-d,a+ni-d],why:`Cash came in from revenue (+${fmt(rv)}) and went out for dividends (−${fmt(d)}); the unpaid expenses touched no asset. ${fmt(a)} + ${fmt(rv)} − ${fmt(d)} = ${fmt(a+rv-d)}.`}][which];},
+ ()=>{const c=R(20000,120000,5000),s=R(0,c/5,1000),n=[3,4,5,8,10][Math.random()*5|0];return {q:`${co()} acquired a ${$$(c)} machine on January 1. It has a useful life of ${n} years and a residual value of ${$$(s)}. Using straight-line depreciation, the depreciation expense for the first year is:`,ans:(c-s)/n,ds:[c/n,(c-s)/(n+1),c-s],why:`(Cost − residual) ÷ life = (${fmt(c)} − ${fmt(s)}) ÷ ${n} = ${fmt((c-s)/n)}.`};},
+ ()=>{const c=R(20000,120000,5000),s=R(1000,c/5,1000),n=[4,5,8,10][Math.random()*4|0];return {q:`${co()} bought equipment for ${$$(c)} with a ${n}-year life and ${$$(s)} residual value. Using double-declining-balance, first-year depreciation is:`,ans:c*2/n,ds:[(c-s)*2/n,(c-s)/n,c/n],why:`DDB rate = 2 ÷ ${n} = ${(200/n).toFixed(0)}%, applied to the full book value (residual is ignored until the floor): ${fmt(c)} × ${(2/n).toFixed(2)} = ${fmt(c*2/n)}.`};},
+ ()=>{const c=R(40000,120000,5000),s=R(0,c/5,5000),u=[100000,200000,500000][Math.random()*3|0],y=R(u/10,u/4,10000);return {q:`A ${$$(c)} machine with ${$$(s)} residual value is expected to produce ${fmt(u)} units. It produced ${fmt(y)} units this year. Units-of-production depreciation for the year is:`,ans:(c-s)/u*y,ds:[c/u*y,(c-s)/5,(c-s)/u*y*2],why:`Rate per unit = (${fmt(c)} − ${fmt(s)}) ÷ ${fmt(u)} = ${((c-s)/u).toFixed(3)}; × ${fmt(y)} units = ${fmt((c-s)/u*y)}.`};},
+ ()=>{const m1=Math.random()*11|0,m2=m1+1;return {q:`${co()} receives an advance payment in ${MON[m1]} for services it provides during ${MON[m2]}. Which statement is correct?`,choices:[`An expense is recorded in ${MON[m1]}; revenue will be recorded in ${MON[m2]}.`,`Revenue is recorded in ${MON[m1]} and an expense in ${MON[m2]}.`,`Revenue and expenses are both recorded in ${MON[m1]}.`,`A liability is recorded in ${MON[m1]}; revenue will be recorded in ${MON[m2]}.`],ans:3,why:`Cash received before performing creates Unearned Revenue, a liability, in ${MON[m1]}. Revenue is recognized in ${MON[m2]} when the service is provided.`};},
+ ()=>{const v=R(1000,9000,500),a=co(),b=co()===a?"Beta Co.":"Beta Co.";const askBuyer=Math.random()<0.5;return {q:`${a} sold ${$$(v)} of services to ${b} on credit; ${b} promised to pay next month. ${askBuyer?b:a} will report a ${$$(v)}:`,choices:["net income.","account payable.","decrease in cash.","accounts receivable."],ans:askBuyer?1:3,why:askBuyer?`The buyer owes money, so it reports Accounts Payable. Nothing is paid yet, so cash does not move.`:`The seller is owed money, so it reports Accounts Receivable (and revenue). Net income is a total, not an account balance.`};},
+ ()=>{const m=R(1000,6000,500),n=[6,12][Math.random()*2|0],k=R(1,n-1,1);const askBal=Math.random()<0.5;return {q:`On the first day of the year ${co()} paid ${$$(m*n)} for ${n} months of rent in advance. ${k} month${k>1?"s":""} later, ${askBal?"the balance in Prepaid Rent":"the rent expense recognized so far"} is:`,ans:askBal?m*(n-k):m*k,ds:[askBal?m*k:m*(n-k),m*n,m],why:`Monthly rent = ${fmt(m*n)} ÷ ${n} = ${fmt(m)}. After ${k} month${k>1?"s":""}: expense ${fmt(m*k)} used up, prepaid ${fmt(m*(n-k))} still an asset.`};},
+ ()=>{const b=R(500,3000,100),p=R(1000,8000,500),e=R(200,Math.min(b+p-200,4000),100);return {q:`${co()} began the year with ${$$(b)} of supplies, bought ${$$(p)} more during the year, and a year-end count showed ${$$(e)} on hand. Supplies expense for the year is:`,ans:b+p-e,ds:[p-e,p,b+p],why:`Beginning + purchases − ending = used: ${fmt(b)} + ${fmt(p)} − ${fmt(e)} = ${fmt(b+p-e)}.`};},
+ ()=>{const re=R(20000,90000,5000),ni=R(5000,40000,1000),d=R(1000,ni,1000);return {q:`${co()} began the year with retained earnings of ${$$(re)}, earned net income of ${$$(ni)}, and declared dividends of ${$$(d)}. Ending retained earnings is:`,ans:re+ni-d,ds:[re+ni,re+ni+d,ni-d],why:`Ending RE = beginning RE + net income − dividends = ${fmt(re)} + ${fmt(ni)} − ${fmt(d)} = ${fmt(re+ni-d)}.`};},
+ ()=>{const items=shuffle([["Advertising expense",0],["Accounts payable",1],["Cash",1],["Accounts receivable",1],["Wages expense",0],["Unearned revenue",1],["Equipment",1],["Rent expense",0],["Common stock",1],["Supplies",1]]);const ex=items.find(i=>i[1]===0);const bs=items.filter(i=>i[1]===1).slice(0,3);const ch=shuffle([ex,...bs]);return {q:"Which of the following would NOT be reported on the balance sheet?",choices:ch.map(c=>c[0]),ans:ch.indexOf(ex),why:`${ex[0]} is an income statement item. The balance sheet reports assets, liabilities and equity only.`};},
+ ()=>{const ch=shuffle([["paying wages for work performed this period",1],["using supplies",1],["paying for electricity used this period",1],["making a payment on account",0],["declaring a dividend",0],["buying equipment for cash",0]]);const wrong=ch.filter(c=>!c[1])[0];const list=shuffle([wrong,...ch.filter(c=>c[1]).slice(0,3)]);return {q:"Expenses include all of the following EXCEPT:",choices:list.map(c=>c[0]+"."),ans:list.indexOf(wrong),why:wrong[0]==="making a payment on account"?"Paying a payable reduces Cash and Accounts Payable; the expense was recorded when the item was used.":wrong[0]==="declaring a dividend"?"Dividends are a distribution to owners, not a cost of earning revenue.":"Buying equipment is an asset purchase; the expense arrives later as depreciation."};},
+ ()=>{const ca=R(100000,400000,10000),cl=R(50000,ca,10000);return {q:`${co()} has current assets of ${$$(ca)} and current liabilities of ${$$(cl)}. Its current ratio (to two decimals) is:`,ans:Math.round(100*ca/cl)/100,ds:[Math.round(100*cl/ca)/100,Math.round(100*(ca-cl)/cl)/100,Math.round(100*ca/(ca+cl))/100],ratio:true,why:`Current assets ÷ current liabilities = ${fmt(ca)} ÷ ${fmt(cl)} = ${(ca/cl).toFixed(2)}.`};},
+ ()=>{const v=R(2000,20000,1000);const m=Math.random()*10|0;return {q:`In ${MON[m]} ${co()} performed ${$$(v)} of services for a client and sent an invoice due in ${MON[m+2]}. Under accrual accounting, revenue is recognized in:`,choices:[`${MON[m]}, ${$$(v)}`,`${MON[m+2]}, ${$$(v)}`,`${MON[m]}, ${$$(0)} until collected`,`spread evenly across ${MON[m]} to ${MON[m+2]}`],ans:0,why:`Revenue is recognized when earned (the service was performed in ${MON[m]}), regardless of when cash arrives.`};}
+];
+let dr={qs:[],i:0,picked:[],done:false};
+function mkDrill(){const d=DRILLS[Math.random()*DRILLS.length|0]();if(d.choices)return d;
+  const f=v=>d.ratio?v.toFixed(2):$$(v);const seen=new Set([f(d.ans)]);const ds=[];for(const x of d.ds){if(x>0&&!seen.has(f(x))){seen.add(f(x));ds.push(x);}}
+  while(ds.length<3){const x=d.ans*(1+(Math.random()<0.5?-1:1)*(0.1+Math.random()*0.5));const y=d.ratio?Math.round(x*100)/100:Math.round(x/500)*500||500;if(!seen.has(f(y))&&y>0){seen.add(f(y));ds.push(y);}}
+  const ch=shuffle([d.ans,...ds]);return {q:d.q,choices:ch.map(f),ans:ch.indexOf(d.ans),why:d.why};}
+function newDrills(){dr.qs=Array.from({length:10},mkDrill);dr.i=0;dr.picked=[];dr.done=false;}
+function drawDrills(){
+  if(!dr.qs.length)newDrills();
+  if(dr.done){const r=dr.picked.filter((p,i)=>p===dr.qs[i].ans).length;
+    return `<div class="vinfo" style="width:min(900px,100%)"><div class="vt">Drill set finished: ${r}/10</div><div class="list" style="margin-top:8px"><table>${dr.qs.map((q,i)=>`<tr style="color:${dr.picked[i]===q.ans?"var(--good)":"var(--bad)"}"><td>${i+1}</td><td>${esc(q.q)}<div class="meta" style="text-align:left">${esc(q.why)}</div></td><td>${"ABCD"[dr.picked[i]]}</td><td>${"ABCD"[q.ans]}</td></tr>`).join("")}</table></div>
+    <div class="controls"><button class="primary" id="drNew">New set of 10</button></div></div>${method("practice testing with computation: exam-style word problems, fresh numbers every time")}`;}
+  const q=dr.qs[dr.i],p=dr.picked[dr.i];
+  return `<div class="vinfo" style="width:min(900px,100%)"><div class="vt">Drill ${dr.i+1}/10</div><div class="q" style="text-align:left">${esc(q.q)}</div>
+  <div class="choices">${q.choices.map((c,i)=>`<div class="choice ${p!==undefined?(i===q.ans?"correct":i===p?"wrong":"dim"):""}" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(c)}</span></div>`).join("")}</div>
+  ${p!==undefined?`<div class="explain">${esc(q.why)}</div>`:""}
+  <div class="controls">${p!==undefined?`<button class="primary" id="drNext">${dr.i+1<10?"Next →":"Finish"}</button>`:""}<button id="drNew">New set</button></div></div>
+  ${method("practice testing with computation: exam-style word problems, fresh numbers every time")}`;
+}
+function bindDrills(){const c=ctx.content;
+  if(dr.picked[dr.i]===undefined)c.querySelectorAll(".choice").forEach(el=>el.onclick=()=>{dr.picked[dr.i]=+el.dataset.i;ctx.state.test.done++;if(+el.dataset.i===dr.qs[dr.i].ans)ctx.state.test.right++;ctx.save();render();});
+  const nx=$("#drNext",c);if(nx)nx.onclick=()=>{if(dr.i+1<10)dr.i++;else dr.done=true;render();};
+  const nw=$("#drNew",c);if(nw)nw.onclick=()=>{newDrills();render();};
+}
+
+// ================= MATCH, exam style: letters, with more definitions than terms =================
+let mx={terms:[],defs:[],sel:{},checked:false};
+function newMx(){let secs=ctx.state.secs.filter(x=>x!=="AB");if(!secs.length)secs=["A1","A2","A3","A4","A5","B1","B2","B3","PQ"];
+  let pool_=(window.FMAA_CARDS||[]).map(c=>({sec:c[0],f:c[1],b:c[2]})).filter(c=>secs.includes(c.sec)&&c.f.length<60&&c.b.length<160);
+  if(pool_.length<9)pool_=(window.FMAA_CARDS||[]).map(c=>({sec:c[0],f:c[1],b:c[2]})).filter(c=>c.f.length<60&&c.b.length<160);
+  const cards=shuffle(pool_).slice(0,9);mx.terms=cards.slice(0,6).map((c,i)=>({t:c.f,d:c.b}));mx.defs=shuffle(cards.map(c=>c.b));mx.sel={};mx.checked=false;}
+function drawMx(){if(!mx.terms.length)newMx();const L="ABCDEFGHIJK";const right=mx.checked?mx.terms.filter((t,i)=>mx.sel[i]===L[mx.defs.indexOf(t.d)]).length:0;
+  return `<div class="vinfo" style="width:min(1000px,100%)"><div class="vt">Match the term and the definition (there are more definitions than terms)${mx.checked?` · ${right}/6`:""}</div>
+  <div class="mxwrap"><div><table class="mxt">${mx.terms.map((t,i)=>{const ok=mx.checked&&mx.sel[i]===L[mx.defs.indexOf(t.d)];return `<tr class="${mx.checked?(ok?"txok":"txbad"):""}"><td><select data-i="${i}" ${mx.checked?"disabled":""}><option value="">__</option>${mx.defs.map((d,j)=>`<option ${mx.sel[i]===L[j]?"selected":""}>${L[j]}</option>`).join("")}</select></td><td>${i+1}. ${esc(t.t)}${mx.checked&&!ok?`<span class="meta"> → ${L[mx.defs.indexOf(t.d)]}</span>`:""}</td></tr>`;}).join("")}</table></div>
+  <ol class="mxdefs" type="A">${mx.defs.map(d=>`<li>${esc(d)}</li>`).join("")}</ol></div>
+  <div class="controls">${mx.checked?`<button class="primary" id="mxNew">New set →</button>`:`<button class="primary" id="mxChk">Check</button><button id="mxNew">New set</button>`}</div></div>${method("matching with distractors, the exam's format: extra definitions mean you must know each term, not eliminate")}`;}
+function bindMx(){const c=ctx.content;c.querySelectorAll(".mxt select").forEach(s=>s.onchange=()=>{mx.sel[+s.dataset.i]=s.value;});
+  const chk=$("#mxChk",c);if(chk)chk.onclick=()=>{mx.checked=true;render();};const nw=$("#mxNew",c);if(nw)nw.onclick=()=>{newMx();render();};}
+
 function render(){
   const c=ctx.content;
   const opts=(o,cur,lab)=>`<select id="vpick">${Object.keys(o).map(k=>`<option value="${k}" ${cur===k?"selected":""}>${lab(k)}</option>`).join("")}</select>`;
   const ST=window.FMAA_STATEMENTS;const stMap=Object.fromEntries(ST.list);
-  const picker={story:"",build:"",stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
-  const body={story:drawStory,build:drawBuild,stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
-  const TABS=[["stmts","Statements","read a full statement line by line"],["build","Build","sort accounts, assemble a mini balance sheet"],["story","Story","turn a word problem into statements"],["maps","Mind maps","see how topics connect"],["diagrams","Diagrams","process flows, step by step"],["anim","Examples","worked and faded examples"],["charts","Charts","ratios and trends as pictures"],["sims","Sort","drag items into categories"],["match","Match","pair terms with meanings"]];
+  const picker={drills:"",tx:"",mx:"",story:"",build:"",stmts:opts(stMap,pick.stmt,k=>stMap[k]),maps:opts(MAPS,pick.map,k=>MAPS[k][0]),diagrams:opts(D,pick.diagram,k=>D[k].title),anim:opts(ANIMS,pick.anim,k=>ANIMS[k][0]),charts:opts(CHARTS,pick.chart,k=>CHARTS[k][0]),sims:opts(SIMS,pick.sim,k=>SIMS[k].title+(ctx.state.visual&&ctx.state.visual[k]!=null?" · best "+ctx.state.visual[k]+"%":"")),match:""}[sub];
+  const body={drills:drawDrills,tx:drawTx,mx:drawMx,story:drawStory,build:drawBuild,stmts:()=>ST.render(pick.stmt,stSel,stQuiz)+`<div class="controls"><button id="stPrev">← Prev line</button><button class="primary" id="stNext">Next line →</button><button id="stQuiz" class="${stQuiz?"warn":""}">${stQuiz?"Show labels":"Hide labels (recall)"}</button></div>${method("worked example: read a complete statement line by line, then recall the labels from the numbers alone")}`,maps:drawMap,diagrams:drawDiagram,anim:()=>ANIMS[pick.anim][1](),charts:drawChart,sims:drawSim,match:drawMatch}[sub]();
+  const TABS=[["drills","Drills","exam-style word problems, endless"],["tx","Transactions","effects on the accounting equation (exam table)"],["story","Story","turn a word problem into statements"],["stmts","Statements","read a full statement line by line"],["build","Build","sort accounts, assemble a mini balance sheet"],["mx","Match (exam)","terms to lettered definitions, with extras"],["maps","Mind maps","see how topics connect"],["diagrams","Diagrams","process flows, step by step"],["anim","Examples","worked and faded examples"],["charts","Charts","ratios and trends as pictures"],["sims","Sort","drag items into categories"],["match","Match","pair terms with meanings"]];
   const cur=TABS.find(t=>t[0]===sub);
   c.innerHTML=`<div class="stage" style="justify-content:flex-start;padding-top:4px"><div class="vtop"><div class="vtabs">${TABS.map(([k,l])=>`<button class="${sub===k?"on":""}" data-v="${k}">${l}</button>`).join("")}</div><div class="vcrumb"><b>${esc(cur[1])}</b><span class="meta">${esc(cur[2])}</span></div>${picker}</div>${body}</div>`;
   const nav=document.getElementById("visNav");if(nav){nav.innerHTML=`<h3>Visual activities</h3>${TABS.map(([k,l,d])=>`<button class="vnav ${sub===k?"on":""}" data-v="${k}"><b>${l}</b><span>${d}</span></button>`).join("")}`;
@@ -443,7 +567,7 @@ function render(){
   if(pv)pv.onclick=()=>{step=Math.max(0,step-1);render();};
   const rv=$("#vreveal",c);if(rv)rv.onclick=()=>{ui.reveal=1;render();};
   const ms=$("#mshow",c),mr=$("#mrecall",c);if(ms)ms.onclick=()=>{ui.recall=0;render();};if(mr)mr.onclick=()=>{ui.recall=1;ui.open={};render();};
-  if(sub==="sims")bindSim();if(sub==="match")bindMatch();if(sub==="build")bindBuild();if(sub==="story")bindStory();
+  if(sub==="sims")bindSim();if(sub==="match")bindMatch();if(sub==="build")bindBuild();if(sub==="story")bindStory();if(sub==="tx")bindTx();if(sub==="drills")bindDrills();if(sub==="mx")bindMx();
   if(sub==="anim"&&pick.anim==="faded"){$("#fdr",c).onchange=e=>fade.dr=e.target.value;$("#fcr",c).onchange=e=>fade.cr=e.target.value;
     $("#fchk",c).onclick=()=>{const a=BP[fade.i][1];const ok=a.some(x=>x[1]&&x[0]===fade.dr)&&a.some(x=>x[2]&&x[0]===fade.cr);if(fade.res===null&&ok)fade.score++;fade.res=ok;render();};
     $("#fnext",c).onclick=()=>{fade.i=(fade.i+1)%BP.length;fade.dr=fade.cr="";fade.res=null;render();};$("#fprev",c).onclick=()=>{fade.i=(fade.i+BP.length-1)%BP.length;fade.dr=fade.cr="";fade.res=null;render();};}

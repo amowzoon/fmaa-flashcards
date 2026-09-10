@@ -562,7 +562,7 @@ function render(){
     $("#stNext",c).onclick=()=>step_(1);$("#stPrev",c).onclick=()=>step_(-1);$("#stQuiz",c).onclick=()=>{stQuiz=!stQuiz;render();};}
   c.querySelectorAll(".vn").forEach(n=>n.onclick=()=>{if(sub==="maps"){ui.open[+n.dataset.i]=!ui.open[+n.dataset.i];}else step=+n.dataset.i;render();});
   c.querySelectorAll("[data-fam]").forEach(b=>b.onclick=()=>{step=+b.dataset.fam;ui.r=0;render();});
-  c.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ui.r=+b.dataset.r;render();});
+  c.querySelectorAll(".rchip[data-r]").forEach(b=>b.onclick=()=>{ui.r=+b.dataset.r;render();});
   const nx=$("#vnext",c),pv=$("#vprev",c);
   if(nx)nx.onclick=()=>{const max=sub==="diagrams"?(D[pick.diagram].nodes||[]).length||4:pick.anim==="bestport"?BP.length+1:pick.anim==="cashflow"?CF.length+1:99;step=(step+1)%max;render();};
   if(pv)pv.onclick=()=>{step=Math.max(0,step-1);render();};

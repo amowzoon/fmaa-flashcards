@@ -343,7 +343,8 @@ function drawStory(){
   const tot=c=>rows.filter(o=>o[1]===c).reduce((s,o)=>s+sy.bal[o[0]],0);
   const cell=o=>{const k=o[0],v=sy.bal[k],u=sy.inputs[k];const ok=sy.checked&&u!=null&&u!==""&&Math.abs(parseFloat(u)-Math.abs(v))<1;const bad=sy.checked&&!ok;
     const shown=k==="Accumulated depreciation"?"("+fmt(Math.abs(v))+")":fmt(v);
-    return `<tr class="sl i1 ${bad?"srow-bad":ok?"srow-ok":""}"><td class="lab">${esc(k)}${k==="Accumulated depreciation"?' <span class="meta">(contra-asset: enter as a positive number)</span>':""}</td><td class="num"><div class="sycell"><input class="sin" data-k="${esc(k)}" type="number" step="any" value="${u==null?"":esc(u)}" ${sy.checked?"disabled":""}>${sy.checked?`<span class="syres ${ok?"good":"bad"}">${ok?"✓":"✗ "+shown}</span>`:""}</div></td></tr>`;};
+    const der=sy.checked?`<div class="sder">${sy.events.filter(e=>e.fx[k]).map(e=>{const lbl=(e.sx&&e.sx[k])||e.s||"Event";const d=k==="Accumulated depreciation"?-e.fx[k]:e.fx[k];return esc(lbl)+" "+(d<0?"−":"+")+" "+fmt(Math.abs(d));}).join(" · ")}${HOWNOTE[k]?` <span class="meta">(${esc(HOWNOTE[k])})</span>`:""}</div>`:"";
+    return `<tr class="sl i1 ${bad?"srow-bad":ok?"srow-ok":""}"><td class="lab">${esc(k)}${k==="Accumulated depreciation"?' <span class="meta">(contra-asset: enter as a positive number)</span>':""}${der}</td><td class="num"><div class="sycell"><input class="sin" data-k="${esc(k)}" type="number" step="any" value="${u==null?"":esc(u)}" ${sy.checked?"disabled":""}>${sy.checked?`<span class="syres ${ok?"good":"bad"}">${ok?"✓":"✗ "+shown}</span>`:""}</div></td></tr>`;};
   const sec=(c,title)=>`<tr class="sl kh"><td>${title}</td><td></td></tr>${rows.filter(o=>o[1]===c).map(cell).join("")}<tr class="sl kt"><td class="lab">Total ${title.toLowerCase()}</td><td class="num">${sy.checked?fmt(tot(c)):"?"}</td></tr>`;
   // generic signed line for IS / CFS: {k,l,v,src:[[label,delta]...],note}
   const sline=(x,ind)=>{const u=sy.inputs[x.k];const ok=sy.checked&&u!=null&&u!==""&&Math.abs(parseFloat(u)-x.v)<1;const bad=sy.checked&&!ok;const signOnly=bad&&u!=null&&u!==""&&Math.abs(Math.abs(parseFloat(u))-Math.abs(x.v))<1;
@@ -362,7 +363,6 @@ function drawStory(){
   <div class="controls" style="justify-content:flex-start;gap:14px"><label class="meta"><input type="checkbox" id="syBS" ${SZ.bs?"checked":""}> Balance sheet</label><label class="meta"><input type="checkbox" id="syIS" ${SZ.is?"checked":""}> Income statement</label><label class="meta"><input type="checkbox" id="syCF" ${SZ.cf?"checked":""}> Cash flow statement</label></div></div>
   ${SZ.bs?`<div class="stmt sycol"><div class="sh"><b>Balance sheet at year end</b><span class="meta">${sy.checked?"A "+fmt(tot("A"))+" = L "+fmt(tot("L"))+" + E "+fmt(tot("E")):"fill in every line"}</span></div>
   <table class="stab sytab">${sec("A","Assets")}${sec("L","Liabilities")}${sec("E","Equity")}</table></div>`:""}${isHtml}${cfHtml}</div>
-  ${sy.checked&&SZ.bs?howBuilt(rows):""}
   ${method("transfer: translate events in words into account balances, the way exam word problems do")}`;
 }
 function storyStmts(){
@@ -383,13 +383,6 @@ function storyStmts(){
   return {IS:{rev,exp,texp,ni,lines:[...rev,...exp]},CF:{op,inv,fin,cfo,cfi,cff,lines:[...op,...inv,...fin]}};
 }
 const HOWNOTE={"Cash":"every cash in (+) and cash out (−), in order","Accounts receivable":"invoiced but not yet collected","Supplies":"bought − used = still on hand","Prepaid rent":"paid ahead − months used up","Equipment":"kept at original cost; wear goes to accumulated depreciation","Accumulated depreciation":"shown as a negative under assets (contra-asset)","Accounts payable":"bought on credit − paid to suppliers = still owed","Unearned revenue":"collected in advance − portion now earned","Notes payable":"amount financed − payments made","Common stock":"cash put in by stockholders","Retained earnings":"net income (revenues − expenses, including non-cash ones) − dividends"};
-function howBuilt(rows){
-  const sg=v=>(v<0?"− ":"+ ")+fmt(Math.abs(v));
-  const cards=rows.map(o=>{const k=o[0],v=sy.bal[k],u=parseFloat(sy.inputs[k]);const ok=!isNaN(u)&&Math.abs(u-Math.abs(v))<1;
-    const lines=sy.events.filter(e=>e.fx[k]).map(e=>{const lbl=(e.sx&&e.sx[k])||e.s||"Event";const d=k==="Accumulated depreciation"?-e.fx[k]:e.fx[k];return `<div class="hrow"><span>${esc(lbl)}</span><span class="num">${sg(d)}</span></div>`;}).join("");
-    return `<div class="hcard ${ok?"hok":"hbad"}"><div class="ht"><b>${esc(k)}</b><span class="num">= ${fmt(Math.abs(v))}</span></div>${lines}<div class="hn">${esc(HOWNOTE[k]||"")}${ok?"":isNaN(u)?"<br>You left this blank.":`<br>You entered ${fmt(u)}.`}</div></div>`;}).join("");
-  return `<div class="vinfo syhow"><div class="vt">How each number was built</div><div class="meta" style="text-align:left">Each balance is just the events that touch that account, added up. Non-cash entries change equity without touching cash.</div><div class="hgrid">${cards}</div></div>`;
-}
 function bindStory(){const c=ctx.content;
   c.querySelectorAll(".sin").forEach(i=>{i.oninput=e=>sy.inputs[i.dataset.k]=e.target.value;i.onkeydown=e=>{if(e.key==="Enter"){const b=$("#syChk",c);if(b)b.click();}};});
   const chk=$("#syChk",c);if(chk)chk.onclick=()=>{sy.checked=true;render();};
@@ -640,11 +633,134 @@ function bindDrills(){const c=ctx.content;
 }
 
 // ================= MATCH, exam style: letters, with more definitions than terms =================
+// Curated matching bank. Every definition inside a set is written in the same shape,
+// so the set cannot be solved by eliminating on format. Decoys are near misses.
+const MATCHSETS=[
+{title:"Accrual and timing",terms:[
+["Unearned revenue","Cash collected before the goods are delivered or the service is performed"],
+["Accrued revenue","Revenue that has been earned but not yet billed or collected"],
+["Prepaid expense","Cash paid before the resource is used up"],
+["Accrued expense","A cost that has been incurred but not yet paid"],
+["Revenue recognition principle","Revenue is recorded when it is earned, whatever period the cash arrives in"],
+["Matching principle","Expenses are recorded in the same period as the revenue they helped produce"],
+["Accrual basis","Revenues are recorded when earned and expenses when incurred"],
+["Cash basis","Revenues and expenses are recorded only when cash changes hands"],
+["Time period assumption","The life of the business is divided into equal reporting periods"],
+["Conservatism","Under uncertainty, choose the treatment least likely to overstate assets or income"],
+["Adjusting entry","An entry made at period end to bring an account to the amount actually earned or used"],
+["Closing entry","An entry that returns revenue, expense and dividend accounts to a zero balance"]],
+decoys:[
+"Cash collected for goods that were delivered in an earlier period",
+"Expenses are recorded in whichever period the invoice happens to be paid",
+"Revenue is recorded on the date the contract is signed",
+"An entry made at the start of a period that undoes a prior accrual",
+"Choosing the treatment that reports the highest net income the rules allow"]},
+
+{title:"Balance sheet items",terms:[
+["Current asset","Expected to become cash or be used up within one year or the operating cycle, whichever is longer"],
+["Non-current asset","Held for use over more than one year and not expected to become cash soon"],
+["Current liability","An obligation due to be settled within one year or the operating cycle"],
+["Contra-asset account","An account carrying a credit balance that reduces the asset it is paired with"],
+["Accumulated depreciation","The total depreciation charged on an asset since it was acquired"],
+["Retained earnings","Cumulative earnings kept in the business rather than distributed to owners"],
+["Additional paid-in capital","The amount shareholders paid above the par value of the shares"],
+["Treasury stock","The company's own shares that it has repurchased and holds"],
+["Net working capital","Current assets minus current liabilities"],
+["Book value of an asset","Original cost minus accumulated depreciation"],
+["Liquidity","How quickly an asset can be turned into cash"],
+["Financial flexibility","The ability to change the amount and timing of cash flows to meet unexpected needs"]],
+decoys:[
+"The market value of everything the company owns at the reporting date",
+"Earnings distributed to shareholders during the period",
+"An account carrying a debit balance that increases the liability it accompanies",
+"Total assets minus total liabilities",
+"Shares that have been authorized but have never been issued"]},
+
+{title:"Internal control and risk",terms:[
+["Inherent risk","How exposed an account is to error before any controls are considered"],
+["Control risk","The chance the company's own controls fail to prevent or catch an error in time"],
+["Detection risk","The chance that audit procedures fail to find an error that exists"],
+["Residual risk","The risk that is left after management's controls have been applied"],
+["Segregation of duties","Splitting authorization, recordkeeping, custody and reconciliation among different people"],
+["Compensating control","A supervisory review or reconciliation used where duties cannot be separated"],
+["Corporate governance","The system of rules and oversight by which an organization is directed and controlled"],
+["Agency problem","The conflict created when the people running a company are not the people who own it"],
+["Reasonable assurance","The realistic level of confidence controls give, limited by collusion, override and cost"],
+["Risk transfer","Shifting the financial consequence of a risk to another party, such as an insurer"],
+["Risk avoidance","Choosing not to undertake the activity that creates the risk"],
+["Internal control","Any action taken to manage risk and raise the chance that objectives are met"]],
+decoys:[
+"Assigning one trusted employee full responsibility for a transaction from beginning to end",
+"A guarantee that no error or fraud can occur once controls are in place",
+"Accepting a risk because controlling it would cost more than the loss it could cause",
+"The external auditor's responsibility to design the company's control system",
+"The risk that the company's share price falls after unfavourable news"]},
+
+{title:"Inventory and cost flow",terms:[
+["First in, first out","The oldest unit costs are charged to cost of goods sold first"],
+["Last in, first out","The newest unit costs are charged to cost of goods sold first"],
+["Product cost","A cost that stays in inventory until the goods are sold"],
+["Period cost","A cost charged against income in the period it is incurred"],
+["Carrying cost","The cost of holding inventory, such as storage, insurance and obsolescence"],
+["Ordering cost","The cost of placing and processing a purchase order"],
+["Stockout cost","The lost sales and lost goodwill caused by running out of inventory"],
+["Just in time","Inventory is scheduled to arrive only as it is needed, so almost none is held"],
+["Consignment","Goods held by one party but still owned by another until they are sold"],
+["Free on board shipping point","Title passes to the buyer the moment the goods leave the seller"],
+["Free on board destination","Title stays with the seller until the goods reach the buyer"],
+["Lead time","The gap between placing an order and having the goods ready to use"]],
+decoys:[
+"The cost of shipping finished goods out to customers",
+"Unit costs are averaged across every unit available for sale",
+"Goods are owned by whichever party is physically holding them",
+"Inventory is ordered in the largest quantity the supplier will discount",
+"A cost shared equally between the buyer and the seller"]},
+
+{title:"Ratios and analysis",terms:[
+["Current ratio","Current assets divided by current liabilities"],
+["Quick ratio","Cash, marketable securities and receivables divided by current liabilities"],
+["Times interest earned","Operating income before interest and tax divided by interest expense"],
+["Inventory turnover","Cost of goods sold divided by average inventory"],
+["Receivables turnover","Net credit sales divided by average receivables"],
+["Debt ratio","Total liabilities divided by total assets"],
+["Return on assets","Net income divided by average total assets"],
+["Return on equity","Net income divided by average shareholders' equity"],
+["Gross profit margin","Gross profit divided by net sales"],
+["Operating cycle","Days inventory is held plus the days taken to collect from customers"],
+["Cash conversion cycle","The operating cycle minus the days taken to pay suppliers"],
+["Vertical analysis","Every line stated as a percentage of sales, or of total assets"],
+["Horizontal analysis","The change in a line from one period to the next, stated as a percentage"]],
+decoys:[
+"Current assets divided by total assets",
+"Net sales divided by average inventory",
+"Interest expense divided by operating income",
+"Total assets divided by total liabilities",
+"Net income divided by net sales"]},
+
+{title:"Revenue and equity transactions",terms:[
+["Performance obligation","A distinct promise to transfer a good or a service to the customer"],
+["Transaction price","The consideration the seller expects to be entitled to for the promised goods"],
+["Variable consideration","The part of the price that depends on discounts, rebates, bonuses or refunds"],
+["Control of an asset","The ability to direct its use and obtain substantially all of its benefits"],
+["Recognition over time","Revenue recorded as the work progresses because the customer benefits as it is performed"],
+["Recognition at a point in time","Revenue recorded at the moment control passes, normally on delivery"],
+["Principal","The party that controls the good before transfer and reports the gross amount as revenue"],
+["Agent","The party that arranges a sale for someone else and reports only its commission"],
+["Stock split","More shares are issued in place of the old ones, with no change to total equity"],
+["Small stock dividend","Retained earnings are reduced by the market value of the shares issued"],
+["Large stock dividend","Retained earnings are reduced by the par value of the shares issued"],
+["Cash dividend","Becomes a liability of the company on the date it is declared"]],
+decoys:[
+"The amount of cash the customer has actually paid to date",
+"A promise that cannot be separated from the other promises in the contract",
+"Revenue recorded evenly across the contract term whatever work has been performed",
+"Retained earnings are reduced by the cash the shareholders originally paid for the shares",
+"Becomes a liability of the company on the date it is actually paid"]}
+];
 let mx={terms:[],defs:[],sel:{},checked:false};
-function newMx(){let secs=ctx.state.secs.filter(x=>x!=="AB");if(!secs.length)secs=["A1","A2","A3","A4","A5","B1","B2","B3"];
-  let pool_=(window.FMAA_CARDS||[]).map(c=>({sec:c[0],f:c[1],b:c[2]})).filter(c=>secs.includes(c.sec)&&c.f.length<60&&c.b.length<160);
-  if(pool_.length<9)pool_=(window.FMAA_CARDS||[]).map(c=>({sec:c[0],f:c[1],b:c[2]})).filter(c=>c.f.length<60&&c.b.length<160);
-  const cards=shuffle(pool_).slice(0,9);mx.terms=cards.slice(0,6).map((c,i)=>({t:c.f,d:c.b}));mx.defs=shuffle(cards.map(c=>c.b));mx.sel={};mx.checked=false;}
+function newMx(){const g=MATCHSETS[Math.random()*MATCHSETS.length|0];const ts=shuffle(g.terms.slice());
+  const use=ts.slice(0,6),extras=ts.slice(6,9).map(t=>t[1]),wrote=shuffle(g.decoys.slice()).slice(0,2);
+  mx.terms=use.map(t=>({t:t[0],d:t[1]}));mx.defs=shuffle(use.map(t=>t[1]).concat(extras,wrote));mx.sel={};mx.checked=false;}
 function drawMx(){if(!mx.terms.length)newMx();const L="ABCDEFGHIJK";const right=mx.checked?mx.terms.filter((t,i)=>mx.sel[i]===L[mx.defs.indexOf(t.d)]).length:0;
   return `<div class="vinfo" style="width:min(1000px,100%)"><div class="vt">Match the term and the definition (there are more definitions than terms)${mx.checked?` · ${right}/6`:""}</div>
   <div class="mxwrap"><div><table class="mxt">${mx.terms.map((t,i)=>{const ok=mx.checked&&mx.sel[i]===L[mx.defs.indexOf(t.d)];return `<tr class="${mx.checked?(ok?"txok":"txbad"):""}"><td><select data-i="${i}" ${mx.checked?"disabled":""}><option value="">__</option>${mx.defs.map((d,j)=>`<option ${mx.sel[i]===L[j]?"selected":""}>${L[j]}</option>`).join("")}</select></td><td>${i+1}. ${esc(t.t)}${mx.checked&&!ok?`<span class="meta"> → ${L[mx.defs.indexOf(t.d)]}</span>`:""}</td></tr>`;}).join("")}</table></div>
